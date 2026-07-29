@@ -327,19 +327,19 @@ def train(cfg: TrainPipelineConfig, accelerator: "Accelerator | None" = None):
     if not cfg.is_reward_model_training and processor_pretrained_path is not None:
         preprocessor_overrides = {
             "device_processor": {"device": device.type},
-            "normalizer_processor": {
-                "stats": dataset.meta.stats,
-                "features": {**policy.config.input_features, **policy.config.output_features},
-                "norm_map": policy.config.normalization_mapping,
-            },
+            # "normalizer_processor": {
+            #     "stats": dataset.meta.stats,
+            #     "features": {**policy.config.input_features, **policy.config.output_features},
+            #     "norm_map": policy.config.normalization_mapping,
+            # },
             "rename_observations_processor": {"rename_map": cfg.rename_map},
         }
         postprocessor_overrides = {
-            "unnormalizer_processor": {
-                "stats": dataset.meta.stats,
-                "features": policy.config.output_features,
-                "norm_map": policy.config.normalization_mapping,
-            },
+            # "unnormalizer_processor": {
+            #     "stats": dataset.meta.stats,
+            #     "features": policy.config.output_features,
+            #     "norm_map": policy.config.normalization_mapping,
+            # },
         }
         if getattr(active_cfg, "use_relative_actions", False):
             preprocessor_overrides["relative_actions_processor"] = {
