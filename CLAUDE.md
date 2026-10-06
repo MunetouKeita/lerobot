@@ -82,8 +82,9 @@ export MKL_NUM_THREADS=1
 ## セットアップと主要コマンド
 
 ```bash
+uv python pin 3.12                                  # .python-version は .gitignore 対象のため、クローンごとに実行する
 uv sync --locked --extra molmoact2 --extra libero   # 本研究で使う依存関係
-uv sync --locked --extra test --extra dev           # LeRobot のテスト・開発ツールが必要な場合
+uv sync --locked --extra molmoact2 --extra libero --extra test --extra dev   # テスト・開発ツールも必要な場合（本研究の extra も必ず含める）
 git lfs install && git lfs pull                     # LeRobot のテスト用アーティファクト（テストを回す場合のみ）
 ```
 

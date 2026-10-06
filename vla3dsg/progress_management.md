@@ -21,12 +21,12 @@
 
 目的: LIBEROでMolmoAct2が1エピソードでも動く状態にする
 
-- [ ] uv をインストールする
+- [x] uv をインストールする（uv 0.12.23、`~/.local/bin`）
 - [x] 本家 LeRobot（`huggingface/lerobot` の main）をフォーク（`MunetouKeita/lerobot`）してクローンし、使用したコミットを記録する（`8c920c42`、2026-10-03）
 - [x] 公式の `CLAUDE.md`（`AGENTS.md` へのシンボリックリンク）を本研究用の `CLAUDE.md` に置き換え、`vla3dsg/` ディレクトリと本ファイルを配置する
-- [ ] `uv sync --locked --extra molmoact2 --extra libero` で Python 3.12 の仮想環境を作る（extra の組み合わせでエラーが出たら報告）
-- [ ] PyTorch が CUDA 12.8 ビルドで、`get_arch_list()` に `sm_120` が含まれることを確認する
-- [ ] システムに ffmpeg が入っており、TorchCodec から使えることを確認する
+- [x] `uv sync --locked --extra molmoact2 --extra libero` で Python 3.12 の仮想環境を作る（extra の組み合わせでエラーが出たら報告）（Python 3.12.15、`.python-version` で 3.12 に固定）
+- [x] PyTorch が CUDA 12.8 ビルドで、`get_arch_list()` に `sm_120` が含まれることを確認する（torch 2.11.0+cu128、RTX 5090 で行列積も確認）
+- [x] システムに ffmpeg が入っており、TorchCodec から使えることを確認する（ffmpeg 4.4.2、torchcodec 0.11.1+cpu で H.264 をデコードできた）
 - [ ] EGL のヘッドレス描画でLIBEROの環境が起動し、カメラ画像（agentview、手首）が保存できることを確認する（`scripts/test_libero_env.py`）
 - [ ] `allenai/MolmoAct2-LIBERO-LeRobot` をダウンロードする（約22GB）
 - [ ] 1タスク・1エピソードで `lerobot-eval` が最後まで走ることを確認する
@@ -136,3 +136,6 @@ Phase 4 の結果を受けて詳細化する。現時点の予定のみ記載。
 | 2026-10-06 | LeRobot 公式の CLAUDE.md と統合 | 研究コードは `vla3dsg/` に置く構成に変更 |
 | 2026-10-06 | CLAUDE.md の記述をリポジトリの実態に合わせて修正 | フォーク（`MunetouKeita/lerobot`）である旨と、統合元が `AGENTS.md` である旨を明記 |
 | 2026-10-06 | 使用コミットを記録、`upstream` remote を追加 | ベースコミット `8c920c42`（upstream main、2026-10-03）。`upstream` = `https://github.com/huggingface/lerobot.git` |
+| 2026-10-06 | uv をインストール | 公式インストーラで uv 0.12.23 を `~/.local/bin` に導入。作業は `vla3dsg` ブランチで行う（`main` は upstream 追従用） |
+| 2026-10-06 | `uv sync --locked --extra molmoact2 --extra libero` | 初回は `.python-version` がなくシステムの Python 3.13 が選ばれたため、`uv python pin 3.12` で固定して作り直した（3.12.15）。torch 2.11.0+cu128、`sm_120` あり、lerobot 0.6.2・libero の import を確認。extra の組み合わせでエラーなし |
+| 2026-10-06 | ffmpeg を apt でインストールし TorchCodec を確認 | ffmpeg 4.4.2（Ubuntu 22.04 標準）。TorchCodec 0.11.1（CPU 版）で H.264 のテスト動画をデコードできた。システムの ffmpeg には libsvtav1 がないが、eval のロールアウト動画は PyAV（同梱 FFmpeg、libsvtav1 あり）の libx264 で書き出すため影響なし |
