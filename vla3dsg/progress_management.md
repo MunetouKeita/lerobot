@@ -31,6 +31,7 @@
 - [ ] `allenai/MolmoAct2-LIBERO-LeRobot` をダウンロードする（約22GB）
 - [ ] 1タスク・1エピソードで `lerobot-eval` が最後まで走ることを確認する
 - [ ] 推論時のVRAM使用量と1ステップあたりの推論時間を記録する
+- [ ] `lerobot-eval` が保存するロールアウト動画（`<output_dir>/videos/<スイート>_<タスクID>/eval_episode_*.mp4`）を確認する
 
 完了条件: エラーなく1エピソードが終了し、ロールアウト動画を保存できる
 
@@ -119,6 +120,24 @@ Phase 4 の結果を受けて詳細化する。現時点の予定のみ記載。
 
 ---
 
+## 共通ツール: ロールアウトの可視化
+
+目的: LIBEROでの動作の様子を、動画またはストリーミングで確認できるようにする（失敗分類や、SGの有無による挙動の違いの確認に使う）
+
+LeRobot 本体の現状（2026-10-06 時点、`8c920c42`）:
+
+- `lerobot-eval` は1タスクあたり最大10エピソードをMP4で `<output_dir>/videos/` に保存する（本数はコード内で固定。`--eval.recording=true` のときは保存しない）
+- 動画の中身は `LiberoEnv.render()` の出力で、agentview カメラの1視点のみ（観測と同じ解像度、既定 360x360）。手首カメラ、指示文、成功判定などの表示はない
+- 評価中にリアルタイムで見るストリーミング機能はない（Rerun / Foxglove による可視化は `lerobot-record`・`lerobot-teleoperate`・`lerobot-dataset-viz` 向けで、`lerobot-eval` には組み込まれていない）
+- `--eval.recording=true` でロールアウトを LeRobot データセットとして保存すれば、両カメラを `lerobot-dataset-viz`（Rerun）で後から見られる
+
+方針: 不足分は `vla3dsg/` 側で作る（LeRobot 本体は変更しない）
+
+- [ ] 動画: agentview と手首カメラを横に並べ、指示文（SG付きプロンプトを含む）、ステップ数、成功・失敗を重ねて表示した MP4 を保存する
+- [ ] 保存する本数・対象（全エピソード／失敗のみ など）を `config/settings.py` で指定できるようにする
+- [ ] ストリーミング: 評価中の映像を Rerun ビューアでリアルタイムに確認できるようにする（このPCのローカル画面で見る。両カメラ、指示文、行動の値をステップごとに記録し、`.rrd` に保存して後から見直せるようにする）
+- [ ] 実装の場所（`lerobot-eval` を呼ぶラッパーか、独自の評価ループか）を、Phase 1 で `lerobot-eval` の処理の流れを調べたうえで決める
+
 ## 未決事項
 
 - 隠れた物体の具体的なパターンと、どの程度隠すか
@@ -140,3 +159,6 @@ Phase 4 の結果を受けて詳細化する。現時点の予定のみ記載。
 | 2026-10-06 | `uv sync --locked --extra molmoact2 --extra libero` | 初回は `.python-version` がなくシステムの Python 3.13 が選ばれたため、`uv python pin 3.12` で固定して作り直した（3.12.15）。torch 2.11.0+cu128、`sm_120` あり、lerobot 0.6.2・libero の import を確認。extra の組み合わせでエラーなし |
 | 2026-10-06 | ffmpeg を apt でインストールし TorchCodec を確認 | ffmpeg 4.4.2（Ubuntu 22.04 標準）。TorchCodec 0.11.1（CPU 版）で H.264 のテスト動画をデコードできた。システムの ffmpeg には libsvtav1 がないが、eval のロールアウト動画は PyAV（同梱 FFmpeg、libsvtav1 あり）の libx264 で書き出すため影響なし |
 | 2026-10-06 | `config/settings.py` と `scripts/test_libero_env.py` を作成し、LIBERO の起動を確認 | 初回 import 時の対話プロンプトに N で答え `~/.libero/config.yaml` を既定値で作成。アセットは初回起動時に HF Hub から `~/.cache/libero/assets` に自動ダウンロード（約70秒）。libero_goal task0 で reset 2.1秒（2回目）、no-op step 6.5ms、360x360 の agentview・手首画像を保存し目視で確認。出力先 `outputs/` は git 管理外 |
+| 2026-10-06 | ロールアウト可視化機能の有無を調査 | `lerobot-eval` は agentview のみの MP4 を1タスク最大10本保存。手首カメラ・指示文の表示やストリーミングはないため、`vla3dsg/` 側で作る方針を「共通ツール」節に追記 |
+| 2026-10-06 | ストリーミングの視聴環境を確認 | 評価・確認ともこのPCで行う（リモート不要）。方式は Rerun（要 `viz` extra）か OpenCV ウィンドウかで未決 |
+| 2026-10-06 | ストリーミング方式を Rerun に決定し、`viz` extra を追加 | rerun-sdk 0.33.1・foxglove-sdk 0.25.3 を導入（他パッケージの削除なし）。以降の `uv sync` は `--extra molmoact2 --extra libero --extra viz` で行う |

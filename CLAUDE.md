@@ -46,7 +46,7 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 
 | 項目 | 内容 |
 |---|---|
-| 評価・学習基盤 | 本家 LeRobot のフォーク（main、v0.6系）。`molmoact2` と `libero` の extra を使う |
+| 評価・学習基盤 | 本家 LeRobot のフォーク（main、v0.6系）。`molmoact2`・`libero`・`viz`（Rerun）の extra を使う |
 | シミュレータ | LIBERO（MuJoCo / robosuite ベース、`hf-libero` パッケージ経由） |
 | VLA | MolmoAct2（`allenai/MolmoAct2-LIBERO-LeRobot`、または元のHFチェックポイント `allenai/MolmoAct2-LIBERO`） |
 | 主要ライブラリ | PyTorch、Hugging Face（datasets、Hub、accelerate）、draccus（設定・CLI）、Gymnasium（環境） |
@@ -83,8 +83,8 @@ export MKL_NUM_THREADS=1
 
 ```bash
 uv python pin 3.12                                  # .python-version は .gitignore 対象のため、クローンごとに実行する
-uv sync --locked --extra molmoact2 --extra libero   # 本研究で使う依存関係
-uv sync --locked --extra molmoact2 --extra libero --extra test --extra dev   # テスト・開発ツールも必要な場合（本研究の extra も必ず含める）
+uv sync --locked --extra molmoact2 --extra libero --extra viz   # 本研究で使う依存関係（viz はロールアウト可視化の Rerun 用）
+uv sync --locked --extra molmoact2 --extra libero --extra viz --extra test --extra dev   # テスト・開発ツールも必要な場合（本研究の extra も必ず含める）
 git lfs install && git lfs pull                     # LeRobot のテスト用アーティファクト（テストを回す場合のみ）
 ```
 
