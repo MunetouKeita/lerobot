@@ -1,0 +1,39 @@
+"""VLA×3DSG の設定値を一元管理する。"""
+
+import os
+from pathlib import Path
+
+# パス
+VLA3DSG_DIR = Path(__file__).resolve().parents[1]
+REPO_ROOT = VLA3DSG_DIR.parent
+RESULTS_DIR = VLA3DSG_DIR / "results"
+# テストスクリプトの出力（画像など）。git 管理しない
+OUTPUTS_DIR = VLA3DSG_DIR / "outputs"
+
+# ヘッドレス描画と再現性のための環境変数（MuJoCo / torch の import 前に適用する）
+RUNTIME_ENV = {
+    "MUJOCO_GL": "egl",
+    "PYOPENGL_PLATFORM": "egl",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+}
+
+
+def apply_runtime_env() -> None:
+    """未設定の環境変数だけを設定する。"""
+    for key, value in RUNTIME_ENV.items():
+        os.environ.setdefault(key, value)
+
+
+# シード
+SEED = 1000
+EVAL_SEED = 1000
+
+# LIBERO 環境
+LIBERO_SUITES = ["libero_spatial", "libero_object", "libero_goal", "libero_10"]
+LIBERO_OBS_SIZE = 360  # LeRobot の LiberoEnv 設定の既定値（縦横共通）
+# MolmoAct2 のドキュメントの評価コマンドに合わせる
+LIBERO_CAMERA_NAME_MAPPING = {
+    "agentview_image": "image",
+    "robot0_eye_in_hand_image": "wrist_image",
+}
