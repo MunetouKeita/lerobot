@@ -29,9 +29,11 @@
 - [x] システムに ffmpeg が入っており、TorchCodec から使えることを確認する（ffmpeg 4.4.2、torchcodec 0.11.1+cpu で H.264 をデコードできた）
 - [x] EGL のヘッドレス描画でLIBEROの環境が起動し、カメラ画像（agentview、手首）が保存できることを確認する（`scripts/test_libero_env.py`、libero_goal task0 で確認）
 - [x] `allenai/MolmoAct2-LIBERO-LeRobot` をダウンロードする（10.9GB、bf16 の単一 safetensors。読み込み時に `checkpoint_path` の `allenai/MolmoAct2-LIBERO`（21GB）も自動でダウンロードされる）
-- [ ] 1タスク・1エピソードで `lerobot-eval` が最後まで走ることを確認する
+- [x] 1タスク・1エピソードで `lerobot-eval` が最後まで走ることを確認する（元の HF チェックポイント `MolmoAct2-LIBERO`、libero_goal task0 で成功。`results/phase0_smoke/`）
 - [ ] 推論時のVRAM使用量と1ステップあたりの推論時間を記録する
-- [ ] `lerobot-eval` が保存するロールアウト動画（`<output_dir>/videos/<スイート>_<タスクID>/eval_episode_*.mp4`）を確認する
+  - VRAM: float32 でピーク約 26.0GB（デスクトップ表示分を除く）
+  - 推論時間: `lerobot-eval` は推論1回あたりの時間を出さないため未計測（126 環境ステップで約 6.5 秒、チャンク長 10）。可視化ツールか計測用スクリプトで測る
+- [x] `lerobot-eval` が保存するロールアウト動画（`<output_dir>/videos/<スイート>_<タスクID>/eval_episode_*.mp4`）を確認する（引き出しが開くことを確認。80fps で保存されるため実時間の4倍速で再生される）
 
 完了条件: エラーなく1エピソードが終了し、ロールアウト動画を保存できる
 
@@ -143,7 +145,7 @@ LeRobot 本体の現状（2026-10-06 時点、`8c920c42`）:
 
 ## 未決事項
 
-- `MolmoAct2-LIBERO-LeRobot` の `config.json` が現在の LeRobot と非互換な件の対処（作業ログ 2026-10-07 参照）
+- `MolmoAct2-LIBERO-LeRobot` の `config.json` が現在の LeRobot と非互換な件の対処（作業ログ 2026-10-07 参照）。Phase 0 は元の HF チェックポイントで実施。Phase 1 の比較時に、項目名を直したローカルコピーで試すか決める
 - `num_steps_wait=50` の指定方法（`vla3dsg/` 側で LIBERO の環境設定を継承したクラスを登録するか、`src/lerobot/` を最小限変更するか）
 - 隠れた物体の具体的なパターンと、どの程度隠すか
 - SGのテキスト化形式（どこまでの情報を入れるか）
@@ -169,3 +171,4 @@ LeRobot 本体の現状（2026-10-06 時点、`8c920c42`）:
 | 2026-10-06 | ストリーミング方式を Rerun に決定し、`viz` extra を追加 | rerun-sdk 0.33.1・foxglove-sdk 0.25.3 を導入（他パッケージの削除なし）。以降の `uv sync` は `--extra molmoact2 --extra libero --extra viz` で行う |
 | 2026-10-07 | `num_steps_wait` の設定可否を調査 | MolmoAct2 の報告値は `num_steps_wait=50` 前提だが、LeRobot の `--env.*` からは変えられず既定値 10 のまま。Phase 0 の動作確認は既定値で行い、Phase 1 までに指定方法を決める |
 | 2026-10-07 | チェックポイントをダウンロードし `lerobot-eval` を試行 | `MolmoAct2-LIBERO-LeRobot`（10.9GB）と、読み込み時に自動取得される `MolmoAct2-LIBERO`（21GB）を `~/.cache/huggingface/hub` に保存。`lerobot-eval` は `The fields enable_lora_vlm, enable_lora_action_expert, train_action_expert_only, model_dtype are not valid for MolmoAct2Config` で失敗。Hub の config.json が、LeRobot 側の設定項目の変更（c13d79e6 で LoRA 関連を `train_mode_vlm` に統合、ff71cae1 で `model_dtype` を `dtype` に統一）に追従していないため。upstream main（2026-10-07 時点）にも修正なし。config.json の項目名だけ直した一時コピーでは設定と前後処理の読み込みが通ることを確認（推論は未実施） |
+| 2026-10-07 | 元の HF チェックポイントで 1 エピソード評価 | `--policy.checkpoint_path=allenai/MolmoAct2-LIBERO --policy.norm_tag=libero --policy.dtype=float32`。libero_goal task0 で成功（126 ステップ）。評価 8.9 秒、コマンド全体 36.6 秒、VRAM ピーク約 26.0GB。結果と条件を `results/phase0_smoke/` に保存 |

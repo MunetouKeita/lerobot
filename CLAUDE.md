@@ -56,7 +56,7 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 - 研究テーマ2（習慣考慮型3DSG）用の Python 3.10 venv とは混ぜない
 - 本家 LeRobot では MolmoAct2-Think は未対応（通常の MolmoAct2 のみ）
 - Ai2 のフォーク（`allenai/lerobot` の `molmoact2-hf-inference`、v0.5.1固定）は論文値の厳密な再現用。ベースラインが論文値と大きくずれたときの切り分けにだけ使う
-- チェックポイントは1つあたり約22GB
+- チェックポイントの容量: `MolmoAct2-LIBERO`（元の HF 形式、float32）が約21GB、`MolmoAct2-LIBERO-LeRobot`（bf16）が約11GB。float32 推論時の VRAM ピークは約26GB
 
 ## OS・GPU・開発環境
 
