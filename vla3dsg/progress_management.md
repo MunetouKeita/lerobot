@@ -28,7 +28,7 @@
 - [x] PyTorch が CUDA 12.8 ビルドで、`get_arch_list()` に `sm_120` が含まれることを確認する（torch 2.11.0+cu128、RTX 5090 で行列積も確認）
 - [x] システムに ffmpeg が入っており、TorchCodec から使えることを確認する（ffmpeg 4.4.2、torchcodec 0.11.1+cpu で H.264 をデコードできた）
 - [x] EGL のヘッドレス描画でLIBEROの環境が起動し、カメラ画像（agentview、手首）が保存できることを確認する（`scripts/test_libero_env.py`、libero_goal task0 で確認）
-- [ ] `allenai/MolmoAct2-LIBERO-LeRobot` をダウンロードする（約22GB）
+- [x] `allenai/MolmoAct2-LIBERO-LeRobot` をダウンロードする（10.9GB、bf16 の単一 safetensors。読み込み時に `checkpoint_path` の `allenai/MolmoAct2-LIBERO`（21GB）も自動でダウンロードされる）
 - [ ] 1タスク・1エピソードで `lerobot-eval` が最後まで走ることを確認する
 - [ ] 推論時のVRAM使用量と1ステップあたりの推論時間を記録する
 - [ ] `lerobot-eval` が保存するロールアウト動画（`<output_dir>/videos/<スイート>_<タスクID>/eval_episode_*.mp4`）を確認する
@@ -47,6 +47,9 @@
 - [ ] LeRobot 形式のチェックポイント（`MolmoAct2-LIBERO-LeRobot`）と元のHFチェックポイント（`MolmoAct2-LIBERO` + `--policy.norm_tag=libero`）で差がないか確認する
 - [ ] 評価結果（成功率、条件、所要時間）を `results/baseline/` に保存する
 - [ ] 論文値と大きくずれる場合は、Ai2 のフォーク（v0.5.1固定）で同じ評価を行って原因を切り分ける
+- [ ] `num_steps_wait`（reset 後に物体を落ち着かせる no-op ステップ数）を 50 にして評価する方法を決める
+  - MolmoAct2 のドキュメントでは、LIBERO の報告値はすべて `num_steps_wait=50` で測ったとされている（10 では成功率が下がりうる）
+  - 現在の LeRobot では `LiberoEnv`（`src/lerobot/envs/libero.py`）の引数に既定値 10 があるだけで、`--env.*` の設定からは変えられない
 
 完了条件: 公式の報告値に近い成功率が再現できる（大きくずれる場合は原因を調べてから先へ進む）
 
@@ -140,6 +143,8 @@ LeRobot 本体の現状（2026-10-06 時点、`8c920c42`）:
 
 ## 未決事項
 
+- `MolmoAct2-LIBERO-LeRobot` の `config.json` が現在の LeRobot と非互換な件の対処（作業ログ 2026-10-07 参照）
+- `num_steps_wait=50` の指定方法（`vla3dsg/` 側で LIBERO の環境設定を継承したクラスを登録するか、`src/lerobot/` を最小限変更するか）
 - 隠れた物体の具体的なパターンと、どの程度隠すか
 - SGのテキスト化形式（どこまでの情報を入れるか）
 - 視点依存の空間関係（behind など）をどの座標系で定義するか
@@ -162,3 +167,5 @@ LeRobot 本体の現状（2026-10-06 時点、`8c920c42`）:
 | 2026-10-06 | ロールアウト可視化機能の有無を調査 | `lerobot-eval` は agentview のみの MP4 を1タスク最大10本保存。手首カメラ・指示文の表示やストリーミングはないため、`vla3dsg/` 側で作る方針を「共通ツール」節に追記 |
 | 2026-10-06 | ストリーミングの視聴環境を確認 | 評価・確認ともこのPCで行う（リモート不要）。方式は Rerun（要 `viz` extra）か OpenCV ウィンドウかで未決 |
 | 2026-10-06 | ストリーミング方式を Rerun に決定し、`viz` extra を追加 | rerun-sdk 0.33.1・foxglove-sdk 0.25.3 を導入（他パッケージの削除なし）。以降の `uv sync` は `--extra molmoact2 --extra libero --extra viz` で行う |
+| 2026-10-07 | `num_steps_wait` の設定可否を調査 | MolmoAct2 の報告値は `num_steps_wait=50` 前提だが、LeRobot の `--env.*` からは変えられず既定値 10 のまま。Phase 0 の動作確認は既定値で行い、Phase 1 までに指定方法を決める |
+| 2026-10-07 | チェックポイントをダウンロードし `lerobot-eval` を試行 | `MolmoAct2-LIBERO-LeRobot`（10.9GB）と、読み込み時に自動取得される `MolmoAct2-LIBERO`（21GB）を `~/.cache/huggingface/hub` に保存。`lerobot-eval` は `The fields enable_lora_vlm, enable_lora_action_expert, train_action_expert_only, model_dtype are not valid for MolmoAct2Config` で失敗。Hub の config.json が、LeRobot 側の設定項目の変更（c13d79e6 で LoRA 関連を `train_mode_vlm` に統合、ff71cae1 で `model_dtype` を `dtype` に統一）に追従していないため。upstream main（2026-10-07 時点）にも修正なし。config.json の項目名だけ直した一時コピーでは設定と前後処理の読み込みが通ることを確認（推論は未実施） |
