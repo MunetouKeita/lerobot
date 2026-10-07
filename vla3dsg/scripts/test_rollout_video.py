@@ -48,7 +48,7 @@ def main() -> None:
     assert len(rollout_video._final_frames) == 1
     rollout_video._final_frames.clear()
 
-    out = settings.OUTPUTS_DIR / "test_rollout_video" / "frame.png"
+    out = settings.TMP_DIR / "test_rollout_video" / "frame.png"
     out.parent.mkdir(parents=True, exist_ok=True)
     Image.fromarray(frame).save(out)
     print(f"saved: {out}")

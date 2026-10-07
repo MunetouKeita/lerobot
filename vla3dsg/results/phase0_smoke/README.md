@@ -39,3 +39,5 @@ uv run lerobot-eval \
   --seed=1000 \
   --output_dir=vla3dsg/outputs/phase0_smoke
 ```
+
+- 当時の出力先 `vla3dsg/outputs/` は 2026-10-07 の整理で削除した。動画と `eval_info.json` はこのディレクトリにある

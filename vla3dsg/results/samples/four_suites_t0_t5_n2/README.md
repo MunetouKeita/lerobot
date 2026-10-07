@@ -28,8 +28,10 @@
 
 ## 動画（git 管理外）
 
-- テロップ付きデモ（全 16 エピソードを連結、133 秒、720x468、20fps）: `vla3dsg/outputs/eval/samples/four_suites_t0_t5_n2/videos/demo_with_captions.mp4`
+- テロップ付きデモ（全 16 エピソードを連結、133 秒、720x468、20fps）: `videos/demo_with_captions.mp4`
   - 映像: agentview（左）と手首カメラ（右）
   - 下部テロップ: 「指示：<指示文の日本語訳>」と「成功率：<成功回数>/<実行数>」（タスクごと）。日本語訳は `vla3dsg/config/instructions_ja.py`
   - 各エピソードの最後のフレームを 1 秒止めて表示
-- エピソードごとの動画（テロップなし）: 同じディレクトリの `<スイート>_<タスクID>/eval_episode_<n>.mp4`
+- エピソードごとの動画（テロップなし）: `videos/<スイート>_<タスクID>/eval_episode_<n>.mp4`
+- 実行ログ: `eval.log`（git 管理外）
+- 実行時の出力先は `vla3dsg/outputs/eval/...`（`conditions.json` の `--output_dir`）で、2026-10-07 にこのディレクトリへ移動した

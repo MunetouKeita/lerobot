@@ -5,6 +5,7 @@
 - 条件: `conditions.json`（チェックポイント `allenai/MolmoAct2-LIBERO`、`norm_tag=libero`、float32、`num_steps_wait=50`、シード 1000、元のタスク指示のみ）
 - コミット: `8d664192`（upstream ベース `200ee535`）
 - 所要時間: 322 秒（モデル読み込みを含む）
+- 実行ログ・動画: `eval.log`、`videos/<スイート>_<タスクID>/eval_episode_<n>.mp4`（git 管理外。実行時の出力先は `vla3dsg/outputs/eval/...` で、2026-10-07 にこのディレクトリへ移動した）
 
 ## 結果
 
@@ -35,4 +36,4 @@
 
 ## 失敗エピソード
 
-- task 2 の episode 2: 上限の 300 ステップで時間切れ。腕がキャビネットの上付近で止まったまま終了している（動画は `vla3dsg/outputs/eval/baseline/libero_goal_n5/videos/libero_goal_2/eval_episode_2.mp4`、git 管理外）
+- task 2 の episode 2: 上限の 300 ステップで時間切れ。腕がキャビネットの上付近で止まったまま終了している（動画は `videos/libero_goal_2/eval_episode_2.mp4`、git 管理外）

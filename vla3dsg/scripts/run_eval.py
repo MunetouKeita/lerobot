@@ -1,4 +1,7 @@
-"""MolmoAct2 の LIBERO 評価を実行し、結果を条件とともに results/ に保存する。
+"""MolmoAct2 の LIBERO 評価を実行し、結果を条件とともに results/<name>/ に保存する。
+
+lerobot-eval の出力先も results/<name>/ にする（eval_info.json と videos/）。
+実行ログは results/<name>/eval.log に保存する（videos/ と eval.log は git 管理外）。
 
     uv run python vla3dsg/scripts/run_eval.py --name baseline/libero_goal_n5 --suite libero_goal --n-episodes 5
     uv run python vla3dsg/scripts/run_eval.py --name samples/all_suites --suite libero_spatial,libero_goal \
@@ -11,6 +14,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+from typing import Any, TextIO
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from vla3dsg.config import settings  # noqa: E402
@@ -33,6 +37,24 @@ def git_info() -> dict[str, str | bool]:
     }
 
 
+class _Tee:
+    """標準出力・標準エラーを画面とログファイルの両方に書く。"""
+
+    def __init__(self, stream: TextIO, log: TextIO) -> None:
+        self.stream, self.log = stream, log
+
+    def write(self, data: str) -> int:
+        self.log.write(data)
+        return self.stream.write(data)
+
+    def flush(self) -> None:
+        self.log.flush()
+        self.stream.flush()
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self.stream, name)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--name", required=True, help="results/ 以下の保存先（例: baseline/libero_goal_n5）")
@@ -51,12 +73,11 @@ def main() -> None:
         task_ids = list(range(len(_get_suite(suites[0]).tasks)))
     else:
         sys.exit("複数スイートでは --task-ids を指定すること")
-    out_dir = settings.OUTPUTS_DIR / "eval" / args.name
     res_dir = settings.RESULTS_DIR / args.name
     if res_dir.exists():
         sys.exit(f"{res_dir} は既に存在する。別の --name を指定すること")
 
-    eval_args = settings.molmoact2_eval_args(args.suite, task_ids, args.n_episodes, out_dir)
+    eval_args = settings.molmoact2_eval_args(args.suite, task_ids, args.n_episodes, res_dir)
     conditions = {
         "suite": args.suite,
         "task_ids": task_ids,
@@ -77,11 +98,15 @@ def main() -> None:
     if args.annotated_video:
         rollout_video.install()
     sys.argv = [sys.argv[0], *eval_args]
+    res_dir.mkdir(parents=True)
     t0 = time.perf_counter()
+    # lerobot のロガーが stderr を保持するため、プロセス終了までログファイルを開いたままにする
+    log = open(res_dir / "eval.log", "w")  # noqa: SIM115
+    sys.stdout, sys.stderr = _Tee(sys.stdout, log), _Tee(sys.stderr, log)
     lerobot_eval.main()
     conditions["wall_s"] = round(time.perf_counter() - t0, 1)
 
-    info = json.loads((out_dir / "eval_info.json").read_text())
+    info = json.loads((res_dir / "eval_info.json").read_text())
     per_task = [
         {
             "suite": t["task_group"],
@@ -101,12 +126,10 @@ def main() -> None:
         "per_task": per_task,
     }
 
-    res_dir.mkdir(parents=True)
     (res_dir / "conditions.json").write_text(json.dumps(conditions, indent=2, ensure_ascii=False))
     (res_dir / "summary.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False))
-    (res_dir / "eval_info.json").write_text(json.dumps(info, indent=2, ensure_ascii=False))
     print(json.dumps(summary, indent=2, ensure_ascii=False))
-    print(f"saved: {res_dir}（動画は {out_dir / 'videos'}）")
+    print(f"saved: {res_dir}")
 
 
 if __name__ == "__main__":

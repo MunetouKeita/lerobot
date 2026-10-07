@@ -65,7 +65,7 @@ def main() -> None:
         assert not terminated[0], "no-op 動作中にエピソードが終了した"
     print(f"step: {(time.perf_counter() - t0) / N_STEPS * 1000:.1f}ms/step")
 
-    out_dir = settings.OUTPUTS_DIR / "test_libero_env" / f"{args.suite}_task{args.task_id}"
+    out_dir = settings.TMP_DIR / "test_libero_env" / f"{args.suite}_task{args.task_id}"
     out_dir.mkdir(parents=True, exist_ok=True)
     for name in cam_names:
         img = obs["pixels"][name][0]

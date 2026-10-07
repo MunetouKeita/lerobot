@@ -6,9 +6,10 @@ from pathlib import Path
 # パス
 VLA3DSG_DIR = Path(__file__).resolve().parents[1]
 REPO_ROOT = VLA3DSG_DIR.parent
+# 実験結果。1 実験 = results/<名前>/（要約・条件は git 管理、videos/ と eval.log は管理外）
 RESULTS_DIR = VLA3DSG_DIR / "results"
-# テストスクリプトの出力（画像など）。git 管理しない
-OUTPUTS_DIR = VLA3DSG_DIR / "outputs"
+# テスト・計測スクリプトの使い捨て出力。git 管理外で、いつ消してもよい
+TMP_DIR = VLA3DSG_DIR / "tmp"
 
 # ヘッドレス描画と再現性のための環境変数（MuJoCo / torch の import 前に適用する）
 RUNTIME_ENV = {
@@ -39,6 +40,7 @@ LIBERO_CONTROL_FPS = 20  # robosuite の制御周期。動画を実時間で保�
 # デモ動画のテロップ
 DEMO_FONT_PATH = "/usr/share/fonts/opentype/noto/NotoSansCJK-Medium.ttc"  # 日本語表示用（fonts-noto-cjk）
 DEMO_HOLD_LAST_S = 1.0  # 各エピソードの最後のフレームを止めて見せる秒数
+DEMO_EPISODES_PER_TASK = 1  # デモ動画に載せるエピソード数（成功率は全エピソードから計算）
 # MolmoAct2 のドキュメントの評価コマンドに合わせる
 LIBERO_CAMERA_NAME_MAPPING = {
     "agentview_image": "image",

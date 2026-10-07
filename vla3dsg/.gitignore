@@ -1,2 +1,4 @@
-outputs/
+tmp/
+results/**/videos/
+results/**/*.log
 __pycache__/

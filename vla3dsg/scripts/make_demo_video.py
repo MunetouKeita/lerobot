@@ -1,6 +1,8 @@
 """評価結果の動画をつなぎ、指示（日本語訳）と成功率（成功回数/実行数）のテロップを付けたデモ動画を作る。
 
-run_eval.py の結果（results/<name>/summary.json）と動画（outputs/eval/<name>/videos/）を使う。
+各タスクの先頭から DEMO_EPISODES_PER_TASK 本だけを等倍で載せ、成功率は全エピソードの結果を表示する。
+
+run_eval.py の結果（results/<name>/summary.json と results/<name>/videos/）を使う。
 
     uv run python vla3dsg/scripts/make_demo_video.py --name samples/four_suites_t0_t5_n2
 """
@@ -59,10 +61,11 @@ def caption(frame: np.ndarray, lines: list[str], font: ImageFont.FreeTypeFont) -
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--name", required=True, help="run_eval.py の --name")
+    parser.add_argument("--episodes-per-task", type=int, default=settings.DEMO_EPISODES_PER_TASK)
     args = parser.parse_args()
 
     summary = json.loads((settings.RESULTS_DIR / args.name / "summary.json").read_text())
-    videos_dir = settings.OUTPUTS_DIR / "eval" / args.name / "videos"
+    videos_dir = settings.RESULTS_DIR / args.name / "videos"
     out_path = videos_dir / "demo_with_captions.mp4"
     font = ImageFont.truetype(settings.DEMO_FONT_PATH, 22)
     fps = settings.LIBERO_CONTROL_FPS
@@ -80,7 +83,7 @@ def main() -> None:
             lines = wrap(f"指示：{instruction}", font, frame_w - 2 * MARGIN, MAX_INSTRUCTION_LINES)
             lines += [""] * (MAX_INSTRUCTION_LINES - len(lines))
             lines.append(f"成功率：{sum(successes)}/{len(successes)}")
-            for ep in range(len(successes)):
+            for ep in range(min(args.episodes_per_task, len(successes))):
                 video = videos_dir / f"{task['suite']}_{task['task_id']}" / f"eval_episode_{ep}.mp4"
                 with av.open(str(video)) as src:
                     frames = [f.to_ndarray(format="rgb24") for f in src.decode(video=0)]

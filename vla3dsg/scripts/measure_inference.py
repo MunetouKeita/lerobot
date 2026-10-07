@@ -86,7 +86,7 @@ def main() -> None:
     parser.add_argument("--n-episodes", type=int, default=1)
     args = parser.parse_args()
 
-    out_dir = settings.OUTPUTS_DIR / "measure_inference" / f"{args.suite}_task{args.task_id}"
+    out_dir = settings.TMP_DIR / "measure_inference" / f"{args.suite}_task{args.task_id}"
     sys.argv = [sys.argv[0], *settings.molmoact2_eval_args(args.suite, [args.task_id], args.n_episodes, out_dir)]
 
     patch_eval()

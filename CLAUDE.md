@@ -32,18 +32,23 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 |---|---|
 | `src/lerobot/` | LeRobot 本体。原則として変更しない |
 | `vla3dsg/` | 本研究のコード一式（下記） |
-| `vla3dsg/config/settings.py` | 設定値（パス、シード、エピソード数、プロンプト形式など）の一元管理 |
+| `vla3dsg/config/settings.py` | 設定値（パス、シード、チェックポイント、評価引数 `molmoact2_eval_args` など）の一元管理 |
+| `vla3dsg/config/instructions_ja.py` | LIBERO の指示文の日本語訳（デモ動画のテロップ用） |
 | `vla3dsg/envs/` | `lerobot-eval` にプラグインとして読み込ませる環境設定（環境タイプ `libero_vla3dsg`） |
-| `vla3dsg/visualization/` | ロールアウトの可視化（2 視点・指示文・成否を重ねた動画） |
-| `vla3dsg/scripts/test_<対象>.py` | モジュール単位のテスト |
+| `vla3dsg/visualization/` | ロールアウトの可視化（agentview と手首カメラを並べた実時間の動画） |
 | `vla3dsg/scripts/run_eval.py` | 評価の実行と結果の保存（条件・git 情報つき）。`--annotated-video` で可視化動画を保存 |
-| `vla3dsg/scripts/make_demo_video.py` | 評価動画を連結し、指示文と成功率のテロップを付ける |
-| `vla3dsg/results/` | 評価結果 |
-| `vla3dsg/docs/` | 調査メモ（LIBEROのタスク定義、LeRobotの処理の流れなど） |
+| `vla3dsg/scripts/make_demo_video.py` | デモ動画の作成。各タスク 1 エピソードを等倍で連結し、「指示：<日本語訳>」「成功率：k/n」（全エピソードの結果）のテロップを付ける |
+| `vla3dsg/scripts/measure_inference.py` | 推論時間と GPU メモリの計測 |
+| `vla3dsg/scripts/test_<対象>.py` | モジュール単位のテスト |
+| `vla3dsg/results/<名前>/` | 1 実験分の結果。`README.md`・`summary.json`・`conditions.json`・`eval_info.json` は git 管理、`videos/` と `eval.log` は管理外 |
+| `vla3dsg/tmp/` | テスト・計測の使い捨て出力（git 管理外。いつ消してもよい） |
+| `vla3dsg/docs/` | 調査メモ（LIBEROのタスク定義、LeRobotの処理の流れなど。Phase 2 で作成予定） |
 | `vla3dsg/progress_management.md` | 詳細計画と進捗 |
 
 - カスタムシーンの登録やプロンプト改変は、`vla3dsg/` 側のコード（ラッパー、`ProcessorStep` の追加、LIBEROへのベンチマーク登録処理など）で実現する
 - やむを得ず `src/lerobot/` を変更する場合は、理由と差分を `progress_management.md` の作業ログに記録する
+- ブランチ: 作業は `vla3dsg` ブランチで行い、`main` は upstream（`huggingface/lerobot`）の追従用にする。remote は `origin`（フォーク）と `upstream`（本家）
+  - upstream の取り込み: `git fetch upstream` → `main` を `upstream/main` に早送りして `origin` に push → `vla3dsg` を `main` にリベース → `uv sync` とテスト・1 エピソード評価で動作確認
 - 使用した LeRobot のコミットを記録する。このファイルは upstream の `CLAUDE.md`（`AGENTS.md` へのシンボリックリンク）を通常ファイルで置き換えているため、upstream を取り込むと競合しうる。その場合は `AGENTS.md` 側の更新内容を確認して反映する
 
 ## 使用するソフトウェア
@@ -52,7 +57,7 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 |---|---|
 | 評価・学習基盤 | 本家 LeRobot のフォーク（main、v0.6系）。`molmoact2`・`libero`・`viz`（Rerun）の extra を使う |
 | シミュレータ | LIBERO（MuJoCo / robosuite ベース、`hf-libero` パッケージ経由） |
-| VLA | MolmoAct2（`allenai/MolmoAct2-LIBERO-LeRobot`、または元のHFチェックポイント `allenai/MolmoAct2-LIBERO`） |
+| VLA | MolmoAct2。現在は元の HF チェックポイント `allenai/MolmoAct2-LIBERO`（`norm_tag=libero`、float32）を使う。LeRobot 形式の `allenai/MolmoAct2-LIBERO-LeRobot` は `config.json` が現在の LeRobot と非互換で、そのままでは読み込めない |
 | 主要ライブラリ | PyTorch、Hugging Face（datasets、Hub、accelerate）、draccus（設定・CLI）、Gymnasium（環境） |
 | パッケージ管理 | uv（`uv.lock` に従ってインストール） |
 
@@ -60,6 +65,7 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 - 研究テーマ2（習慣考慮型3DSG）用の Python 3.10 venv とは混ぜない
 - 本家 LeRobot では MolmoAct2-Think は未対応（通常の MolmoAct2 のみ）
 - Ai2 のフォーク（`allenai/lerobot` の `molmoact2-hf-inference`、v0.5.1固定）は論文値の厳密な再現用。ベースラインが論文値と大きくずれたときの切り分けにだけ使う
+- LIBERO の初回 import 時にデータセットの保存先を対話で聞かれる。`~/.libero/config.yaml` を既定値で作成済み（評価にデモデータは不要）。物体モデルなどのアセットは初回起動時に `~/.cache/libero/assets` へ自動ダウンロードされる
 - チェックポイントの容量: `MolmoAct2-LIBERO`（元の HF 形式、float32）が約21GB、`MolmoAct2-LIBERO-LeRobot`（bf16）が約11GB。float32 推論時の VRAM ピークは約26GB
 
 ## OS・GPU・開発環境
@@ -94,6 +100,9 @@ git lfs install && git lfs pull                     # LeRobot のテスト用ア
 
 ```bash
 uv run python vla3dsg/scripts/test_<対象>.py        # 本研究のモジュールテスト
+uv run python vla3dsg/scripts/run_eval.py --name baseline/libero_goal_n5 --suite libero_goal --n-episodes 5   # 評価（結果は results/<name>/）
+uv run python vla3dsg/scripts/run_eval.py --name samples/xxx --suite libero_spatial,libero_goal --task-ids 0 5 --n-episodes 20 --annotated-video
+uv run python vla3dsg/scripts/make_demo_video.py --name samples/xxx   # テロップ付きデモ動画（results/<name>/videos/demo_with_captions.mp4）
 uv run pytest tests -svv --maxfail=10               # LeRobot 本体のテスト（本体を変更した場合）
 pre-commit run --all-files                          # Lint・フォーマット（ruff、typos、bandit など）
 ```
@@ -126,10 +135,10 @@ pre-commit run --all-files                          # Lint・フォーマット�
 - 設定値は `vla3dsg/config/settings.py` に一元管理する
 - コメントは日本語で、最低限必要なものだけ簡潔に書く
 - モジュールなど小さなまとまりごとに `vla3dsg/scripts/test_<対象>.py` でテストしてから評価パイプラインに組み込む
-- 評価結果は条件（チェックポイント、スイート、タスクID、シード、プロンプト条件）とともに `vla3dsg/results/` に保存し、再現できるようにする
+- 評価は `vla3dsg/scripts/run_eval.py` で行い、結果は条件（チェックポイント、スイート、タスクID、シード、プロンプト条件、git コミット）とともに `vla3dsg/results/<名前>/` に保存して再現できるようにする。同じ名前の結果は上書きしない
 - LIBERO評価では `policy.per_episode_seed=true` と `policy.eval_seed` を使い、シードを固定する
 - LIBERO評価では環境タイプ `libero_vla3dsg` を使う（`num_steps_wait` の既定値が 50。MolmoAct2 の報告値と同じ条件）。リポジトリのルートで次のように指定する
-  - `PYTHONPATH=. uv run lerobot-eval --env.discover_packages_path=vla3dsg.envs --env.type=libero_vla3dsg ...`
+  - `run_eval.py` はこの指定を自動で行う。`lerobot-eval` を直接使う場合は `PYTHONPATH=. uv run lerobot-eval --env.discover_packages_path=vla3dsg.envs --env.type=libero_vla3dsg ...`
 - `vla3dsg` はパッケージとして扱う。スクリプトからは `from vla3dsg.config import settings` で import する
 - LeRobot の import は絶対 import（`from lerobot.module import X`）を使う
 
@@ -143,6 +152,7 @@ LeRobot 本体（`src/lerobot/`）を変更する場合は、公式のルール�
 
 - 不明点や方針に関わる判断は、勝手に決めずに確認を求めること
 - 作業の区切りごとに `vla3dsg/progress_management.md` のチェックボックスと作業ログを更新すること
+- コミットメッセージや PR の説明に、Claude が作業したことを示す内容（`Co-Authored-By: Claude` など）を含めない
 
 ## 参考リンク
 
