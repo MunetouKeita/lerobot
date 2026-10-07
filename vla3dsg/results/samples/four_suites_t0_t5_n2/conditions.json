@@ -14,11 +14,11 @@
   "seed": 1000,
   "eval_seed": 1000,
   "git": {
-    "commit": "b605051b71dd894789f672f9e7045d3b5ef8af22",
+    "commit": "92fd67e3a673a7247a89b6864111a912c71e49e8",
     "upstream_base": "200ee53596d464bd28f6595cdb31be69a2b5e379",
     "dirty": true
   },
-  "started_at": "2026-10-07 14:05:19",
+  "started_at": "2026-10-07 14:20:20",
   "lerobot_eval_args": [
     "--env.discover_packages_path=vla3dsg.envs",
     "--env.type=libero_vla3dsg",
@@ -40,5 +40,5 @@
     "--seed=1000",
     "--output_dir=/home/common/github/lerobot/vla3dsg/outputs/eval/samples/four_suites_t0_t5_n2"
   ],
-  "wall_s": 257.2
+  "wall_s": 243.3
 }

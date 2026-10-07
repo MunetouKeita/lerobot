@@ -139,9 +139,10 @@ LeRobot 本体の現状（2026-10-06 時点、`8c920c42`）:
 
 方針: 不足分は `vla3dsg/` 側で作る（LeRobot 本体は変更しない）
 
-- [x] 動画: agentview と手首カメラを横に並べ、指示文（SG付きプロンプトを含む）、ステップ数、成功・失敗を重ねて表示した MP4 を保存する（`visualization/rollout_video.py`、`run_eval.py --annotated-video`。実時間 20fps）
-  - SG付きプロンプトの表示は Phase 3 でプロンプト差し替えを実装するときに対応する
-- [x] テロップ付きデモ動画: 評価結果の動画を連結し、指示文と成功率（成功回数/実行数）を下部に表示する（`scripts/make_demo_video.py`）
+- [x] 動画: agentview と手首カメラを横に並べた MP4 を実時間（20fps）で保存する（`visualization/rollout_video.py`、`run_eval.py --annotated-video`）
+  - 映像の上に重ねていたタスク名・ステップ数・状態の表示は、ユーザーの要望で削除した（2026-10-07）
+- [x] テロップ付きデモ動画: 評価結果の動画を連結し、下部に「指示：<日本語訳>」と「成功率：<成功回数>/<実行数>」を表示する（`scripts/make_demo_video.py`、訳は `config/instructions_ja.py`）
+  - SG付きプロンプトをテロップにどう出すかは Phase 3 で決める
 - [ ] 保存する本数・対象（全エピソード／失敗のみ など）を `config/settings.py` で指定できるようにする
 - [ ] ストリーミング: 評価中の映像を Rerun ビューアでリアルタイムに確認できるようにする（このPCのローカル画面で見る。両カメラ、指示文、行動の値をステップごとに記録し、`.rrd` に保存して後から見直せるようにする）
 - [x] 実装の場所（`lerobot-eval` を呼ぶラッパーか、独自の評価ループか）を、Phase 1 で `lerobot-eval` の処理の流れを調べたうえで決める
@@ -180,3 +181,4 @@ LeRobot 本体の現状（2026-10-06 時点、`8c920c42`）:
 | 2026-10-07 | 推論時間と GPU メモリを計測 | `scripts/measure_inference.py` を作成（`lerobot-eval` の `make_policy`・`make_pre_post_processors` を差し替えて計時）。libero_goal task0 × 3 エピソード（3/3 成功）で、チャンク推論 中央値 189ms、前処理 9ms/ステップ、PyTorch の確保量ピーク 22.6GiB。`config/settings.py` に MolmoAct2 の評価引数（`molmoact2_eval_args`）を追加。Phase 0 の項目がすべて完了 |
 | 2026-10-07 | libero_goal のベースライン評価（10 タスク × 5 エピソード） | `scripts/run_eval.py` を作成（条件・git 情報・結果を `results/<name>/` に保存）。成功率 98.0%（49/50）で、MolmoAct2 の報告値 97.8% とほぼ一致。失敗は task 2（wine bottle を cabinet の上へ）の 1 件で、300 ステップの時間切れ。所要 322 秒 |
 | 2026-10-07 | 可視化動画とサンプル実行 | `visualization/rollout_video.py`（2 視点・指示文・ステップ数・状態を重ねたフレーム、実時間 20fps）、`scripts/make_demo_video.py`（指示と成功率のテロップ付きで連結）を作成。`run_eval.py` を複数スイート・`--annotated-video` に対応。LeRobot の `lerobot-eval` が動画の書き出し時に終了ステップのフレームを落とす（`stacked_frames[: done_index + 1]`、reset 直後のフレーム分のずれ）ことを確認し、`vla3dsg` 側で補った。4 スイート × task 0・5 × 2 エピソードで 16/16 成功（`results/samples/four_suites_t0_t5_n2/`） |
+| 2026-10-07 | デモ動画の表示を変更 | 映像上部のタスク名・ステップ数・状態の表示を削除し、下部テロップを「指示：<日本語訳>」「成功率：k/n」の 2 項目に整理。4 スイート 40 タスクの指示文の日本語訳を `config/instructions_ja.py` に追加。サンプルを再実行し 16/16 成功 |

@@ -36,13 +36,17 @@ def main() -> None:
         vec_env.step(action)
     inner = vec_env.envs[0]
     frame = inner.render()
-    assert frame.shape == (size + rollout_video.HEADER_H, size * 2, 3), frame.shape
+    assert frame.shape == (size, size * 2, 3), frame.shape
     assert frame.dtype == np.uint8
-    assert inner._vis_step == 3 and not inner._vis_success
+    assert inner._vis_step == 3 and not inner._vis_done
+    assert not rollout_video._final_frames
 
-    # 状態表示の切り替え
-    inner._vis_step = inner._max_episode_steps
-    assert rollout_video.COLORS["TIMEOUT"] in {tuple(p) for p in inner.render()[30:50, -200:].reshape(-1, 3)}
+    # 終了したエピソードの最後のフレームが保持されること
+    inner._vis_done = True
+    inner.render()
+    inner.render()
+    assert len(rollout_video._final_frames) == 1
+    rollout_video._final_frames.clear()
 
     out = settings.OUTPUTS_DIR / "test_rollout_video" / "frame.png"
     out.parent.mkdir(parents=True, exist_ok=True)

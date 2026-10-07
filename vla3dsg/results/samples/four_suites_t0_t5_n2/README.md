@@ -8,8 +8,8 @@
   uv run python vla3dsg/scripts/make_demo_video.py --name samples/four_suites_t0_t5_n2
   ```
 - 条件: `conditions.json`（チェックポイント `allenai/MolmoAct2-LIBERO`、float32、`num_steps_wait=50`、シード 1000、元のタスク指示のみ）
-- コミット: 実行時は `b605051b` に可視化コードの未コミット変更が乗った状態（`conditions.json` の `dirty: true`）。可視化コードは本結果と同じコミットで追加
-- 所要時間: 257 秒（モデル読み込みを含む）
+- コミット: 実行時は `92fd67e3` に可視化コードの未コミット変更が乗った状態（`conditions.json` の `dirty: true`）。可視化コードは本結果と同じコミットで更新
+- 所要時間: 243 秒（モデル読み込みを含む）
 
 ## 結果
 
@@ -28,9 +28,8 @@
 
 ## 動画（git 管理外）
 
-- テロップ付きデモ（全 16 エピソードを連結、133 秒、720x526、20fps）: `vla3dsg/outputs/eval/samples/four_suites_t0_t5_n2/videos/demo_with_captions.mp4`
-  - 上部: タスク名、指示文、ステップ数、状態（RUNNING / SUCCESS / TIMEOUT）
-  - 中央: agentview（左）と手首カメラ（右）
-  - 下部テロップ: 与えた指示、タスクごとの成功率（成功回数/実行数）、エピソードごとの成否
+- テロップ付きデモ（全 16 エピソードを連結、133 秒、720x468、20fps）: `vla3dsg/outputs/eval/samples/four_suites_t0_t5_n2/videos/demo_with_captions.mp4`
+  - 映像: agentview（左）と手首カメラ（右）
+  - 下部テロップ: 「指示：<指示文の日本語訳>」と「成功率：<成功回数>/<実行数>」（タスクごと）。日本語訳は `vla3dsg/config/instructions_ja.py`
   - 各エピソードの最後のフレームを 1 秒止めて表示
-- エピソードごとの動画: 同じディレクトリの `<スイート>_<タスクID>/eval_episode_<n>.mp4`
+- エピソードごとの動画（テロップなし）: 同じディレクトリの `<スイート>_<タスクID>/eval_episode_<n>.mp4`

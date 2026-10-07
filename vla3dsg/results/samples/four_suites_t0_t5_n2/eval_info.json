@@ -325,8 +325,8 @@
       80.63923194655635,
       100.0
     ],
-    "eval_s": 234.5143313407898,
-    "eval_ep_s": 14.657145738601685,
+    "eval_s": 220.63532257080078,
+    "eval_ep_s": 13.789707690477371,
     "video_paths": [
       "/home/common/github/lerobot/vla3dsg/outputs/eval/samples/four_suites_t0_t5_n2/videos/libero_spatial_0/eval_episode_0.mp4",
       "/home/common/github/lerobot/vla3dsg/outputs/eval/samples/four_suites_t0_t5_n2/videos/libero_spatial_0/eval_episode_1.mp4",
