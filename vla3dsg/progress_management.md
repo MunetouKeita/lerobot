@@ -9,7 +9,7 @@
 | Phase | 内容 | 状態 |
 |---|---|---|
 | 0 | LIBERO + MolmoAct2 の環境構築 | 完了 |
-| 1 | 標準LIBEROでのMolmoAct2ベースライン再現 | 未着手 |
+| 1 | 標準LIBEROでのMolmoAct2ベースライン再現 | 進行中 |
 | 2 | 隠れた物体のあるカスタムシーンの作成 | 未着手 |
 | 3 | Scene Graphのテキスト化とプロンプト追加（ゼロショット評価） | 未着手 |
 | 4 | 結果の分析と次の方針決定 | 未着手 |
@@ -41,10 +41,10 @@
 
 目的: 環境構築が正しいことを公式の数値との比較で確認し、以降の比較の基準にする
 
-- [ ] LeRobot の MolmoAct2 ドキュメントの評価コマンドに合わせて設定する
+- [x] LeRobot の MolmoAct2 ドキュメントの評価コマンドに合わせて設定する（`config/settings.py` の `molmoact2_eval_args`、評価は `scripts/run_eval.py`）
   - `--policy.inference_action_mode=continuous`、`--policy.per_episode_seed=true`、`--policy.eval_seed=1000`、`--seed=1000`
   - `--env.camera_name_mapping='{"agentview_image":"image","robot0_eye_in_hand_image":"wrist_image"}'`
-- [ ] まず `libero_goal` など1スイートを少数エピソードで評価する
+- [x] まず `libero_goal` など1スイートを少数エピソードで評価する（10 タスク × 5 エピソードで 98.0%。報告値 97.8%。`results/baseline/libero_goal_n5/`）
 - [ ] 4スイート（`libero_spatial`、`libero_object`、`libero_goal`、`libero_10`）を評価し、公式の報告値と比較する
 - [ ] LeRobot 形式のチェックポイント（`MolmoAct2-LIBERO-LeRobot`）と元のHFチェックポイント（`MolmoAct2-LIBERO` + `--policy.norm_tag=libero`）で差がないか確認する
 - [ ] 評価結果（成功率、条件、所要時間）を `results/baseline/` に保存する
@@ -175,3 +175,4 @@ LeRobot 本体の現状（2026-10-06 時点、`8c920c42`）:
 | 2026-10-07 | フォークを upstream に同期 | `main`（ローカル・GitHub の `origin`）を `8c920c42` から `200ee535` に早送り（7コミット、DM05・FineART-VLA の追加など。molmoact2・libero・viz の依存関係、MolmoAct2・LIBERO・eval のコードに変更なし）。`vla3dsg` ブランチを新しい `main` にリベース（競合なし）。`uv sync` 後に `test_libero_env.py` と 1 エピソード評価を再実行し、同じく成功（評価 8.5 秒） |
 | 2026-10-07 | 環境タイプ `libero_vla3dsg` を追加 | `vla3dsg/envs/libero_vla3dsg.py`。`vla3dsg` をパッケージ化し、テストの import を `from vla3dsg.config import settings` に変更。`scripts/test_libero_vla3dsg_env.py` で、CLI 解析・環境への受け渡し・効果（reset 直後の最大関節速度: 10 ステップで 1.0e-2、50 ステップで 1.8e-4）を確認。`lerobot-eval` からプラグインとして読み込み、libero_goal task0 の 1 エピソードで成功 |
 | 2026-10-07 | 推論時間と GPU メモリを計測 | `scripts/measure_inference.py` を作成（`lerobot-eval` の `make_policy`・`make_pre_post_processors` を差し替えて計時）。libero_goal task0 × 3 エピソード（3/3 成功）で、チャンク推論 中央値 189ms、前処理 9ms/ステップ、PyTorch の確保量ピーク 22.6GiB。`config/settings.py` に MolmoAct2 の評価引数（`molmoact2_eval_args`）を追加。Phase 0 の項目がすべて完了 |
+| 2026-10-07 | libero_goal のベースライン評価（10 タスク × 5 エピソード） | `scripts/run_eval.py` を作成（条件・git 情報・結果を `results/<name>/` に保存）。成功率 98.0%（49/50）で、MolmoAct2 の報告値 97.8% とほぼ一致。失敗は task 2（wine bottle を cabinet の上へ）の 1 件で、300 ステップの時間切れ。所要 322 秒 |
