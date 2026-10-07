@@ -10,8 +10,8 @@ import sys
 import time
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from config import settings  # noqa: E402
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from vla3dsg.config import settings  # noqa: E402
 
 settings.apply_runtime_env()
 

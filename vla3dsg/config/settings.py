@@ -32,6 +32,8 @@ EVAL_SEED = 1000
 # LIBERO 環境
 LIBERO_SUITES = ["libero_spatial", "libero_object", "libero_goal", "libero_10"]
 LIBERO_OBS_SIZE = 360  # LeRobot の LiberoEnv 設定の既定値（縦横共通）
+# reset 後の no-op ステップ数。MolmoAct2 の LIBERO 報告値は 50 で測定されている
+LIBERO_NUM_STEPS_WAIT = 50
 # MolmoAct2 のドキュメントの評価コマンドに合わせる
 LIBERO_CAMERA_NAME_MAPPING = {
     "agentview_image": "image",

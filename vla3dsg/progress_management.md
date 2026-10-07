@@ -49,7 +49,8 @@
 - [ ] LeRobot 形式のチェックポイント（`MolmoAct2-LIBERO-LeRobot`）と元のHFチェックポイント（`MolmoAct2-LIBERO` + `--policy.norm_tag=libero`）で差がないか確認する
 - [ ] 評価結果（成功率、条件、所要時間）を `results/baseline/` に保存する
 - [ ] 論文値と大きくずれる場合は、Ai2 のフォーク（v0.5.1固定）で同じ評価を行って原因を切り分ける
-- [ ] `num_steps_wait`（reset 後に物体を落ち着かせる no-op ステップ数）を 50 にして評価する方法を決める
+- [x] `num_steps_wait`（reset 後に物体を落ち着かせる no-op ステップ数）を 50 にして評価する方法を決める
+  - `vla3dsg/envs/` に環境タイプ `libero_vla3dsg`（LeRobot の LIBERO 設定を継承し、`num_steps_wait` を追加。既定値 50）を登録し、`--env.discover_packages_path=vla3dsg.envs` で読み込む。LeRobot 本体は変更しない
   - MolmoAct2 のドキュメントでは、LIBERO の報告値はすべて `num_steps_wait=50` で測ったとされている（10 では成功率が下がりうる）
   - 現在の LeRobot では `LiberoEnv`（`src/lerobot/envs/libero.py`）の引数に既定値 10 があるだけで、`--env.*` の設定からは変えられない
 
@@ -146,7 +147,6 @@ LeRobot 本体の現状（2026-10-06 時点、`8c920c42`）:
 ## 未決事項
 
 - `MolmoAct2-LIBERO-LeRobot` の `config.json` が現在の LeRobot と非互換な件の対処（作業ログ 2026-10-07 参照）。Phase 0 は元の HF チェックポイントで実施。Phase 1 の比較時に、項目名を直したローカルコピーで試すか決める
-- `num_steps_wait=50` の指定方法（`vla3dsg/` 側で LIBERO の環境設定を継承したクラスを登録するか、`src/lerobot/` を最小限変更するか）
 - 隠れた物体の具体的なパターンと、どの程度隠すか
 - SGのテキスト化形式（どこまでの情報を入れるか）
 - 視点依存の空間関係（behind など）をどの座標系で定義するか
@@ -173,3 +173,4 @@ LeRobot 本体の現状（2026-10-06 時点、`8c920c42`）:
 | 2026-10-07 | チェックポイントをダウンロードし `lerobot-eval` を試行 | `MolmoAct2-LIBERO-LeRobot`（10.9GB）と、読み込み時に自動取得される `MolmoAct2-LIBERO`（21GB）を `~/.cache/huggingface/hub` に保存。`lerobot-eval` は `The fields enable_lora_vlm, enable_lora_action_expert, train_action_expert_only, model_dtype are not valid for MolmoAct2Config` で失敗。Hub の config.json が、LeRobot 側の設定項目の変更（c13d79e6 で LoRA 関連を `train_mode_vlm` に統合、ff71cae1 で `model_dtype` を `dtype` に統一）に追従していないため。upstream main（2026-10-07 時点）にも修正なし。config.json の項目名だけ直した一時コピーでは設定と前後処理の読み込みが通ることを確認（推論は未実施） |
 | 2026-10-07 | 元の HF チェックポイントで 1 エピソード評価 | `--policy.checkpoint_path=allenai/MolmoAct2-LIBERO --policy.norm_tag=libero --policy.dtype=float32`。libero_goal task0 で成功（126 ステップ）。評価 8.9 秒、コマンド全体 36.6 秒、VRAM ピーク約 26.0GB。結果と条件を `results/phase0_smoke/` に保存 |
 | 2026-10-07 | フォークを upstream に同期 | `main`（ローカル・GitHub の `origin`）を `8c920c42` から `200ee535` に早送り（7コミット、DM05・FineART-VLA の追加など。molmoact2・libero・viz の依存関係、MolmoAct2・LIBERO・eval のコードに変更なし）。`vla3dsg` ブランチを新しい `main` にリベース（競合なし）。`uv sync` 後に `test_libero_env.py` と 1 エピソード評価を再実行し、同じく成功（評価 8.5 秒） |
+| 2026-10-07 | 環境タイプ `libero_vla3dsg` を追加 | `vla3dsg/envs/libero_vla3dsg.py`。`vla3dsg` をパッケージ化し、テストの import を `from vla3dsg.config import settings` に変更。`scripts/test_libero_vla3dsg_env.py` で、CLI 解析・環境への受け渡し・効果（reset 直後の最大関節速度: 10 ステップで 1.0e-2、50 ステップで 1.8e-4）を確認。`lerobot-eval` からプラグインとして読み込み、libero_goal task0 の 1 エピソードで成功 |

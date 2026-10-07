@@ -33,6 +33,7 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 | `src/lerobot/` | LeRobot 本体。原則として変更しない |
 | `vla3dsg/` | 本研究のコード一式（下記） |
 | `vla3dsg/config/settings.py` | 設定値（パス、シード、エピソード数、プロンプト形式など）の一元管理 |
+| `vla3dsg/envs/` | `lerobot-eval` にプラグインとして読み込ませる環境設定（環境タイプ `libero_vla3dsg`） |
 | `vla3dsg/scripts/test_<対象>.py` | モジュール単位のテスト |
 | `vla3dsg/results/` | 評価結果 |
 | `vla3dsg/docs/` | 調査メモ（LIBEROのタスク定義、LeRobotの処理の流れなど） |
@@ -124,6 +125,9 @@ pre-commit run --all-files                          # Lint・フォーマット�
 - モジュールなど小さなまとまりごとに `vla3dsg/scripts/test_<対象>.py` でテストしてから評価パイプラインに組み込む
 - 評価結果は条件（チェックポイント、スイート、タスクID、シード、プロンプト条件）とともに `vla3dsg/results/` に保存し、再現できるようにする
 - LIBERO評価では `policy.per_episode_seed=true` と `policy.eval_seed` を使い、シードを固定する
+- LIBERO評価では環境タイプ `libero_vla3dsg` を使う（`num_steps_wait` の既定値が 50。MolmoAct2 の報告値と同じ条件）。リポジトリのルートで次のように指定する
+  - `PYTHONPATH=. uv run lerobot-eval --env.discover_packages_path=vla3dsg.envs --env.type=libero_vla3dsg ...`
+- `vla3dsg` はパッケージとして扱う。スクリプトからは `from vla3dsg.config import settings` で import する
 - LeRobot の import は絶対 import（`from lerobot.module import X`）を使う
 
 LeRobot 本体（`src/lerobot/`）を変更する場合は、公式のルールに従う:
