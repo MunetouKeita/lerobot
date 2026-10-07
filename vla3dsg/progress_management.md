@@ -22,7 +22,7 @@
 目的: LIBEROでMolmoAct2が1エピソードでも動く状態にする
 
 - [x] uv をインストールする（uv 0.12.23、`~/.local/bin`）
-- [x] 本家 LeRobot（`huggingface/lerobot` の main）をフォーク（`MunetouKeita/lerobot`）してクローンし、使用したコミットを記録する（`8c920c42`、2026-10-03）
+- [x] 本家 LeRobot（`huggingface/lerobot` の main）をフォーク（`MunetouKeita/lerobot`）してクローンし、使用したコミットを記録する（初回 `8c920c42`。2026-10-07 に upstream main `200ee535` へ更新。以降の更新は作業ログに記録）
 - [x] 公式の `CLAUDE.md`（`AGENTS.md` へのシンボリックリンク）を本研究用の `CLAUDE.md` に置き換え、`vla3dsg/` ディレクトリと本ファイルを配置する
 - [x] `uv sync --locked --extra molmoact2 --extra libero` で Python 3.12 の仮想環境を作る（extra の組み合わせでエラーが出たら報告）（Python 3.12.15、`.python-version` で 3.12 に固定）
 - [x] PyTorch が CUDA 12.8 ビルドで、`get_arch_list()` に `sm_120` が含まれることを確認する（torch 2.11.0+cu128、RTX 5090 で行列積も確認）
@@ -172,3 +172,4 @@ LeRobot 本体の現状（2026-10-06 時点、`8c920c42`）:
 | 2026-10-07 | `num_steps_wait` の設定可否を調査 | MolmoAct2 の報告値は `num_steps_wait=50` 前提だが、LeRobot の `--env.*` からは変えられず既定値 10 のまま。Phase 0 の動作確認は既定値で行い、Phase 1 までに指定方法を決める |
 | 2026-10-07 | チェックポイントをダウンロードし `lerobot-eval` を試行 | `MolmoAct2-LIBERO-LeRobot`（10.9GB）と、読み込み時に自動取得される `MolmoAct2-LIBERO`（21GB）を `~/.cache/huggingface/hub` に保存。`lerobot-eval` は `The fields enable_lora_vlm, enable_lora_action_expert, train_action_expert_only, model_dtype are not valid for MolmoAct2Config` で失敗。Hub の config.json が、LeRobot 側の設定項目の変更（c13d79e6 で LoRA 関連を `train_mode_vlm` に統合、ff71cae1 で `model_dtype` を `dtype` に統一）に追従していないため。upstream main（2026-10-07 時点）にも修正なし。config.json の項目名だけ直した一時コピーでは設定と前後処理の読み込みが通ることを確認（推論は未実施） |
 | 2026-10-07 | 元の HF チェックポイントで 1 エピソード評価 | `--policy.checkpoint_path=allenai/MolmoAct2-LIBERO --policy.norm_tag=libero --policy.dtype=float32`。libero_goal task0 で成功（126 ステップ）。評価 8.9 秒、コマンド全体 36.6 秒、VRAM ピーク約 26.0GB。結果と条件を `results/phase0_smoke/` に保存 |
+| 2026-10-07 | フォークを upstream に同期 | `main`（ローカル・GitHub の `origin`）を `8c920c42` から `200ee535` に早送り（7コミット、DM05・FineART-VLA の追加など。molmoact2・libero・viz の依存関係、MolmoAct2・LIBERO・eval のコードに変更なし）。`vla3dsg` ブランチを新しい `main` にリベース（競合なし）。`uv sync` 後に `test_libero_env.py` と 1 エピソード評価を再実行し、同じく成功（評価 8.5 秒） |
