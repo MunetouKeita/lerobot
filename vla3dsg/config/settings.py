@@ -39,3 +39,34 @@ LIBERO_CAMERA_NAME_MAPPING = {
     "agentview_image": "image",
     "robot0_eye_in_hand_image": "wrist_image",
 }
+
+# MolmoAct2（元の HF チェックポイント。LeRobot 形式は config.json が現在の LeRobot と非互換）
+MOLMOACT2_CHECKPOINT = "allenai/MolmoAct2-LIBERO"
+MOLMOACT2_NORM_TAG = "libero"
+MOLMOACT2_DTYPE = "float32"  # ドキュメントの元チェックポイント用評価コマンドに合わせる
+
+
+def molmoact2_eval_args(suite: str, task_ids: list[int], n_episodes: int, output_dir: Path) -> list[str]:
+    """lerobot-eval の共通引数（環境タイプ libero_vla3dsg、シード固定）。"""
+    return [
+        "--env.discover_packages_path=vla3dsg.envs",
+        "--env.type=libero_vla3dsg",
+        f"--env.task={suite}",
+        f"--env.task_ids={task_ids}",
+        f"--env.num_steps_wait={LIBERO_NUM_STEPS_WAIT}",
+        "--env.camera_name_mapping="
+        + "{" + ",".join(f'"{k}":"{v}"' for k, v in LIBERO_CAMERA_NAME_MAPPING.items()) + "}",
+        "--policy.type=molmoact2",
+        f"--policy.checkpoint_path={MOLMOACT2_CHECKPOINT}",
+        f"--policy.norm_tag={MOLMOACT2_NORM_TAG}",
+        "--policy.inference_action_mode=continuous",
+        f"--policy.dtype={MOLMOACT2_DTYPE}",
+        "--policy.enable_inference_cuda_graph=true",
+        "--policy.device=cuda",
+        "--policy.per_episode_seed=true",
+        f"--policy.eval_seed={EVAL_SEED}",
+        "--eval.batch_size=1",
+        f"--eval.n_episodes={n_episodes}",
+        f"--seed={SEED}",
+        f"--output_dir={output_dir}",
+    ]

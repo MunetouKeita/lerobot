@@ -1,0 +1,33 @@
+{
+  "suite": "libero_goal",
+  "task_id": 0,
+  "n_episodes": 3,
+  "checkpoint": "allenai/MolmoAct2-LIBERO",
+  "dtype": "float32",
+  "gpu": "NVIDIA GeForce RTX 5090",
+  "torch_max_memory_allocated_gib": 22.57,
+  "torch_max_memory_reserved_gib": 24.2,
+  "timing": {
+    "preprocess": {
+      "count": 352,
+      "first_ms": 10.0,
+      "median_ms_excl_first": 8.9,
+      "mean_ms_excl_first": 9.0,
+      "max_ms_excl_first": 14.7
+    },
+    "predict_action_chunk": {
+      "count": 37,
+      "first_ms": 860.6,
+      "median_ms_excl_first": 188.8,
+      "mean_ms_excl_first": 188.9,
+      "max_ms_excl_first": 192.0
+    },
+    "select_action": {
+      "count": 352,
+      "first_ms": 865.8,
+      "median_ms_excl_first": 4.8,
+      "mean_ms_excl_first": 24.2,
+      "max_ms_excl_first": 196.9
+    }
+  }
+}

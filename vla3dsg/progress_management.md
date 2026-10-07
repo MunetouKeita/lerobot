@@ -8,7 +8,7 @@
 
 | Phase | 内容 | 状態 |
 |---|---|---|
-| 0 | LIBERO + MolmoAct2 の環境構築 | 未着手 |
+| 0 | LIBERO + MolmoAct2 の環境構築 | 完了 |
 | 1 | 標準LIBEROでのMolmoAct2ベースライン再現 | 未着手 |
 | 2 | 隠れた物体のあるカスタムシーンの作成 | 未着手 |
 | 3 | Scene Graphのテキスト化とプロンプト追加（ゼロショット評価） | 未着手 |
@@ -30,9 +30,9 @@
 - [x] EGL のヘッドレス描画でLIBEROの環境が起動し、カメラ画像（agentview、手首）が保存できることを確認する（`scripts/test_libero_env.py`、libero_goal task0 で確認）
 - [x] `allenai/MolmoAct2-LIBERO-LeRobot` をダウンロードする（10.9GB、bf16 の単一 safetensors。読み込み時に `checkpoint_path` の `allenai/MolmoAct2-LIBERO`（21GB）も自動でダウンロードされる）
 - [x] 1タスク・1エピソードで `lerobot-eval` が最後まで走ることを確認する（元の HF チェックポイント `MolmoAct2-LIBERO`、libero_goal task0 で成功。`results/phase0_smoke/`）
-- [ ] 推論時のVRAM使用量と1ステップあたりの推論時間を記録する
-  - VRAM: float32 でピーク約 26.0GB（デスクトップ表示分を除く）
-  - 推論時間: `lerobot-eval` は推論1回あたりの時間を出さないため未計測（126 環境ステップで約 6.5 秒、チャンク長 10）。可視化ツールか計測用スクリプトで測る
+- [x] 推論時のVRAM使用量と1ステップあたりの推論時間を記録する（`scripts/measure_inference.py`、`results/phase0_inference/`）
+  - VRAM: float32 でピーク約 26.0GB（nvidia-smi、デスクトップ表示分を除く）。PyTorch の確保量は allocated 22.6GiB / reserved 24.2GiB
+  - 推論時間: アクションチャンク（10 ステップ分）の推論が中央値 189ms（初回は CUDA graph のキャプチャ込みで 861ms）。前処理は毎ステップ 9ms
 - [x] `lerobot-eval` が保存するロールアウト動画（`<output_dir>/videos/<スイート>_<タスクID>/eval_episode_*.mp4`）を確認する（引き出しが開くことを確認。80fps で保存されるため実時間の4倍速で再生される）
 
 完了条件: エラーなく1エピソードが終了し、ロールアウト動画を保存できる
@@ -174,3 +174,4 @@ LeRobot 本体の現状（2026-10-06 時点、`8c920c42`）:
 | 2026-10-07 | 元の HF チェックポイントで 1 エピソード評価 | `--policy.checkpoint_path=allenai/MolmoAct2-LIBERO --policy.norm_tag=libero --policy.dtype=float32`。libero_goal task0 で成功（126 ステップ）。評価 8.9 秒、コマンド全体 36.6 秒、VRAM ピーク約 26.0GB。結果と条件を `results/phase0_smoke/` に保存 |
 | 2026-10-07 | フォークを upstream に同期 | `main`（ローカル・GitHub の `origin`）を `8c920c42` から `200ee535` に早送り（7コミット、DM05・FineART-VLA の追加など。molmoact2・libero・viz の依存関係、MolmoAct2・LIBERO・eval のコードに変更なし）。`vla3dsg` ブランチを新しい `main` にリベース（競合なし）。`uv sync` 後に `test_libero_env.py` と 1 エピソード評価を再実行し、同じく成功（評価 8.5 秒） |
 | 2026-10-07 | 環境タイプ `libero_vla3dsg` を追加 | `vla3dsg/envs/libero_vla3dsg.py`。`vla3dsg` をパッケージ化し、テストの import を `from vla3dsg.config import settings` に変更。`scripts/test_libero_vla3dsg_env.py` で、CLI 解析・環境への受け渡し・効果（reset 直後の最大関節速度: 10 ステップで 1.0e-2、50 ステップで 1.8e-4）を確認。`lerobot-eval` からプラグインとして読み込み、libero_goal task0 の 1 エピソードで成功 |
+| 2026-10-07 | 推論時間と GPU メモリを計測 | `scripts/measure_inference.py` を作成（`lerobot-eval` の `make_policy`・`make_pre_post_processors` を差し替えて計時）。libero_goal task0 × 3 エピソード（3/3 成功）で、チャンク推論 中央値 189ms、前処理 9ms/ステップ、PyTorch の確保量ピーク 22.6GiB。`config/settings.py` に MolmoAct2 の評価引数（`molmoact2_eval_args`）を追加。Phase 0 の項目がすべて完了 |
