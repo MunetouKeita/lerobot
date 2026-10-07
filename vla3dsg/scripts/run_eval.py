@@ -3,7 +3,8 @@
 lerobot-eval の出力先も results/<name>/ にする（eval_info.json と videos/）。
 実行ログは results/<name>/eval.log に保存する（videos/ と eval.log は git 管理外）。
 
-    uv run python vla3dsg/scripts/run_eval.py --name baseline/libero_goal_n5 --suite libero_goal --n-episodes 5
+    uv run python vla3dsg/scripts/run_eval.py --name baseline/all40_n5 --suite libero_spatial,libero_object,libero_goal,libero_10 \
+        --task-ids 0 1 2 3 4 5 6 7 8 9 --n-episodes 5 --annotated-video
     uv run python vla3dsg/scripts/run_eval.py --name samples/all_suites --suite libero_spatial,libero_goal \
         --task-ids 0 5 --n-episodes 2 --annotated-video
 """
@@ -57,7 +58,7 @@ class _Tee:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--name", required=True, help="results/ 以下の保存先（例: baseline/libero_goal_n5）")
+    parser.add_argument("--name", required=True, help="results/ 以下の保存先（例: baseline/all40_n5）")
     parser.add_argument("--suite", default="libero_goal", help="カンマ区切りで複数指定できる")
     parser.add_argument("--task-ids", type=int, nargs="*", help="省略時はスイートの全タスク（複数スイートでは必須）")
     parser.add_argument("--n-episodes", type=int, default=5, help="1タスクあたりのエピソード数")

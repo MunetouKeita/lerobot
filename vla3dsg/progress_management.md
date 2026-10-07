@@ -14,7 +14,6 @@
 | 実験 | 結果 | 場所 |
 |---|---|---|
 | 4 スイート全 40 タスク × 5 エピソード（簡易チェック） | 97.0%（194/200）。報告値の平均 97.2%。成功率 0 のタスクなし | `results/baseline/all40_n5/` |
-| libero_goal 10 タスク × 5 エピソード | 98.0%（49/50）。報告値 97.8% | `results/baseline/libero_goal_n5/` |
 | 4 スイート × task 0・5 × 20 エピソード（デモ動画＋失敗動画） | 99.4%（159/160）。失敗は libero_goal task 0 の 1 回（引き出しの取っ手付近で停止） | `results/samples/four_suites_t0_t5_n20/` |
 | 推論時間・GPU メモリ | チャンク推論 189ms、VRAM ピーク約 26GB | `results/phase0_inference/` |
 
@@ -60,11 +59,11 @@
 - [x] LeRobot の MolmoAct2 ドキュメントの評価コマンドに合わせて設定する（`config/settings.py` の `molmoact2_eval_args`、評価は `scripts/run_eval.py`）
   - `--policy.inference_action_mode=continuous`、`--policy.per_episode_seed=true`、`--policy.eval_seed=1000`、`--seed=1000`
   - `--env.camera_name_mapping='{"agentview_image":"image","robot0_eye_in_hand_image":"wrist_image"}'`
-- [x] まず `libero_goal` など1スイートを少数エピソードで評価する（10 タスク × 5 エピソードで 98.0%。報告値 97.8%。`results/baseline/libero_goal_n5/`）
+- [x] まず `libero_goal` など1スイートを少数エピソードで評価する（10 タスク × 5 エピソードで 98.0%。報告値 97.8%。同じ条件のエピソードを含む `results/baseline/all40_n5/` に統合し、個別の記録は削除）
 - [x] 4スイート（`libero_spatial`、`libero_object`、`libero_goal`、`libero_10`）を評価し、公式の報告値と比較する（全 40 タスク × 5 エピソードで 97.0%、報告値の平均 97.2%。`results/baseline/all40_n5/`）
   - 報告値と同じ各スイート 500 エピソードの評価（5〜6 時間）は行わない（下の判断を参照）
 - [-] LeRobot 形式のチェックポイント（`MolmoAct2-LIBERO-LeRobot`）と元のHFチェックポイント（`MolmoAct2-LIBERO` + `--policy.norm_tag=libero`）で差がないか確認する（実施しない。下の判断を参照）
-- [x] 評価結果（成功率、条件、所要時間）を `results/baseline/` に保存する（`all40_n5`、`libero_goal_n5`。`run_eval.py` が自動で保存）
+- [x] 評価結果（成功率、条件、所要時間）を `results/baseline/` に保存する（`all40_n5`。`run_eval.py` が自動で保存）
 - [-] 論文値と大きくずれる場合は、Ai2 のフォーク（v0.5.1固定）で同じ評価を行って原因を切り分ける（大きなずれがないため不要）
 - [x] `num_steps_wait`（reset 後に物体を落ち着かせる no-op ステップ数）を 50 にして評価する方法を決める
   - `vla3dsg/envs/` に環境タイプ `libero_vla3dsg`（LeRobot の LIBERO 設定を継承し、`num_steps_wait` を追加。既定値 50）を登録し、`--env.discover_packages_path=vla3dsg.envs` で読み込む。LeRobot 本体は変更しない
@@ -75,7 +74,7 @@
 
 判断（2026-10-07、ユーザーと合意）:
 
-- 報告値の再現は達成したとみなし、Phase 1 を完了とする。根拠は、全 40 タスク × 5 エピソードで 97.0%（報告値の平均 97.2%）、libero_goal 50 エピソードで 98.0%（報告値 97.8%）、4 スイート × 2 タスク × 20 エピソードで 99.4%。シード固定で同じエピソードが同じように失敗することも確認した
+- 報告値の再現は達成したとみなし、Phase 1 を完了とする。根拠は、全 40 タスク × 5 エピソードで 97.0%（報告値の平均 97.2%）（うち libero_goal は 98.0%、報告値 97.8%）、4 スイート × 2 タスク × 20 エピソードで 99.4%。シード固定で同じエピソードが同じように失敗することも確認した
 - 報告値と同じ規模（各スイート 500 エピソード）の評価は行わない。以降の比較の基準（条件 A: 元の指示のみ）は、Phase 3 で実際に比較するタスクについて同じ条件で取り直す
 - LeRobot 形式のチェックポイントとの比較は行わない。以降は元の HF チェックポイント `allenai/MolmoAct2-LIBERO` に統一する
 
@@ -223,3 +222,4 @@ LeRobot 本体の現状（2026-10-06 時点、`8c920c42`）:
 | 2026-10-07 | デモ動画を 1 エピソード表示・20 回の成功率に変更 | `make_demo_video.py` は各タスク 1 エピソード（等倍）だけを載せ、成功率は全エピソードから表示するよう変更。4 スイート × task 0・5 × 20 エピソードを実行し 159/160 成功（失敗は libero_goal task 0 の 1 回）。所要約 33 分。デモ動画は 68 秒（`results/samples/four_suites_t0_t5_n20/videos/demo_with_captions.mp4`） |
 | 2026-10-07 | 失敗エピソードの動画を保存できるように変更 | `rollout_video.py` で `lerobot-eval` の描画本数（10 本固定）を差し替え、各タスク先頭 10 本＋それ以降の失敗を保存。`make_demo_video.py --keep-failures-only` を追加。2 エピソードのサンプル（`samples/four_suites_t0_t5_n2`）を削除。20 エピソードのサンプルを再実行し、1 回目と同じく 159/160（libero_goal task 0 の episode 12 が再び失敗、シード固定で再現）。失敗の内容: グリッパーが引き出しの取っ手付近で止まり、300 ステップで時間切れ |
 | 2026-10-07 | 全 40 タスク × 5 エピソードの簡易チェックと Phase 1 の完了 | 194/200（97.0%）。spatial 96.0%・object 100%・goal 98.0%・libero_10 94.0%（報告値 97.8・100・97.8・93.2%）。成功率 0 のタスクなし。失敗 6 件はすべて時間切れ（モカポット 2 つ目、電子レンジのマグなど）。所要約 45 分。報告値の再現は達成したとみなし、500 エピソード規模の評価と LeRobot 形式チェックポイントとの比較は行わずに Phase 1 を完了とした（ユーザーと合意）。`MolmoAct2-LIBERO-LeRobot` の非互換は未決事項から外した（使わないため） |
+| 2026-10-07 | 重複した評価記録を削除 | `results/baseline/libero_goal_n5/` を削除。`all40_n5` の libero_goal 部分と条件（シード・タスク・エピソード数）が同じで、全 50 エピソードの成否も一致（98.0%、失敗は task 2 の episode 2）したため |

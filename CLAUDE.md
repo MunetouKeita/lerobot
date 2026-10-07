@@ -100,7 +100,7 @@ git lfs install && git lfs pull                     # LeRobot のテスト用ア
 
 ```bash
 uv run python vla3dsg/scripts/test_<対象>.py        # 本研究のモジュールテスト
-uv run python vla3dsg/scripts/run_eval.py --name baseline/libero_goal_n5 --suite libero_goal --n-episodes 5   # 評価（結果は results/<name>/）
+uv run python vla3dsg/scripts/run_eval.py --name baseline/xxx --suite libero_goal --n-episodes 5   # 評価（結果は results/<name>/）
 uv run python vla3dsg/scripts/run_eval.py --name samples/xxx --suite libero_spatial,libero_goal --task-ids 0 5 --n-episodes 20 --annotated-video
 uv run python vla3dsg/scripts/make_demo_video.py --name samples/xxx --keep-failures-only   # デモ動画（results/<name>/videos/demo_with_captions.mp4）と失敗動画だけを残す
 uv run pytest tests -svv --maxfail=10               # LeRobot 本体のテスト（本体を変更した場合）
