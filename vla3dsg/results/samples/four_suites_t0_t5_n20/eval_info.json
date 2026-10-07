@@ -448,7 +448,8 @@
           "/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20/videos/libero_goal_0/eval_episode_6.mp4",
           "/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20/videos/libero_goal_0/eval_episode_7.mp4",
           "/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20/videos/libero_goal_0/eval_episode_8.mp4",
-          "/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20/videos/libero_goal_0/eval_episode_9.mp4"
+          "/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20/videos/libero_goal_0/eval_episode_9.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20/videos/libero_goal_0/eval_episode_12.mp4"
         ],
         "predicted_video_paths": []
       },
@@ -827,6 +828,7 @@
         "/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20/videos/libero_goal_0/eval_episode_7.mp4",
         "/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20/videos/libero_goal_0/eval_episode_8.mp4",
         "/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20/videos/libero_goal_0/eval_episode_9.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20/videos/libero_goal_0/eval_episode_12.mp4",
         "/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20/videos/libero_goal_5/eval_episode_0.mp4",
         "/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20/videos/libero_goal_5/eval_episode_1.mp4",
         "/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20/videos/libero_goal_5/eval_episode_2.mp4",
@@ -885,8 +887,8 @@
       96.5451014037521,
       99.88958682306179
     ],
-    "eval_s": 1958.9629926681519,
-    "eval_ep_s": 12.243518705666066,
+    "eval_s": 1973.8242726325989,
+    "eval_ep_s": 12.336401705443858,
     "video_paths": [
       "/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20/videos/libero_spatial_0/eval_episode_0.mp4",
       "/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20/videos/libero_spatial_0/eval_episode_1.mp4",
@@ -938,6 +940,7 @@
       "/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20/videos/libero_goal_0/eval_episode_7.mp4",
       "/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20/videos/libero_goal_0/eval_episode_8.mp4",
       "/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20/videos/libero_goal_0/eval_episode_9.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20/videos/libero_goal_0/eval_episode_12.mp4",
       "/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20/videos/libero_goal_5/eval_episode_0.mp4",
       "/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20/videos/libero_goal_5/eval_episode_1.mp4",
       "/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20/videos/libero_goal_5/eval_episode_2.mp4",

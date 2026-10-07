@@ -14,8 +14,7 @@
 | 実験 | 結果 | 場所 |
 |---|---|---|
 | libero_goal 10 タスク × 5 エピソード | 98.0%（49/50）。報告値 97.8% | `results/baseline/libero_goal_n5/` |
-| 4 スイート × task 0・5 × 20 エピソード（デモ動画用） | 99.4%（159/160） | `results/samples/four_suites_t0_t5_n20/` |
-| 4 スイート × task 0・5 × 2 エピソード（最初の目視確認） | 100%（16/16） | `results/samples/four_suites_t0_t5_n2/` |
+| 4 スイート × task 0・5 × 20 エピソード（デモ動画＋失敗動画） | 99.4%（159/160）。失敗は libero_goal task 0 の 1 回（引き出しの取っ手付近で停止） | `results/samples/four_suites_t0_t5_n20/` |
 | 推論時間・GPU メモリ | チャンク推論 189ms、VRAM ピーク約 26GB | `results/phase0_inference/` |
 
 - 次の作業: 4 スイートをより多いエピソード数で評価（報告値は各 500 エピソード）、LeRobot 形式チェックポイントとの比較
@@ -160,7 +159,9 @@ LeRobot 本体の現状（2026-10-06 時点、`8c920c42`）:
 - [x] テロップ付きデモ動画: 評価結果の動画を連結し、下部に「指示：<日本語訳>」と「成功率：<成功回数>/<実行数>」を表示する（`scripts/make_demo_video.py`、訳は `config/instructions_ja.py`）
   - 載せるのは各タスク 1 エピソードのみ（等倍、`DEMO_EPISODES_PER_TASK`）。成功率は全エピソード（20 回程度）の結果を表示する
   - SG付きプロンプトをテロップにどう出すかは Phase 3 で決める
-- [ ] 保存する本数・対象（全エピソード／失敗のみ など）を `config/settings.py` で指定できるようにする（現在は `lerobot-eval` の固定値で、1 タスクあたり最大 10 本）
+- [x] 保存する本数・対象（全エピソード／失敗のみ など）を `config/settings.py` で指定できるようにする
+  - `--annotated-video` 時は、各タスクの先頭 `VIDEO_SAVE_FIRST_N`（10）本と、それ以降の失敗エピソード（`VIDEO_SAVE_FAILURES`）を保存する。`lerobot-eval` の描画本数（10 本固定）を差し替えて全エピソードを描画させ、書き出し時に選ぶ
+  - サンプルでは `make_demo_video.py --keep-failures-only` で、デモ動画と失敗エピソードの動画だけを残す
 - [ ] ストリーミング: 評価中の映像を Rerun ビューアでリアルタイムに確認できるようにする（このPCのローカル画面で見る。両カメラ、指示文、行動の値をステップごとに記録し、`.rrd` に保存して後から見直せるようにする）
 - [x] 実装の場所（`lerobot-eval` を呼ぶラッパーか、独自の評価ループか）を、Phase 1 で `lerobot-eval` の処理の流れを調べたうえで決める
   - 動画は `lerobot-eval` を呼ぶラッパー（`run_eval.py`）から、`LiberoEnv` の render などを差し替える方式にした。Rerun のストリーミングも同じ方式で入れられるか、実装時に確認する
@@ -171,6 +172,7 @@ LeRobot 本体の現状（2026-10-06 時点、`8c920c42`）:
 |---|---|---|
 | `allenai/MolmoAct2-LIBERO-LeRobot` の `config.json` が現在の `MolmoAct2Config` と非互換（LoRA 関連の項目と `model_dtype` の名前変更に未追従） | LeRobot 形式のチェックポイントを読み込めない | 元の HF チェックポイントを使用 |
 | `num_steps_wait` が `--env.*` から指定できない（既定値 10） | MolmoAct2 の報告値（50 で測定）と条件がずれる | 環境タイプ `libero_vla3dsg` で指定 |
+| `lerobot-eval` の動画は 1 タスクあたり先頭 10 本に固定（本数を指定できない） | 11 本目以降の失敗エピソードの動画が残らない | `visualization/rollout_video.py` で全エピソードを描画させ、先頭 10 本＋失敗を保存 |
 | `lerobot-eval` が動画の書き出し時に終了ステップのフレームを落とす（`stacked_frames[: done_index + 1]`） | 動画の最後に成功の瞬間が映らない | `visualization/rollout_video.py` で補う |
 | LIBERO の動画が `render_fps=80` で保存される（制御周期は 20Hz） | 実時間の 4 倍速で再生される | `visualization/rollout_video.py` で 20fps にする |
 
@@ -212,3 +214,4 @@ LeRobot 本体の現状（2026-10-06 時点、`8c920c42`）:
 | 2026-10-07 | デモ動画の表示を変更 | 映像上部のタスク名・ステップ数・状態の表示を削除し、下部テロップを「指示：<日本語訳>」「成功率：k/n」の 2 項目に整理。4 スイート 40 タスクの指示文の日本語訳を `config/instructions_ja.py` に追加。サンプルを再実行し 16/16 成功 |
 | 2026-10-07 | 出力フォルダの整理とドキュメント更新 | `outputs/` を廃止し、1 実験分（要約・条件・`eval_info.json`・`eval.log`・`videos/`）を `results/<名前>/` にまとめた（`videos/` と `eval.log` は git 管理外）。テスト・計測の出力は `tmp/`（git 管理外）。動作確認用の試走（phase0_smoke の再実行、plugin_check、measure_inference の動画）とテスト出力、履歴書き換え前のバックアップブランチを削除。`CLAUDE.md` に構成・ブランチ運用・主要コマンド・チェックポイントの現状・コミット方針を反映し、本ファイルに現在の状況と LeRobot 側の既知の問題を追加 |
 | 2026-10-07 | デモ動画を 1 エピソード表示・20 回の成功率に変更 | `make_demo_video.py` は各タスク 1 エピソード（等倍）だけを載せ、成功率は全エピソードから表示するよう変更。4 スイート × task 0・5 × 20 エピソードを実行し 159/160 成功（失敗は libero_goal task 0 の 1 回）。所要約 33 分。デモ動画は 68 秒（`results/samples/four_suites_t0_t5_n20/videos/demo_with_captions.mp4`） |
+| 2026-10-07 | 失敗エピソードの動画を保存できるように変更 | `rollout_video.py` で `lerobot-eval` の描画本数（10 本固定）を差し替え、各タスク先頭 10 本＋それ以降の失敗を保存。`make_demo_video.py --keep-failures-only` を追加。2 エピソードのサンプル（`samples/four_suites_t0_t5_n2`）を削除。20 エピソードのサンプルを再実行し、1 回目と同じく 159/160（libero_goal task 0 の episode 12 が再び失敗、シード固定で再現）。失敗の内容: グリッパーが引き出しの取っ手付近で止まり、300 ステップで時間切れ |

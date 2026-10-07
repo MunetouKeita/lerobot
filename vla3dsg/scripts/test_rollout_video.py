@@ -46,7 +46,14 @@ def main() -> None:
     inner.render()
     inner.render()
     assert len(rollout_video._final_frames) == 1
+    assert rollout_video._final_frames[0][1] is False
     rollout_video._final_frames.clear()
+
+    # 保存対象: 先頭 N 本は成否によらず保存、それ以降は失敗のみ
+    n = settings.VIDEO_SAVE_FIRST_N
+    assert rollout_video.should_save(0, True) and rollout_video.should_save(n - 1, True)
+    assert not rollout_video.should_save(n, True)
+    assert rollout_video.should_save(n, False) == settings.VIDEO_SAVE_FAILURES
 
     out = settings.TMP_DIR / "test_rollout_video" / "frame.png"
     out.parent.mkdir(parents=True, exist_ok=True)

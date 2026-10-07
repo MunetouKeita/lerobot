@@ -1,6 +1,8 @@
 """評価結果の動画をつなぎ、指示（日本語訳）と成功率（成功回数/実行数）のテロップを付けたデモ動画を作る。
 
 各タスクの先頭から DEMO_EPISODES_PER_TASK 本だけを等倍で載せ、成功率は全エピソードの結果を表示する。
+--keep-failures-only を付けると、デモ動画を作ったあとに成功エピソードの個別動画を削除し、
+デモ動画と失敗エピソードの動画だけを残す（サンプル用）。
 
 run_eval.py の結果（results/<name>/summary.json と results/<name>/videos/）を使う。
 
@@ -62,6 +64,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--name", required=True, help="run_eval.py の --name")
     parser.add_argument("--episodes-per-task", type=int, default=settings.DEMO_EPISODES_PER_TASK)
+    parser.add_argument("--keep-failures-only", action="store_true", help="成功エピソードの個別動画を削除する")
     args = parser.parse_args()
 
     summary = json.loads((settings.RESULTS_DIR / args.name / "summary.json").read_text())
@@ -100,6 +103,18 @@ def main() -> None:
             out.mux(packet)
 
     print(f"saved: {out_path}（全体の成功率 {summary['n_success']}/{summary['n_episodes']}）")
+
+    if args.keep_failures_only:
+        for task in summary["per_task"]:
+            task_dir = videos_dir / f"{task['suite']}_{task['task_id']}"
+            for ep, ok in enumerate(task["successes"]):
+                video = task_dir / f"eval_episode_{ep}.mp4"
+                if ok and video.exists():
+                    video.unlink()
+            if task_dir.exists() and not any(task_dir.iterdir()):
+                task_dir.rmdir()
+        failures = sorted(p.relative_to(videos_dir) for p in videos_dir.glob("*/eval_episode_*.mp4"))
+        print(f"失敗エピソードの動画: {[str(p) for p in failures] or 'なし'}")
 
 
 if __name__ == "__main__":

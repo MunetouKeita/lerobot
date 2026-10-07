@@ -7,6 +7,10 @@
   "n_episodes_per_task": 20,
   "prompt_condition": "original",
   "annotated_video": true,
+  "video_save": {
+    "first_n": 10,
+    "failures": true
+  },
   "checkpoint": "allenai/MolmoAct2-LIBERO",
   "norm_tag": "libero",
   "dtype": "float32",
@@ -14,11 +18,11 @@
   "seed": 1000,
   "eval_seed": 1000,
   "git": {
-    "commit": "e1c7c5a3996143169027a895e2c3c6d3f921431c",
+    "commit": "4feca8b06c500980ebb5eb04297ef97fe1bf15e4",
     "upstream_base": "200ee53596d464bd28f6595cdb31be69a2b5e379",
     "dirty": true
   },
-  "started_at": "2026-10-07 14:33:24",
+  "started_at": "2026-10-07 15:16:06",
   "lerobot_eval_args": [
     "--env.discover_packages_path=vla3dsg.envs",
     "--env.type=libero_vla3dsg",
@@ -40,5 +44,5 @@
     "--seed=1000",
     "--output_dir=/home/common/github/lerobot/vla3dsg/results/samples/four_suites_t0_t5_n20"
   ],
-  "wall_s": 1981.5
+  "wall_s": 1996.2
 }

@@ -6,8 +6,12 @@ LeRobot の LiberoEnv の render / reset / step を差し替え、agentview と�
 lerobot-eval は動画を書き出すときに終了ステップのフレームを落とす
 （`stacked_frames[: done_index + 1]` で、reset 直後のフレームの分だけずれる）。
 終了時のフレームを保持し、write_video の差し替えで末尾に足す。eval.batch_size=1 が前提。
+
+保存する動画: lerobot-eval は 1 タスクあたり先頭 10 本しか描画しない（本数はコード内で固定）。
+全エピソードを描画させ、各タスクの先頭 VIDEO_SAVE_FIRST_N 本と、それ以降の失敗エピソードだけを書き出す。
 """
 
+import re
 from collections import deque
 from typing import Any
 
@@ -20,8 +24,15 @@ from lerobot.scripts import lerobot_eval
 from vla3dsg.config import settings
 
 _installed = False
-# 終了したエピソードの最後のフレーム（終了順）
-_final_frames: deque[np.ndarray] = deque()
+# 終了したエピソードの (最後のフレーム, 成功したか)（終了順）
+_final_frames: deque[tuple[np.ndarray, bool]] = deque()
+_EPISODE_INDEX = re.compile(r"eval_episode_(\d+)\.mp4$")
+
+
+def should_save(episode_index: int, success: bool) -> bool:
+    if episode_index < settings.VIDEO_SAVE_FIRST_N:
+        return True
+    return settings.VIDEO_SAVE_FAILURES and not success
 
 
 def compose_frame(agentview: np.ndarray, wrist: np.ndarray) -> np.ndarray:
@@ -49,11 +60,13 @@ def install() -> None:
     orig_reset = LiberoEnv.reset
     orig_step = LiberoEnv.step
     orig_write_video = lerobot_eval.write_video
+    orig_eval_policy_all = lerobot_eval.eval_policy_all
 
     def reset(self: LiberoEnv, *args: Any, **kwargs: Any) -> Any:
         out = orig_reset(self, *args, **kwargs)
         self._vis_step = 0
         self._vis_done = False
+        self._vis_success = False
         self._vis_final_saved = False
         return out
 
@@ -61,6 +74,7 @@ def install() -> None:
         out = orig_step(self, action)
         self._vis_step += 1
         terminated, truncated = out[2], out[3]
+        self._vis_success = self._vis_success or bool(out[4].get("is_success", False))
         self._vis_done = bool(terminated or truncated or self._vis_step >= self._max_episode_steps)
         return out
 
@@ -69,19 +83,31 @@ def install() -> None:
         raw = self._env.env._get_observations()
         frame = compose_frame(raw["agentview_image"], raw["robot0_eye_in_hand_image"])
         if getattr(self, "_vis_done", False) and not self._vis_final_saved:
-            _final_frames.append(frame)
+            _final_frames.append((frame, self._vis_success))
             self._vis_final_saved = True
         return frame
 
     def write_video(video_path: Any, stacked_frames: Any, fps: int) -> None:
         frames = list(stacked_frames)
+        success = True
         if _final_frames:
-            frames.append(_final_frames.popleft())
+            final_frame, success = _final_frames.popleft()
+            frames.append(final_frame)
+        match = _EPISODE_INDEX.search(str(video_path))
+        if match and not should_save(int(match.group(1)), success):
+            return
         orig_write_video(video_path, frames, fps)
+
+    def eval_policy_all(*args: Any, **kwargs: Any) -> Any:
+        # 全エピソードを描画させる（保存するかは write_video で決める）
+        if kwargs.get("max_episodes_rendered", 0) > 0:
+            kwargs["max_episodes_rendered"] = 10**9
+        return orig_eval_policy_all(*args, **kwargs)
 
     LiberoEnv.reset = reset
     LiberoEnv.step = step
     LiberoEnv.render = render
     lerobot_eval.write_video = write_video
+    lerobot_eval.eval_policy_all = eval_policy_all
     # lerobot-eval は render_fps で動画を書き出す（既定の 80 は実時間の 4 倍速になる）
     LiberoEnv.metadata = {**LiberoEnv.metadata, "render_fps": settings.LIBERO_CONTROL_FPS}

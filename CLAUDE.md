@@ -35,9 +35,9 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 | `vla3dsg/config/settings.py` | 設定値（パス、シード、チェックポイント、評価引数 `molmoact2_eval_args` など）の一元管理 |
 | `vla3dsg/config/instructions_ja.py` | LIBERO の指示文の日本語訳（デモ動画のテロップ用） |
 | `vla3dsg/envs/` | `lerobot-eval` にプラグインとして読み込ませる環境設定（環境タイプ `libero_vla3dsg`） |
-| `vla3dsg/visualization/` | ロールアウトの可視化（agentview と手首カメラを並べた実時間の動画） |
+| `vla3dsg/visualization/` | ロールアウトの可視化（agentview と手首カメラを並べた実時間の動画。各タスク先頭 10 本＋失敗エピソードを保存） |
 | `vla3dsg/scripts/run_eval.py` | 評価の実行と結果の保存（条件・git 情報つき）。`--annotated-video` で可視化動画を保存 |
-| `vla3dsg/scripts/make_demo_video.py` | デモ動画の作成。各タスク 1 エピソードを等倍で連結し、「指示：<日本語訳>」「成功率：k/n」（全エピソードの結果）のテロップを付ける |
+| `vla3dsg/scripts/make_demo_video.py` | デモ動画の作成。各タスク 1 エピソードを等倍で連結し、「指示：<日本語訳>」「成功率：k/n」（全エピソードの結果）のテロップを付ける。`--keep-failures-only` でデモ動画と失敗動画だけを残す |
 | `vla3dsg/scripts/measure_inference.py` | 推論時間と GPU メモリの計測 |
 | `vla3dsg/scripts/test_<対象>.py` | モジュール単位のテスト |
 | `vla3dsg/results/<名前>/` | 1 実験分の結果。`README.md`・`summary.json`・`conditions.json`・`eval_info.json` は git 管理、`videos/` と `eval.log` は管理外 |
@@ -102,7 +102,7 @@ git lfs install && git lfs pull                     # LeRobot のテスト用ア
 uv run python vla3dsg/scripts/test_<対象>.py        # 本研究のモジュールテスト
 uv run python vla3dsg/scripts/run_eval.py --name baseline/libero_goal_n5 --suite libero_goal --n-episodes 5   # 評価（結果は results/<name>/）
 uv run python vla3dsg/scripts/run_eval.py --name samples/xxx --suite libero_spatial,libero_goal --task-ids 0 5 --n-episodes 20 --annotated-video
-uv run python vla3dsg/scripts/make_demo_video.py --name samples/xxx   # テロップ付きデモ動画（results/<name>/videos/demo_with_captions.mp4）
+uv run python vla3dsg/scripts/make_demo_video.py --name samples/xxx --keep-failures-only   # デモ動画（results/<name>/videos/demo_with_captions.mp4）と失敗動画だけを残す
 uv run pytest tests -svv --maxfail=10               # LeRobot 本体のテスト（本体を変更した場合）
 pre-commit run --all-files                          # Lint・フォーマット（ruff、typos、bandit など）
 ```

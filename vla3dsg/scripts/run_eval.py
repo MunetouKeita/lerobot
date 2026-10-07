@@ -84,6 +84,7 @@ def main() -> None:
         "n_episodes_per_task": args.n_episodes,
         "prompt_condition": "original",
         "annotated_video": args.annotated_video,
+        "video_save": {"first_n": settings.VIDEO_SAVE_FIRST_N, "failures": settings.VIDEO_SAVE_FAILURES},
         "checkpoint": settings.MOLMOACT2_CHECKPOINT,
         "norm_tag": settings.MOLMOACT2_NORM_TAG,
         "dtype": settings.MOLMOACT2_DTYPE,
@@ -107,6 +108,16 @@ def main() -> None:
     conditions["wall_s"] = round(time.perf_counter() - t0, 1)
 
     info = json.loads((res_dir / "eval_info.json").read_text())
+    if args.annotated_video:
+        # 保存しなかった動画（先頭 N 本以降の成功エピソード）のパスを除く
+        def _existing(paths: list[str]) -> list[str]:
+            return [p for p in paths if Path(p).exists()]
+
+        for task in info["per_task"]:
+            task["metrics"]["video_paths"] = _existing(task["metrics"].get("video_paths", []))
+        for group in [*info["per_group"].values(), info["overall"]]:
+            group["video_paths"] = _existing(group.get("video_paths", []))
+        (res_dir / "eval_info.json").write_text(json.dumps(info, indent=2, ensure_ascii=False))
     per_task = [
         {
             "suite": t["task_group"],
