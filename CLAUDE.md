@@ -57,7 +57,7 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 |---|---|
 | 評価・学習基盤 | 本家 LeRobot のフォーク（main、v0.6系）。`molmoact2`・`libero`・`viz`（Rerun）の extra を使う |
 | シミュレータ | LIBERO（MuJoCo / robosuite ベース、`hf-libero` パッケージ経由） |
-| VLA | MolmoAct2。現在は元の HF チェックポイント `allenai/MolmoAct2-LIBERO`（`norm_tag=libero`、float32）を使う。LeRobot 形式の `allenai/MolmoAct2-LIBERO-LeRobot` は `config.json` が現在の LeRobot と非互換で、そのままでは読み込めない |
+| VLA | MolmoAct2。元の HF チェックポイント `allenai/MolmoAct2-LIBERO`（`norm_tag=libero`、float32）に統一する（全 40 タスク × 5 エピソードで 97.0%、報告値の平均 97.2%）。LeRobot 形式の `allenai/MolmoAct2-LIBERO-LeRobot` は `config.json` が現在の LeRobot と非互換で、そのままでは読み込めない |
 | 主要ライブラリ | PyTorch、Hugging Face（datasets、Hub、accelerate）、draccus（設定・CLI）、Gymnasium（環境） |
 | パッケージ管理 | uv（`uv.lock` に従ってインストール） |
 
