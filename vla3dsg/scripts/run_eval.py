@@ -1,6 +1,8 @@
 """MolmoAct2 の LIBERO 評価を実行し、結果を条件とともに results/ に保存する。
 
     uv run python vla3dsg/scripts/run_eval.py --name baseline/libero_goal_n5 --suite libero_goal --n-episodes 5
+    uv run python vla3dsg/scripts/run_eval.py --name samples/all_suites --suite libero_spatial,libero_goal \
+        --task-ids 0 5 --n-episodes 2 --annotated-video
 """
 
 import argparse
@@ -12,6 +14,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from vla3dsg.config import settings  # noqa: E402
+from vla3dsg.visualization import rollout_video  # noqa: E402
 
 settings.apply_runtime_env()
 
@@ -33,12 +36,21 @@ def git_info() -> dict[str, str | bool]:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--name", required=True, help="results/ 以下の保存先（例: baseline/libero_goal_n5）")
-    parser.add_argument("--suite", default="libero_goal")
-    parser.add_argument("--task-ids", type=int, nargs="*", help="省略時はスイートの全タスク")
+    parser.add_argument("--suite", default="libero_goal", help="カンマ区切りで複数指定できる")
+    parser.add_argument("--task-ids", type=int, nargs="*", help="省略時はスイートの全タスク（複数スイートでは必須）")
     parser.add_argument("--n-episodes", type=int, default=5, help="1タスクあたりのエピソード数")
+    parser.add_argument(
+        "--annotated-video", action="store_true", help="2 視点・指示文・成否を重ねた実時間の動画で保存する"
+    )
     args = parser.parse_args()
 
-    task_ids = args.task_ids or list(range(len(_get_suite(args.suite).tasks)))
+    suites = args.suite.split(",")
+    if args.task_ids:
+        task_ids = args.task_ids
+    elif len(suites) == 1:
+        task_ids = list(range(len(_get_suite(suites[0]).tasks)))
+    else:
+        sys.exit("複数スイートでは --task-ids を指定すること")
     out_dir = settings.OUTPUTS_DIR / "eval" / args.name
     res_dir = settings.RESULTS_DIR / args.name
     if res_dir.exists():
@@ -50,6 +62,7 @@ def main() -> None:
         "task_ids": task_ids,
         "n_episodes_per_task": args.n_episodes,
         "prompt_condition": "original",
+        "annotated_video": args.annotated_video,
         "checkpoint": settings.MOLMOACT2_CHECKPOINT,
         "norm_tag": settings.MOLMOACT2_NORM_TAG,
         "dtype": settings.MOLMOACT2_DTYPE,
@@ -61,6 +74,8 @@ def main() -> None:
         "lerobot_eval_args": eval_args,
     }
 
+    if args.annotated_video:
+        rollout_video.install()
     sys.argv = [sys.argv[0], *eval_args]
     t0 = time.perf_counter()
     lerobot_eval.main()
@@ -68,7 +83,13 @@ def main() -> None:
 
     info = json.loads((out_dir / "eval_info.json").read_text())
     per_task = [
-        {"task_id": t["task_id"], "n_success": t["n_success"], "n_episodes": t["n_episodes"], "pc_success": t["pc_success"]}
+        {
+            "suite": t["task_group"],
+            "task_id": t["task_id"],
+            "instruction": _get_suite(t["task_group"]).get_task(t["task_id"]).language,
+            "successes": t["metrics"]["successes"],
+            "pc_success": t["pc_success"],
+        }
         for t in info["per_task"]
     ]
     summary = {
@@ -76,6 +97,7 @@ def main() -> None:
         "n_success": info["overall"]["n_success"],
         "n_episodes": info["overall"]["n_episodes"],
         "pc_success_ci95": info["overall"]["pc_success_ci95"],
+        "per_suite": {g: v["pc_success"] for g, v in info["per_group"].items()},
         "per_task": per_task,
     }
 

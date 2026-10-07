@@ -34,7 +34,10 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 | `vla3dsg/` | 本研究のコード一式（下記） |
 | `vla3dsg/config/settings.py` | 設定値（パス、シード、エピソード数、プロンプト形式など）の一元管理 |
 | `vla3dsg/envs/` | `lerobot-eval` にプラグインとして読み込ませる環境設定（環境タイプ `libero_vla3dsg`） |
+| `vla3dsg/visualization/` | ロールアウトの可視化（2 視点・指示文・成否を重ねた動画） |
 | `vla3dsg/scripts/test_<対象>.py` | モジュール単位のテスト |
+| `vla3dsg/scripts/run_eval.py` | 評価の実行と結果の保存（条件・git 情報つき）。`--annotated-video` で可視化動画を保存 |
+| `vla3dsg/scripts/make_demo_video.py` | 評価動画を連結し、指示文と成功率のテロップを付ける |
 | `vla3dsg/results/` | 評価結果 |
 | `vla3dsg/docs/` | 調査メモ（LIBEROのタスク定義、LeRobotの処理の流れなど） |
 | `vla3dsg/progress_management.md` | 詳細計画と進捗 |

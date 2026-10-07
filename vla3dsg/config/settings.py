@@ -34,6 +34,11 @@ LIBERO_SUITES = ["libero_spatial", "libero_object", "libero_goal", "libero_10"]
 LIBERO_OBS_SIZE = 360  # LeRobot の LiberoEnv 設定の既定値（縦横共通）
 # reset 後の no-op ステップ数。MolmoAct2 の LIBERO 報告値は 50 で測定されている
 LIBERO_NUM_STEPS_WAIT = 50
+LIBERO_CONTROL_FPS = 20  # robosuite の制御周期。動画を実時間で保存するのに使う
+
+# デモ動画のテロップ
+DEMO_FONT_PATH = "/usr/share/fonts/opentype/noto/NotoSansCJK-Medium.ttc"  # 日本語表示用（fonts-noto-cjk）
+DEMO_HOLD_LAST_S = 1.0  # 各エピソードの最後のフレームを止めて見せる秒数
 # MolmoAct2 のドキュメントの評価コマンドに合わせる
 LIBERO_CAMERA_NAME_MAPPING = {
     "agentview_image": "image",
