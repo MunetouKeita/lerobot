@@ -42,7 +42,7 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 | `vla3dsg/scripts/test_<対象>.py` | モジュール単位のテスト |
 | `vla3dsg/results/<名前>/` | 1 実験分の結果。`README.md`・`summary.json`・`conditions.json`・`eval_info.json` は git 管理、`videos/` と `eval.log` は管理外 |
 | `vla3dsg/tmp/` | テスト・計測の使い捨て出力（git 管理外。いつ消してもよい） |
-| `vla3dsg/docs/` | 調査メモ（LIBEROのタスク定義、LeRobotの処理の流れなど。Phase 2 で作成予定） |
+| `vla3dsg/docs/` | 調査メモ（`libero_task_definition.md`: LIBERO のタスク定義とシーン生成、`lerobot_libero_loading.md`: LeRobot の読み込みの流れとカスタムスイートの登録方法） |
 | `vla3dsg/progress_management.md` | 詳細計画と進捗 |
 
 - カスタムシーンの登録やプロンプト改変は、`vla3dsg/` 側のコード（ラッパー、`ProcessorStep` の追加、LIBEROへのベンチマーク登録処理など）で実現する
