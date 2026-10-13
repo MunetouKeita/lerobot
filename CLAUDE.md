@@ -15,8 +15,11 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 ## 大きな方針
 
 1. LIBERO環境を構築し、MolmoAct2（LIBERO向けファインチューニング済みモデル）が動くことを確認する
-2. LIBEROの環境をカスタマイズ（隠れた物体のあるシーン）し、Scene Graphをプロンプトに追加した場合に、ゼロショット（追加学習なし）で性能が向上するかを確認する
-3. 2の結果を踏まえ、UMI型ハンドヘルド教示デバイスを作成し、教師データの取得とファインチューニングへ進む
+2. SG の与え方と環境を変えた次の 3 つの実験を、追加学習なし（ゼロショット）とありで比較する。まず追加学習なしで色々な条件を比較する（詳細は `progress_management.md` の「実験の方針」）
+   - 実験1: 環境は変えず、SG のような関係性を JSON・テキストにして指示文に加える
+   - 実験2: 隠れた物体のあるシーンに環境を変え、SG をテキストで加える
+   - 実験3: テキストではなく、SG エンコーダーを追加して入力する（学習なしでは意味をなさないため、追加学習ありのみ）
+3. 結果を踏まえ、UMI型ハンドヘルド教示デバイスを作成し、実機の教師データの取得へ進む
 
 ## これまでの経緯（再発防止のため）
 
@@ -136,6 +139,7 @@ pre-commit run --all-files                          # Lint・フォーマット�
 - コメントは日本語で、最低限必要なものだけ簡潔に書く
 - モジュールなど小さなまとまりごとに `vla3dsg/scripts/test_<対象>.py` でテストしてから評価パイプラインに組み込む
 - 評価は `vla3dsg/scripts/run_eval.py` で行い、結果は条件（チェックポイント、スイート、タスクID、シード、プロンプト条件、git コミット）とともに `vla3dsg/results/<名前>/` に保存して再現できるようにする。同じ名前の結果は上書きしない
+- 評価結果は成功率だけでなく、動画で確認できるように保存する（`run_eval.py --annotated-video`。各タスク先頭 10 本＋失敗エピソード。動画は `results/<名前>/videos/`）
 - LIBERO評価では `policy.per_episode_seed=true` と `policy.eval_seed` を使い、シードを固定する
 - LIBERO評価では環境タイプ `libero_vla3dsg` を使う（`num_steps_wait` の既定値が 50。MolmoAct2 の報告値と同じ条件）。リポジトリのルートで次のように指定する
   - `run_eval.py` はこの指定を自動で行う。`lerobot-eval` を直接使う場合は `PYTHONPATH=. uv run lerobot-eval --env.discover_packages_path=vla3dsg.envs --env.type=libero_vla3dsg ...`
