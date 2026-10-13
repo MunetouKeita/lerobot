@@ -10,6 +10,8 @@ REPO_ROOT = VLA3DSG_DIR.parent
 RESULTS_DIR = VLA3DSG_DIR / "results"
 # テスト・計測スクリプトの使い捨て出力。git 管理外で、いつ消してもよい
 TMP_DIR = VLA3DSG_DIR / "tmp"
+# 自作スイート（BDDL・初期状態・tasks.json）。envs/custom_suites.py が登録する
+CUSTOM_TASKS_DIR = VLA3DSG_DIR / "custom_tasks"
 
 # ヘッドレス描画と再現性のための環境変数（MuJoCo / torch の import 前に適用する）
 RUNTIME_ENV = {
@@ -49,6 +51,15 @@ LIBERO_CAMERA_NAME_MAPPING = {
     "agentview_image": "image",
     "robot0_eye_in_hand_image": "wrist_image",
 }
+
+# 自作タスクの生成（scripts/make_custom_task.py）
+CUSTOM_TASK_MAX_STEPS = 300  # libero_spatial・object は 280、goal は 300
+CUSTOM_TASK_N_INIT = 50  # 初期状態の数（元の LIBERO と同じ）
+CUSTOM_TASK_STABILITY_STEPS = 50  # 落ち着いた後、さらに何もしないで進めて動きを確かめるステップ数
+CUSTOM_TASK_MAX_SETTLE_MOVE = 0.02  # m。配置の直後から落ち着くまでに水平方向にこれ以上動いた配置は除く（押し出し・転倒）
+CUSTOM_TASK_MAX_DRIFT = 0.005  # m。落ち着いた後にこれ以上動く配置は除く
+CUSTOM_TASK_MAX_TRIALS_FACTOR = 4  # 有効な配置が n_init の何倍の試行で集まらなければ中止するか
+CUSTOM_TASK_VIS_MAX_POINTS = 400  # 見え方を測るときに使う対象物体の表面の点の数（メッシュの頂点を間引く）
 
 # Scene Graph の生成（scene_graph/builder.py）
 SG_NEAREST_K = 2  # 各物体について前後左右の関係を付ける近傍の数

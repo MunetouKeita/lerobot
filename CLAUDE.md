@@ -40,10 +40,12 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 | `vla3dsg/config/object_names.py` | SG のノード名に使う物体の読みやすい名前 |
 | `vla3dsg/scene_graph/` | シミュレータの状態から正解の SG を作る（`builder.py`）、テキスト化と対照条件（`textify.py`） |
 | `vla3dsg/prompting/` | プロンプト条件に従ってエピソードごとに指示文を差し替える（`prompt_condition.py`） |
-| `vla3dsg/envs/` | `lerobot-eval` にプラグインとして読み込ませる環境設定（環境タイプ `libero_vla3dsg`） |
+| `vla3dsg/envs/` | `lerobot-eval` にプラグインとして読み込ませる環境設定（環境タイプ `libero_vla3dsg`）と、自作スイートの登録（`custom_suites.py`） |
+| `vla3dsg/custom_tasks/<スイート>/` | 自作タスク（BDDL・初期状態 `.pruned_init`・`tasks.json`・確認用の初期画像 `previews/`）。`tasks.json` のあるフォルダは `--suite <スイート>` で評価できる |
 | `vla3dsg/visualization/` | ロールアウトの可視化（agentview と手首カメラを並べた実時間の動画。各タスク先頭 10 本＋失敗エピソードを保存） |
 | `vla3dsg/scripts/run_eval.py` | 評価の実行と結果の保存（条件・git 情報つき）。`--annotated-video` で可視化動画を保存 |
 | `vla3dsg/scripts/make_demo_video.py` | デモ動画の作成。各タスク 1 エピソードを等倍で連結し、「指示：<日本語訳>」「成功率：k/n」（全エピソードの結果）のテロップを付ける。`--keep-failures-only` でデモ動画と失敗動画だけを残す |
+| `vla3dsg/scripts/make_custom_task.py` | 既存タスクの物体配置を変えた自作タスクを作る（初期状態の生成と、対象物体が隠れているかの計測） |
 | `vla3dsg/scripts/measure_inference.py` | 推論時間と GPU メモリの計測 |
 | `vla3dsg/scripts/compare_results.py` | 複数の評価結果（条件）の成功率を表にまとめる |
 | `vla3dsg/scripts/test_<対象>.py` | モジュール単位のテスト |
@@ -110,6 +112,7 @@ uv run python vla3dsg/scripts/test_<対象>.py        # 本研究のモジュー
 uv run python vla3dsg/scripts/run_eval.py --name baseline/xxx --suite libero_goal --n-episodes 5   # 評価（結果は results/<name>/）
 uv run python vla3dsg/scripts/run_eval.py --name samples/xxx --suite libero_spatial,libero_goal --task-ids 0 5 --n-episodes 20 --annotated-video
 uv run python vla3dsg/scripts/run_eval.py --name exp1/xxx/B1 --suite libero_spatial --n-episodes 5 --prompt-condition B1 --annotated-video   # プロンプト条件（A・B1〜B3・C・D、settings.PROMPT_CONDITIONS）
+uv run python vla3dsg/scripts/make_custom_task.py --suite vla3dsg_hidden --name <タスク名> --base libero_spatial/<元のタスク名> --language "<指示文>" --region <領域名>=x0,y0,x1,y1 --target <物体> --occluder <遮る物体>   # 自作タスク（--preview で 1 件だけ tmp/ に試作）
 uv run python vla3dsg/scripts/compare_results.py --root exp1/xxx --names A B1 B2 B3 C D   # 条件の比較表（<root>/comparison.md）
 uv run python vla3dsg/scripts/make_demo_video.py --name samples/xxx --keep-failures-only   # デモ動画（results/<name>/videos/demo_with_captions.mp4）と失敗動画だけを残す
 uv run pytest tests -svv --maxfail=10               # LeRobot 本体のテスト（本体を変更した場合）

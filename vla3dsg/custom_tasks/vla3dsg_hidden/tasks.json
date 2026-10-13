@@ -1,0 +1,65 @@
+{
+  "max_steps": 300,
+  "tasks": [
+    {
+      "name": "pick_up_the_black_bowl_behind_the_wooden_cabinet_and_place_it_on_the_plate",
+      "language": "pick up the black bowl behind the wooden cabinet and place it on the plate",
+      "bddl_file": "pick_up_the_black_bowl_behind_the_wooden_cabinet_and_place_it_on_the_plate.bddl",
+      "init_states_file": "pick_up_the_black_bowl_behind_the_wooden_cabinet_and_place_it_on_the_plate.pruned_init",
+      "base": "libero_spatial/pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate",
+      "regions": [
+        "between_plate_ramekin_region=-0.21,-0.34,-0.19,-0.32"
+      ],
+      "visibility": {
+        "target": "akita_black_bowl_1",
+        "occluder": "wooden_cabinet_1",
+        "n_init": 50,
+        "n_rejected": 2,
+        "target_position_last": [
+          -0.203,
+          -0.33,
+          0.898
+        ],
+        "agentview_visible_ratio": {
+          "mean": 0.0,
+          "max": 0.0
+        },
+        "wrist_visible_ratio_first": null,
+        "visible_points_first": {
+          "agentview": 0,
+          "robot0_eye_in_hand": 0
+        }
+      }
+    },
+    {
+      "name": "pick_up_the_black_bowl_next_to_the_wooden_cabinet_and_place_it_on_the_plate",
+      "language": "pick up the black bowl next to the wooden cabinet and place it on the plate",
+      "bddl_file": "pick_up_the_black_bowl_next_to_the_wooden_cabinet_and_place_it_on_the_plate.bddl",
+      "init_states_file": "pick_up_the_black_bowl_next_to_the_wooden_cabinet_and_place_it_on_the_plate.pruned_init",
+      "base": "libero_spatial/pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate",
+      "regions": [
+        "between_plate_ramekin_region=-0.01,-0.09,0.01,-0.07"
+      ],
+      "visibility": {
+        "target": "akita_black_bowl_1",
+        "occluder": "wooden_cabinet_1",
+        "n_init": 50,
+        "n_rejected": 0,
+        "target_position_last": [
+          -0.007,
+          -0.08,
+          0.898
+        ],
+        "agentview_visible_ratio": {
+          "mean": 1.0,
+          "max": 1.0
+        },
+        "wrist_visible_ratio_first": 1.0,
+        "visible_points_first": {
+          "agentview": 400,
+          "robot0_eye_in_hand": 398
+        }
+      }
+    }
+  ]
+}

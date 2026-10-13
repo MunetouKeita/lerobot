@@ -19,6 +19,7 @@ from typing import Any, TextIO
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from vla3dsg.config import settings  # noqa: E402
+import vla3dsg.envs  # noqa: E402, F401  自作スイート（custom_tasks/）を LIBERO に登録する（タスク数の取得に必要）
 from vla3dsg.prompting import prompt_condition  # noqa: E402
 from vla3dsg.visualization import rollout_video  # noqa: E402
 
