@@ -50,6 +50,30 @@ LIBERO_CAMERA_NAME_MAPPING = {
     "robot0_eye_in_hand_image": "wrist_image",
 }
 
+# Scene Graph の生成（scene_graph/builder.py）
+SG_NEAREST_K = 2  # 各物体について前後左右の関係を付ける近傍の数
+SG_NEXT_TO_MAX_DIST = 0.03  # m。これより近い物体は前後左右ではなく "next to"
+SG_ON_MIN_DZ = 0.005  # m。接触していて、相手よりこれ以上高いと "on"
+
+# 実験1 のプロンプト条件（run_eval.py --prompt-condition）
+PROMPT_CONDITIONS = {
+    "A": "元の指示文のみ",
+    "B1": "指示文 + SG（JSON）",
+    "B2": "指示文 + SG（三つ組の列挙）",
+    "B3": "指示文 + SG（自然文）",
+    "C": "指示文 + SG（JSON）と同じトークン数の無関係な文",
+    "D": "指示文 + 物体名を入れ替えた SG（JSON）",
+}
+PROMPT_SG_LABEL = "scene information"  # 指示文と追加テキストの区切り: "<指示文>. <ラベル>: <テキスト>"
+FILLER_TEXT = (
+    "the history of the printing press began in the fifteenth century and changed how people shared ideas "
+    "across many countries. musicians often practice scales every morning to keep their fingers flexible and "
+    "their timing precise. a quiet library in the evening can be a good place to read novels about distant "
+    "mountains, old sailing ships and long journeys across the sea."
+)
+# SG を加えると指示文が長くなるため、系列長の上限を広げる（既定は指示文 32 トークン分の見込み）
+MOLMOACT2_MAX_SEQUENCE_LENGTH = 1024
+
 # MolmoAct2（元の HF チェックポイント。LeRobot 形式は config.json が現在の LeRobot と非互換）
 MOLMOACT2_CHECKPOINT = "allenai/MolmoAct2-LIBERO"
 MOLMOACT2_NORM_TAG = "libero"
@@ -71,6 +95,9 @@ def molmoact2_eval_args(suite: str, task_ids: list[int], n_episodes: int, output
         f"--policy.norm_tag={MOLMOACT2_NORM_TAG}",
         "--policy.inference_action_mode=continuous",
         f"--policy.dtype={MOLMOACT2_DTYPE}",
+        f"--policy.max_sequence_length={MOLMOACT2_MAX_SEQUENCE_LENGTH}",
+        # 指示文の正規化は prompting/prompt_condition.py で元の指示文だけに行う（SG のテキストを壊さないため）
+        "--policy.normalize_language=false",
         "--policy.enable_inference_cuda_graph=true",
         "--policy.device=cuda",
         "--policy.per_episode_seed=true",

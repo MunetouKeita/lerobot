@@ -37,11 +37,15 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 | `vla3dsg/` | 本研究のコード一式（下記） |
 | `vla3dsg/config/settings.py` | 設定値（パス、シード、チェックポイント、評価引数 `molmoact2_eval_args` など）の一元管理 |
 | `vla3dsg/config/instructions_ja.py` | LIBERO の指示文の日本語訳（デモ動画のテロップ用） |
+| `vla3dsg/config/object_names.py` | SG のノード名に使う物体の読みやすい名前 |
+| `vla3dsg/scene_graph/` | シミュレータの状態から正解の SG を作る（`builder.py`）、テキスト化と対照条件（`textify.py`） |
+| `vla3dsg/prompting/` | プロンプト条件に従ってエピソードごとに指示文を差し替える（`prompt_condition.py`） |
 | `vla3dsg/envs/` | `lerobot-eval` にプラグインとして読み込ませる環境設定（環境タイプ `libero_vla3dsg`） |
 | `vla3dsg/visualization/` | ロールアウトの可視化（agentview と手首カメラを並べた実時間の動画。各タスク先頭 10 本＋失敗エピソードを保存） |
 | `vla3dsg/scripts/run_eval.py` | 評価の実行と結果の保存（条件・git 情報つき）。`--annotated-video` で可視化動画を保存 |
 | `vla3dsg/scripts/make_demo_video.py` | デモ動画の作成。各タスク 1 エピソードを等倍で連結し、「指示：<日本語訳>」「成功率：k/n」（全エピソードの結果）のテロップを付ける。`--keep-failures-only` でデモ動画と失敗動画だけを残す |
 | `vla3dsg/scripts/measure_inference.py` | 推論時間と GPU メモリの計測 |
+| `vla3dsg/scripts/compare_results.py` | 複数の評価結果（条件）の成功率を表にまとめる |
 | `vla3dsg/scripts/test_<対象>.py` | モジュール単位のテスト |
 | `vla3dsg/results/<名前>/` | 1 実験分の結果。`README.md`・`summary.json`・`conditions.json`・`eval_info.json` は git 管理、`videos/` と `eval.log` は管理外 |
 | `vla3dsg/tmp/` | テスト・計測の使い捨て出力（git 管理外。いつ消してもよい） |
@@ -105,6 +109,8 @@ git lfs install && git lfs pull                     # LeRobot のテスト用ア
 uv run python vla3dsg/scripts/test_<対象>.py        # 本研究のモジュールテスト
 uv run python vla3dsg/scripts/run_eval.py --name baseline/xxx --suite libero_goal --n-episodes 5   # 評価（結果は results/<name>/）
 uv run python vla3dsg/scripts/run_eval.py --name samples/xxx --suite libero_spatial,libero_goal --task-ids 0 5 --n-episodes 20 --annotated-video
+uv run python vla3dsg/scripts/run_eval.py --name exp1/xxx/B1 --suite libero_spatial --n-episodes 5 --prompt-condition B1 --annotated-video   # プロンプト条件（A・B1〜B3・C・D、settings.PROMPT_CONDITIONS）
+uv run python vla3dsg/scripts/compare_results.py --root exp1/xxx --names A B1 B2 B3 C D   # 条件の比較表（<root>/comparison.md）
 uv run python vla3dsg/scripts/make_demo_video.py --name samples/xxx --keep-failures-only   # デモ動画（results/<name>/videos/demo_with_captions.mp4）と失敗動画だけを残す
 uv run pytest tests -svv --maxfail=10               # LeRobot 本体のテスト（本体を変更した場合）
 pre-commit run --all-files                          # Lint・フォーマット（ruff、typos、bandit など）
@@ -143,6 +149,7 @@ pre-commit run --all-files                          # Lint・フォーマット�
 - LIBERO評価では `policy.per_episode_seed=true` と `policy.eval_seed` を使い、シードを固定する
 - LIBERO評価では環境タイプ `libero_vla3dsg` を使う（`num_steps_wait` の既定値が 50。MolmoAct2 の報告値と同じ条件）。リポジトリのルートで次のように指定する
   - `run_eval.py` はこの指定を自動で行う。`lerobot-eval` を直接使う場合は `PYTHONPATH=. uv run lerobot-eval --env.discover_packages_path=vla3dsg.envs --env.type=libero_vla3dsg ...`
+- 評価では MolmoAct2 の指示文の正規化を切り（`--policy.normalize_language=false`）、元の指示文だけを `prompting/prompt_condition.py` で正規化する。SG のテキスト（JSON の括弧など）を壊さないため。系列長の上限も `--policy.max_sequence_length=1024` に広げる（`settings.molmoact2_eval_args` で自動）
 - `vla3dsg` はパッケージとして扱う。スクリプトからは `from vla3dsg.config import settings` で import する
 - LeRobot の import は絶対 import（`from lerobot.module import X`）を使う
 

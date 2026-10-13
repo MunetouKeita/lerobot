@@ -19,6 +19,7 @@ from typing import Any, TextIO
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from vla3dsg.config import settings  # noqa: E402
+from vla3dsg.prompting import prompt_condition  # noqa: E402
 from vla3dsg.visualization import rollout_video  # noqa: E402
 
 settings.apply_runtime_env()
@@ -63,7 +64,13 @@ def main() -> None:
     parser.add_argument("--task-ids", type=int, nargs="*", help="省略時はスイートの全タスク（複数スイートでは必須）")
     parser.add_argument("--n-episodes", type=int, default=5, help="1タスクあたりのエピソード数")
     parser.add_argument(
-        "--annotated-video", action="store_true", help="2 視点・指示文・成否を重ねた実時間の動画で保存する"
+        "--annotated-video", action="store_true", help="2 視点を並べた実時間の動画で保存する（先頭 N 本＋失敗）"
+    )
+    parser.add_argument(
+        "--prompt-condition",
+        default="A",
+        choices=list(settings.PROMPT_CONDITIONS),
+        help="指示文の条件（A: 元の指示文のみ、B1〜B3: SG を追加、C・D: 対照条件）",
     )
     args = parser.parse_args()
 
@@ -83,7 +90,8 @@ def main() -> None:
         "suite": args.suite,
         "task_ids": task_ids,
         "n_episodes_per_task": args.n_episodes,
-        "prompt_condition": "original",
+        "prompt_condition": args.prompt_condition,
+        "prompt_condition_desc": settings.PROMPT_CONDITIONS[args.prompt_condition],
         "annotated_video": args.annotated_video,
         "video_save": {"first_n": settings.VIDEO_SAVE_FIRST_N, "failures": settings.VIDEO_SAVE_FAILURES},
         "checkpoint": settings.MOLMOACT2_CHECKPOINT,
@@ -97,6 +105,7 @@ def main() -> None:
         "lerobot_eval_args": eval_args,
     }
 
+    prompt_condition.install(args.prompt_condition)
     if args.annotated_video:
         rollout_video.install()
     sys.argv = [sys.argv[0], *eval_args]
@@ -138,6 +147,10 @@ def main() -> None:
         "per_task": per_task,
     }
 
+    # 実際に使ったプロンプトと SG（エピソードごと）
+    with open(res_dir / "prompts.jsonl", "w") as f:
+        for record in prompt_condition.records:
+            f.write(json.dumps(record, ensure_ascii=False) + "\n")
     (res_dir / "conditions.json").write_text(json.dumps(conditions, indent=2, ensure_ascii=False))
     (res_dir / "summary.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False))
     print(json.dumps(summary, indent=2, ensure_ascii=False))

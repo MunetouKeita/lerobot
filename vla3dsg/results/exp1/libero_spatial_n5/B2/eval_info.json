@@ -1,0 +1,556 @@
+{
+  "per_task": [
+    {
+      "task_group": "libero_spatial",
+      "task_id": 0,
+      "metrics": {
+        "sum_rewards": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "max_rewards": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "successes": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "video_paths": [
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_0/eval_episode_0.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_0/eval_episode_1.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_0/eval_episode_2.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_0/eval_episode_3.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_0/eval_episode_4.mp4"
+        ],
+        "predicted_video_paths": []
+      },
+      "n_episodes": 5,
+      "n_success": 5,
+      "pc_success": 100.0,
+      "pc_success_ci95": [
+        56.551753521682535,
+        100.0
+      ]
+    },
+    {
+      "task_group": "libero_spatial",
+      "task_id": 1,
+      "metrics": {
+        "sum_rewards": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "max_rewards": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "successes": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "video_paths": [
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_1/eval_episode_0.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_1/eval_episode_1.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_1/eval_episode_2.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_1/eval_episode_3.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_1/eval_episode_4.mp4"
+        ],
+        "predicted_video_paths": []
+      },
+      "n_episodes": 5,
+      "n_success": 5,
+      "pc_success": 100.0,
+      "pc_success_ci95": [
+        56.551753521682535,
+        100.0
+      ]
+    },
+    {
+      "task_group": "libero_spatial",
+      "task_id": 2,
+      "metrics": {
+        "sum_rewards": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "max_rewards": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "successes": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "video_paths": [
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_2/eval_episode_0.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_2/eval_episode_1.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_2/eval_episode_2.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_2/eval_episode_3.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_2/eval_episode_4.mp4"
+        ],
+        "predicted_video_paths": []
+      },
+      "n_episodes": 5,
+      "n_success": 5,
+      "pc_success": 100.0,
+      "pc_success_ci95": [
+        56.551753521682535,
+        100.0
+      ]
+    },
+    {
+      "task_group": "libero_spatial",
+      "task_id": 3,
+      "metrics": {
+        "sum_rewards": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "max_rewards": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "successes": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "video_paths": [
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_3/eval_episode_0.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_3/eval_episode_1.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_3/eval_episode_2.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_3/eval_episode_3.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_3/eval_episode_4.mp4"
+        ],
+        "predicted_video_paths": []
+      },
+      "n_episodes": 5,
+      "n_success": 5,
+      "pc_success": 100.0,
+      "pc_success_ci95": [
+        56.551753521682535,
+        100.0
+      ]
+    },
+    {
+      "task_group": "libero_spatial",
+      "task_id": 4,
+      "metrics": {
+        "sum_rewards": [
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        "max_rewards": [
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        "successes": [
+          true,
+          false,
+          false,
+          true,
+          true
+        ],
+        "video_paths": [
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_4/eval_episode_0.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_4/eval_episode_1.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_4/eval_episode_2.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_4/eval_episode_3.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_4/eval_episode_4.mp4"
+        ],
+        "predicted_video_paths": []
+      },
+      "n_episodes": 5,
+      "n_success": 3,
+      "pc_success": 60.0,
+      "pc_success_ci95": [
+        23.072428127601295,
+        88.2379225767352
+      ]
+    },
+    {
+      "task_group": "libero_spatial",
+      "task_id": 5,
+      "metrics": {
+        "sum_rewards": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "max_rewards": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "successes": [
+          true,
+          true,
+          true,
+          true,
+          false
+        ],
+        "video_paths": [
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_5/eval_episode_0.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_5/eval_episode_1.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_5/eval_episode_2.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_5/eval_episode_3.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_5/eval_episode_4.mp4"
+        ],
+        "predicted_video_paths": []
+      },
+      "n_episodes": 5,
+      "n_success": 4,
+      "pc_success": 80.0,
+      "pc_success_ci95": [
+        37.55346297625255,
+        96.37758913675698
+      ]
+    },
+    {
+      "task_group": "libero_spatial",
+      "task_id": 6,
+      "metrics": {
+        "sum_rewards": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "max_rewards": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "successes": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "video_paths": [
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_6/eval_episode_0.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_6/eval_episode_1.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_6/eval_episode_2.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_6/eval_episode_3.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_6/eval_episode_4.mp4"
+        ],
+        "predicted_video_paths": []
+      },
+      "n_episodes": 5,
+      "n_success": 5,
+      "pc_success": 100.0,
+      "pc_success_ci95": [
+        56.551753521682535,
+        100.0
+      ]
+    },
+    {
+      "task_group": "libero_spatial",
+      "task_id": 7,
+      "metrics": {
+        "sum_rewards": [
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        "max_rewards": [
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        "successes": [
+          true,
+          true,
+          false,
+          true,
+          false
+        ],
+        "video_paths": [
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_7/eval_episode_0.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_7/eval_episode_1.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_7/eval_episode_2.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_7/eval_episode_3.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_7/eval_episode_4.mp4"
+        ],
+        "predicted_video_paths": []
+      },
+      "n_episodes": 5,
+      "n_success": 3,
+      "pc_success": 60.0,
+      "pc_success_ci95": [
+        23.072428127601295,
+        88.2379225767352
+      ]
+    },
+    {
+      "task_group": "libero_spatial",
+      "task_id": 8,
+      "metrics": {
+        "sum_rewards": [
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "max_rewards": [
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "successes": [
+          false,
+          true,
+          true,
+          true,
+          true
+        ],
+        "video_paths": [
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_8/eval_episode_0.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_8/eval_episode_1.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_8/eval_episode_2.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_8/eval_episode_3.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_8/eval_episode_4.mp4"
+        ],
+        "predicted_video_paths": []
+      },
+      "n_episodes": 5,
+      "n_success": 4,
+      "pc_success": 80.0,
+      "pc_success_ci95": [
+        37.55346297625255,
+        96.37758913675698
+      ]
+    },
+    {
+      "task_group": "libero_spatial",
+      "task_id": 9,
+      "metrics": {
+        "sum_rewards": [
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "max_rewards": [
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "successes": [
+          true,
+          true,
+          true,
+          false,
+          true
+        ],
+        "video_paths": [
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_9/eval_episode_0.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_9/eval_episode_1.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_9/eval_episode_2.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_9/eval_episode_3.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_9/eval_episode_4.mp4"
+        ],
+        "predicted_video_paths": []
+      },
+      "n_episodes": 5,
+      "n_success": 4,
+      "pc_success": 80.0,
+      "pc_success_ci95": [
+        37.55346297625255,
+        96.37758913675698
+      ]
+    }
+  ],
+  "per_group": {
+    "libero_spatial": {
+      "avg_sum_reward": 0.86,
+      "avg_max_reward": 0.86,
+      "pc_success": 86.0,
+      "n_episodes": 50,
+      "n_success": 43,
+      "pc_success_ci95": [
+        73.81380628941446,
+        93.04916657298371
+      ],
+      "video_paths": [
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_0/eval_episode_0.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_0/eval_episode_1.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_0/eval_episode_2.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_0/eval_episode_3.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_0/eval_episode_4.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_1/eval_episode_0.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_1/eval_episode_1.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_1/eval_episode_2.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_1/eval_episode_3.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_1/eval_episode_4.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_2/eval_episode_0.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_2/eval_episode_1.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_2/eval_episode_2.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_2/eval_episode_3.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_2/eval_episode_4.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_3/eval_episode_0.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_3/eval_episode_1.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_3/eval_episode_2.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_3/eval_episode_3.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_3/eval_episode_4.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_4/eval_episode_0.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_4/eval_episode_1.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_4/eval_episode_2.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_4/eval_episode_3.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_4/eval_episode_4.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_5/eval_episode_0.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_5/eval_episode_1.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_5/eval_episode_2.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_5/eval_episode_3.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_5/eval_episode_4.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_6/eval_episode_0.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_6/eval_episode_1.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_6/eval_episode_2.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_6/eval_episode_3.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_6/eval_episode_4.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_7/eval_episode_0.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_7/eval_episode_1.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_7/eval_episode_2.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_7/eval_episode_3.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_7/eval_episode_4.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_8/eval_episode_0.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_8/eval_episode_1.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_8/eval_episode_2.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_8/eval_episode_3.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_8/eval_episode_4.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_9/eval_episode_0.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_9/eval_episode_1.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_9/eval_episode_2.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_9/eval_episode_3.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_9/eval_episode_4.mp4"
+      ],
+      "predicted_video_paths": []
+    }
+  },
+  "overall": {
+    "avg_sum_reward": 0.86,
+    "avg_max_reward": 0.86,
+    "pc_success": 86.0,
+    "n_episodes": 50,
+    "n_success": 43,
+    "pc_success_ci95": [
+      73.81380628941446,
+      93.04916657298371
+    ],
+    "eval_s": 687.0337698459625,
+    "eval_ep_s": 13.740675401687621,
+    "video_paths": [
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_0/eval_episode_0.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_0/eval_episode_1.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_0/eval_episode_2.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_0/eval_episode_3.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_0/eval_episode_4.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_1/eval_episode_0.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_1/eval_episode_1.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_1/eval_episode_2.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_1/eval_episode_3.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_1/eval_episode_4.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_2/eval_episode_0.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_2/eval_episode_1.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_2/eval_episode_2.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_2/eval_episode_3.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_2/eval_episode_4.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_3/eval_episode_0.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_3/eval_episode_1.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_3/eval_episode_2.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_3/eval_episode_3.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_3/eval_episode_4.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_4/eval_episode_0.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_4/eval_episode_1.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_4/eval_episode_2.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_4/eval_episode_3.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_4/eval_episode_4.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_5/eval_episode_0.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_5/eval_episode_1.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_5/eval_episode_2.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_5/eval_episode_3.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_5/eval_episode_4.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_6/eval_episode_0.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_6/eval_episode_1.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_6/eval_episode_2.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_6/eval_episode_3.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_6/eval_episode_4.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_7/eval_episode_0.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_7/eval_episode_1.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_7/eval_episode_2.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_7/eval_episode_3.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_7/eval_episode_4.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_8/eval_episode_0.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_8/eval_episode_1.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_8/eval_episode_2.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_8/eval_episode_3.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_8/eval_episode_4.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_9/eval_episode_0.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_9/eval_episode_1.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_9/eval_episode_2.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_9/eval_episode_3.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/exp1/libero_spatial_n5/B2/videos/libero_spatial_9/eval_episode_4.mp4"
+    ],
+    "predicted_video_paths": []
+  }
+}
