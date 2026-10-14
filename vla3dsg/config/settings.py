@@ -61,12 +61,21 @@ CUSTOM_TASK_MAX_DRIFT = 0.005  # m。落ち着いた後にこれ以上動く配�
 CUSTOM_TASK_MAX_TRIALS_FACTOR = 4  # 有効な配置が n_init の何倍の試行で集まらなければ中止するか
 CUSTOM_TASK_VIS_MAX_POINTS = 400  # 見え方を測るときに使う対象物体の表面の点の数（メッシュの頂点を間引く）
 
+# スクリプト制御による pick-and-place（scripts/scripted_pick_place.py）。正解の位置へ手先を動かす
+SCRIPTED_GAIN = 25.0  # 手先の位置の誤差（m）に掛けて、移動量の指令（-1〜1）にする
+SCRIPTED_TOL = 0.01  # m。各経由点にこれより近づいたら次へ進む
+SCRIPTED_GRASP_OFFSET = (-0.04, 0.0, 0.01)  # m。ボウルの中心から見た掴む点（ロボット側の縁）
+SCRIPTED_APPROACH_DZ = 0.12  # m。掴む点の上のこの高さから下ろす
+SCRIPTED_LIFT_DZ = 0.15  # m。掴んだ後に持ち上げる高さ
+SCRIPTED_VIA_DZ = 0.25  # m。障害物を避ける経由点の高さ（掴む点から）
+SCRIPTED_RELEASE_DZ = 0.04  # m。置き場所の上のこの高さで放す
+
 # Scene Graph の生成（scene_graph/builder.py）
 SG_NEAREST_K = 2  # 各物体について前後左右の関係を付ける近傍の数
 SG_NEXT_TO_MAX_DIST = 0.03  # m。これより近い物体は前後左右ではなく "next to"
 SG_ON_MIN_DZ = 0.005  # m。接触していて、相手よりこれ以上高いと "on"
 
-# 実験1 のプロンプト条件（run_eval.py --prompt-condition）
+# プロンプト条件（run_eval.py --prompt-condition）
 PROMPT_CONDITIONS = {
     "A": "元の指示文のみ",
     "B1": "指示文 + SG（JSON）",
@@ -74,7 +83,13 @@ PROMPT_CONDITIONS = {
     "B3": "指示文 + SG（自然文）",
     "C": "指示文 + SG（JSON）と同じトークン数の無関係な文",
     "D": "指示文 + 物体名を入れ替えた SG（JSON）",
+    # 原因の切り分け（Phase 4）: ポリシーが指示文の場所の指定を使っているか
+    "L0": "場所の指定を除いた指示文（例: pick up the black bowl and place it on the plate）",
+    "L1": "同じスイートの別タスクの指示文（タスク ID を PROMPT_OTHER_TASK_OFFSET ずらす）",
 }
+# 条件 L0: "pick up the black bowl <場所> and place it on the plate" の <場所> を除く（libero_spatial 形式の指示文のみ）
+PROMPT_LOCATION_PATTERN = r"^(pick up the black bowl) .+? (and place it on the plate)$"
+PROMPT_OTHER_TASK_OFFSET = 5  # 条件 L1
 PROMPT_SG_LABEL = "scene information"  # 指示文と追加テキストの区切り: "<指示文>. <ラベル>: <テキスト>"
 FILLER_TEXT = (
     "the history of the printing press began in the fifteenth century and changed how people shared ideas "

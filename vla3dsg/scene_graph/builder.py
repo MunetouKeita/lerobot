@@ -48,8 +48,8 @@ def _support_relations(env: Any, names: dict[str, str]) -> dict[str, tuple[str, 
 
     LIBERO の述語（成功判定に使われるもの）に合わせる:
       - 固定物・物体の領域（引き出し・棚の上面・コンロ）: In = 接触 かつ 領域内、On = 領域の上 かつ 親に接触
-      - 動かせる物体どうし: On = 相手より上 かつ 接触（LIBERO は中心のずれ 3 cm 未満も要求するが、
-        ずれて載っている場合も拾うため、ここでは接触と高さだけで判定する）
+      - 動かせる物体どうし: LIBERO の On（相手の原点以上の高さ・接触・中心のずれ 3 cm 未満）、または
+        相手より SG_ON_MIN_DZ 以上高く接触している（ずれて載っている場合も拾うため）
     """
     states = env.object_states_dict
     support: dict[str, tuple[str, str]] = {}
@@ -76,8 +76,10 @@ def _support_relations(env: Any, names: dict[str, str]) -> dict[str, tuple[str, 
         for other_id in env.objects_dict:
             if other_id == obj_id or other_id not in names:
                 continue
-            if pos[2] > _position(env, other_id)[2] + settings.SG_ON_MIN_DZ and env.check_contact(
-                env.get_object(obj_id), env.get_object(other_id)
+            libero_on = states[other_id].check_ontop(obj_state)
+            if libero_on or (
+                pos[2] > _position(env, other_id)[2] + settings.SG_ON_MIN_DZ
+                and env.check_contact(env.get_object(obj_id), env.get_object(other_id))
             ):
                 support[obj_id] = ("on", names[other_id])
                 break

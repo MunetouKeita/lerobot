@@ -67,8 +67,13 @@ def main() -> None:
         assert 0 <= n_c - n_b1 <= 3, (n_b1, n_c)
         assert d != inner.task_description
         assert prompt_condition.compose_prompt(instruction, "A", sg, rng) == instruction  # LIBERO の指示文は正規化しても同じ
+        assert prompt_condition.compose_prompt(instruction, "L0", sg, rng) == "pick up the black bowl and place it on the plate"
+        assert prompt_condition.compose_prompt(instruction, "L1", sg, rng, inner._other_task_description) != instruction
 
-        prompts = {k: prompt_condition.compose_prompt(instruction, k, sg, np.random.default_rng(1)) for k in settings.PROMPT_CONDITIONS}
+        prompts = {
+            k: prompt_condition.compose_prompt(instruction, k, sg, np.random.default_rng(1), inner._other_task_description)
+            for k in settings.PROMPT_CONDITIONS
+        }
         (out_dir / f"{args.suite}_{task_id}.json").write_text(
             json.dumps({"instruction": instruction, "scene_graph": sg.to_dict(), "prompts": prompts}, indent=2, ensure_ascii=False)
         )

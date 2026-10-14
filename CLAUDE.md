@@ -46,8 +46,10 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 | `vla3dsg/scripts/run_eval.py` | 評価の実行と結果の保存（条件・git 情報つき）。`--annotated-video` で可視化動画を保存 |
 | `vla3dsg/scripts/make_demo_video.py` | デモ動画の作成。各タスク 1 エピソードを等倍で連結し、「指示：<日本語訳>」「成功率：k/n」（全エピソードの結果）のテロップを付ける。`--keep-failures-only` でデモ動画と失敗動画だけを残す |
 | `vla3dsg/scripts/make_custom_task.py` | 既存タスクの物体配置を変えた自作タスクを作る（初期状態の生成と、対象物体が隠れているかの計測） |
+| `vla3dsg/scripts/scripted_pick_place.py` | 自作タスクの対象物体を正解の位置へのスクリプト制御で掴んで運び、物理的にできるかを確かめる |
 | `vla3dsg/scripts/measure_inference.py` | 推論時間と GPU メモリの計測 |
 | `vla3dsg/scripts/compare_results.py` | 複数の評価結果（条件）の成功率を表にまとめる |
+| `vla3dsg/scripts/classify_outcomes.py` | エピソードの開始時と終了時の SG を比べ、何をどこに置いたかを集計する（`<root>/outcomes.md`） |
 | `vla3dsg/scripts/test_<対象>.py` | モジュール単位のテスト |
 | `vla3dsg/results/<名前>/` | 1 実験分の結果。`README.md`・`summary.json`・`conditions.json`・`eval_info.json` は git 管理、`videos/` と `eval.log` は管理外 |
 | `vla3dsg/tmp/` | テスト・計測の使い捨て出力（git 管理外。いつ消してもよい） |
@@ -111,7 +113,7 @@ git lfs install && git lfs pull                     # LeRobot のテスト用ア
 uv run python vla3dsg/scripts/test_<対象>.py        # 本研究のモジュールテスト
 uv run python vla3dsg/scripts/run_eval.py --name baseline/xxx --suite libero_goal --n-episodes 5   # 評価（結果は results/<name>/）
 uv run python vla3dsg/scripts/run_eval.py --name samples/xxx --suite libero_spatial,libero_goal --task-ids 0 5 --n-episodes 20 --annotated-video
-uv run python vla3dsg/scripts/run_eval.py --name exp1/xxx/B1 --suite libero_spatial --n-episodes 5 --prompt-condition B1 --annotated-video   # プロンプト条件（A・B1〜B3・C・D、settings.PROMPT_CONDITIONS）
+uv run python vla3dsg/scripts/run_eval.py --name exp1/xxx/B1 --suite libero_spatial --n-episodes 5 --prompt-condition B1 --annotated-video   # プロンプト条件（A・B1〜B3・C・D、切り分け用の L0・L1。settings.PROMPT_CONDITIONS）
 uv run python vla3dsg/scripts/make_custom_task.py --suite vla3dsg_hidden --name <タスク名> --base libero_spatial/<元のタスク名> --language "<指示文>" --region <領域名>=x0,y0,x1,y1 --target <物体> --occluder <遮る物体>   # 自作タスク（--preview で 1 件だけ tmp/ に試作）
 uv run python vla3dsg/scripts/compare_results.py --root exp1/xxx --names A B1 B2 B3 C D   # 条件の比較表（<root>/comparison.md）
 uv run python vla3dsg/scripts/make_demo_video.py --name samples/xxx --keep-failures-only   # デモ動画（results/<name>/videos/demo_with_captions.mp4）と失敗動画だけを残す
