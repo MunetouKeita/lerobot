@@ -47,6 +47,7 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 | `vla3dsg/scripts/run_eval.py` | 評価の実行と結果の保存（条件・git 情報つき）。`--annotated-video` で可視化動画を保存 |
 | `vla3dsg/scripts/make_demo_video.py` | デモ動画の作成。各タスク 1 エピソードを等倍で連結し、「指示：<日本語訳>」「成功率：k/n」（全エピソードの結果）のテロップを付ける。`--keep-failures-only` でデモ動画と失敗動画だけを残す |
 | `vla3dsg/scripts/make_custom_task.py` | 既存タスクの物体配置を変えた自作タスクを作る（初期状態の生成と、対象物体が隠れているかの計測） |
+| `vla3dsg/scripts/render_scene_overview.py` | 自作スイートの各タスクの初期状態を、ポリシーの入力の 2 視点と確認用の 4 視点（真上・横など）で描画する（`custom_tasks/<スイート>/previews/overview.png`） |
 | `vla3dsg/scripts/scripted_pick_place.py` | 自作タスクの対象物体を正解の位置へのスクリプト制御で掴んで運び、物理的にできるかを確かめる |
 | `vla3dsg/scripts/generate_demos.py` | 自作タスクのデモをスクリプト制御で自動生成し、LeRobot 形式のデータセット（`lerobot/libero` と同じ観測・動作の形式）に保存する |
 | `vla3dsg/scripts/measure_inference.py` | 推論時間と GPU メモリの計測 |
