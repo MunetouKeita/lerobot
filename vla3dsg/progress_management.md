@@ -162,6 +162,7 @@ Phase 4 の結果を受けて詳細化する。
 方針（2026-10-14、ユーザーと合意）: 隠れた物体のデモは、スクリプト制御（`scripts/scripted_pick_place.py`）を広げて自動で作る。データを作る前に、学習が回るかを確かめる。回らなければ、学習だけ RTX A6000 のサーバ（ssh）で行う
 
 - [x] 学習が回るかを確かめる（`results/phase5/train_check/README.md`）。`lerobot/libero` から `MolmoAct2-LIBERO` を LoRA・bf16・勾配チェックポイントで学習し、バッチ 8 で GPU メモリのピーク 29.7GB（32.6GB 中）、1.63 秒/マイクロバッチ。勾配累積・チェックポイントの保存・評価での読み込みも確認。このPCで学習できる（SG で指示文が長くなると余裕が減るため、足りなければバッチを下げるか A6000 を使う）
+- [x] 隠れた物体のデモを自動生成する（`scripts/generate_demos.py`、`vla3dsg/demos/`）。`vla3dsg_hidden` の task 0・1 で各 50 本（`data/hidden_cabinet_v1/`、記録は `results/demos/hidden_cabinet_v1/`）。形式は `lerobot/libero` と同じで、学習が回ることを確認。ただし動作の分布が公式デモと違う（上限に張り付く割合が 13〜23%、回転なし）
 - [ ] 実験1・2: SG テキスト付きの指示文で MolmoAct2 をファインチューニングし、追加学習なしと比較する
 - [ ] 実験3: SG エンコーダーを追加して学習し、テキストで与える場合と比較する
 
@@ -225,3 +226,4 @@ Phase 4 の結果を受けて詳細化する。
 | 2026-10-14 | Phase 4: 追加学習なしの分析 | プロンプト条件 L0・L1、終了時の SG の記録と集計（`classify_outcomes.py`）、スクリプト制御（`scripted_pick_place.py`）を追加。SG の物体どうしの on に LIBERO の On も使うよう修正（皿の上のボウルを取りこぼしていた。実験1・2 の開始時の SG は全エピソードで変化なしを確認）。結果は `results/phase4/README.md`。途中で中断し、翌日に残りの評価を実行 |
 | 2026-10-14 | 追加学習が回るかを確認 | `lerobot/libero`（1.9GB）で `MolmoAct2-LIBERO` を LoRA・bf16 で 40 マイクロバッチ学習。バッチ 8 で GPU メモリのピーク 29.7GB、1.63 秒/マイクロバッチ、チェックポイント 12GB。学習後のチェックポイントを `lerobot-eval --policy.path` で読み込み 2/2 成功。このPCで学習できるため、A6000 のサーバは当面使わない |
 | 2026-10-14 | 学習サーバ（RTX 6000 Ada × 4、`ssh munetou-6000ada`）の準備 | 以前の作業の `~/lerobot` と不要なキャッシュ（W&B の成果物 168GB、旧モデル・データ約 60GB、古い venv、pip のキャッシュ）を削除し、`vla3dsg` ブランチを clone。venv は `~/environments/lerobot-vla3dsg`。ドライバ 550（CUDA 12.4）で torch 2.11.0+cu128 が動作。学習は 1 枚 6.06 秒、2 枚 7.14 秒/マイクロバッチ（他のユーザーが GPU を使用率 100% 近くで使っていたため、5090 の 1.63 秒より遅い）。サーバの使い方を CLAUDE.md に追記 |
+| 2026-10-14 | デモの自動生成 | スクリプト制御を `vla3dsg/demos/` に切り出し（`make_custom_task.py`・`scripted_pick_place.py` も共通の処理を使う。隠れたボウルは引き続き 50/50）。`generate_demos.py` で `vla3dsg_hidden` の task 0・1 を各 50 本、13 分で生成。見えるボウル（task 1）はキャビネットに当たるため反対側の縁を掴む、掴む点のずらしは 0、1 エピソードの指令は 600 ステップで打ち切る（robosuite の horizon を超えるとエラーになるため）。学習の最初の損失は約 1.0（公式デモでは約 0.08） |

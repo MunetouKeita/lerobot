@@ -1,0 +1,32 @@
+{
+  "dataset": "vla3dsg/data/hidden_cabinet_v1",
+  "n_episodes": 100,
+  "n_frames": 18896,
+  "elapsed_s": 790,
+  "per_task": [
+    {
+      "task_id": 0,
+      "task": "pick up the black bowl behind the wooden cabinet and place it on the plate",
+      "n_episodes": 50,
+      "n_trials": 52,
+      "rejected_placement": 1,
+      "failed": 1,
+      "too_long": 0,
+      "steps_min": 269,
+      "steps_max": 279,
+      "n_frames": 13718
+    },
+    {
+      "task_id": 1,
+      "task": "pick up the black bowl next to the wooden cabinet and place it on the plate",
+      "n_episodes": 50,
+      "n_trials": 50,
+      "rejected_placement": 0,
+      "failed": 0,
+      "too_long": 0,
+      "steps_min": 92,
+      "steps_max": 234,
+      "n_frames": 5178
+    }
+  ]
+}

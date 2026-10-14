@@ -69,6 +69,24 @@ SCRIPTED_APPROACH_DZ = 0.12  # m。掴む点の上のこの高さから下ろす
 SCRIPTED_LIFT_DZ = 0.15  # m。掴んだ後に持ち上げる高さ
 SCRIPTED_VIA_DZ = 0.25  # m。障害物を避ける経由点の高さ（掴む点から）
 SCRIPTED_RELEASE_DZ = 0.04  # m。置き場所の上のこの高さで放す
+SCRIPTED_MAX_STEPS = 600  # 1 エピソードの動作指令の上限（robosuite の horizon 1000 から、待機の 50 ステップを引いても十分に小さく）
+SCRIPTED_ACTION_MAX = 0.9375  # 移動量の指令の上限（LIBERO の公式デモの動作の範囲 ±0.9375 に合わせる）
+
+# スクリプト制御によるデモの生成（scripts/generate_demos.py）
+DEMO_DIR = VLA3DSG_DIR / "data"  # 生成したデータセット（LeRobot 形式、git 管理外）
+DEMO_SEED_START = 100_000  # 配置のサンプリングのシード。評価の初期状態（make_custom_task.py はシード 0 から）と重ならないようにする
+DEMO_IMAGE_SIZE = 256  # lerobot/libero と同じ
+DEMO_FPS = 10  # lerobot/libero の表記に合わせる（実際の制御は 20Hz で、1 フレーム = 1 制御ステップ）
+DEMO_GRASP_JITTER = 0.0  # m。掴む点を水平方向にずらす幅（縁を掴む動作はずれに敏感で、0.005 でも半分ほど掴み損ねるため 0）
+DEMO_VIA_JITTER = 0.02  # m。経由点を水平方向にずらす幅
+# タスクごとのスクリプト制御の設定: 掴む物体、置き場所、経由点（世界座標の x, y）、掴む点（省略時は SCRIPTED_GRASP_OFFSET）
+DEMO_TASK_SPECS = {
+    "vla3dsg_hidden": {
+        0: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [(-0.25, 0.0)]},  # キャビネットを避けて手前を通る
+        # ボウルがキャビネットのすぐ横にあり、ロボット側の縁ではグリッパーがキャビネットに当たるため、反対側の縁を掴む
+        1: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [], "grasp_offset": (0.0, 0.04, 0.01)},
+    },
+}
 
 # Scene Graph の生成（scene_graph/builder.py）
 SG_NEAREST_K = 2  # 各物体について前後左右の関係を付ける近傍の数

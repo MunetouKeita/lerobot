@@ -31,7 +31,8 @@ from libero.libero import get_libero_path  # noqa: E402
 from libero.libero.envs import OffScreenRenderEnv  # noqa: E402
 from PIL import Image  # noqa: E402
 
-NOOP = [0, 0, 0, 0, 0, 0, -1]
+from vla3dsg.demos.placement import body_positions, sample_init_state  # noqa: E402
+
 CAMERAS = ["agentview", "robot0_eye_in_hand"]
 
 
@@ -41,11 +42,6 @@ def set_region_range(bddl: str, region: str, rng: tuple[float, float, float, flo
     if not pattern.search(bddl):
         raise ValueError(f"BDDL に領域 {region!r} が見つからない")
     return pattern.sub(lambda m: m.group(1) + "(" + " ".join(f"{v}" for v in rng) + ")", bddl, count=1)
-
-
-def body_positions(env: OffScreenRenderEnv) -> dict[str, np.ndarray]:
-    e = env.env
-    return {name: np.array(e.sim.data.body_xpos[e.obj_body_id[name]]) for name in e.objects_dict}
 
 
 def _target_points(model: mujoco.MjModel, data: mujoco.MjData, target: str) -> tuple[np.ndarray, set[int]]:
@@ -148,23 +144,12 @@ def main() -> None:
     while len(states) < n_target:
         if seed >= n_target * settings.CUSTOM_TASK_MAX_TRIALS_FACTOR:
             raise RuntimeError(f"有効な配置が集まらない（{len(states)}/{n_target}、除外 {rejected}）。配置範囲を見直すこと")
-        env.seed(seed)
-        env.reset()
+        state = sample_init_state(env, seed)
         seed += 1
-        sampled = body_positions(env)
-        for _ in range(settings.LIBERO_NUM_STEPS_WAIT):
-            env.step(NOOP)
-        settled = body_positions(env)
-        for _ in range(settings.CUSTOM_TASK_STABILITY_STEPS):
-            env.step(NOOP)
-        final = body_positions(env)
-        # 物体はテーブルの少し上に置かれて落ちるため、押し出し・転倒は水平方向の移動で判定する
-        moved = max(np.linalg.norm(settled[k][:2] - sampled[k][:2]) for k in sampled)
-        drift = max(np.linalg.norm(final[k] - settled[k]) for k in sampled)
-        if moved > settings.CUSTOM_TASK_MAX_SETTLE_MOVE or drift > settings.CUSTOM_TASK_MAX_DRIFT:
+        if state is None:
             rejected += 1
             continue
-        states.append(env.get_sim_state())
+        states.append(state)
         vis_list.append(visibility(env, args.target, args.occluder))
 
     first = vis_list[0]
@@ -177,7 +162,7 @@ def main() -> None:
         "occluder": args.occluder,
         "n_init": len(states),
         "n_rejected": rejected,
-        "target_position_last": [round(float(v), 3) for v in final[args.target]],
+        "target_position_last": [round(float(v), 3) for v in body_positions(env)[args.target]],
     }
     if args.occluder:
         ratios = [v["visible_ratio"]["agentview"] for v in vis_list if v["visible_ratio"]["agentview"] is not None]

@@ -2,3 +2,4 @@ tmp/
 results/**/videos/
 results/**/*.log
 __pycache__/
+data/

@@ -1,0 +1,63 @@
+{
+  "args": {
+    "name": "hidden_cabinet_v1",
+    "suite": "vla3dsg_hidden",
+    "task_ids": [
+      0,
+      1
+    ],
+    "n_episodes": 50
+  },
+  "settings": {
+    "DEMO_EPISODES_PER_TASK": 1,
+    "DEMO_FONT_PATH": "/usr/share/fonts/opentype/noto/NotoSansCJK-Medium.ttc",
+    "DEMO_FPS": 10,
+    "DEMO_GRASP_JITTER": 0.0,
+    "DEMO_HOLD_LAST_S": 1.0,
+    "DEMO_IMAGE_SIZE": 256,
+    "DEMO_SEED_START": 100000,
+    "DEMO_TASK_SPECS": {
+      "vla3dsg_hidden": {
+        "0": {
+          "target": "akita_black_bowl_1",
+          "dest": "plate_1",
+          "via": [
+            [
+              -0.25,
+              0.0
+            ]
+          ]
+        },
+        "1": {
+          "target": "akita_black_bowl_1",
+          "dest": "plate_1",
+          "via": [],
+          "grasp_offset": [
+            0.0,
+            0.04,
+            0.01
+          ]
+        }
+      }
+    },
+    "DEMO_VIA_JITTER": 0.02,
+    "SCRIPTED_ACTION_MAX": 0.9375,
+    "SCRIPTED_APPROACH_DZ": 0.12,
+    "SCRIPTED_GAIN": 25.0,
+    "SCRIPTED_GRASP_OFFSET": [
+      -0.04,
+      0.0,
+      0.01
+    ],
+    "SCRIPTED_LIFT_DZ": 0.15,
+    "SCRIPTED_MAX_STEPS": 600,
+    "SCRIPTED_RELEASE_DZ": 0.04,
+    "SCRIPTED_TOL": 0.01,
+    "SCRIPTED_VIA_DZ": 0.25
+  },
+  "git": {
+    "commit": "15c599ca11dcf4a0e2e75b697a7b7407d1ff1c05",
+    "upstream_base": "200ee53596d464bd28f6595cdb31be69a2b5e379",
+    "dirty": true
+  }
+}
