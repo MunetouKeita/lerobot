@@ -100,6 +100,23 @@ export OMP_NUM_THREADS=1
 export MKL_NUM_THREADS=1
 ```
 
+### 学習サーバ（RTX 6000 Ada）
+
+追加学習はこのPCでも回るが（`vla3dsg/results/phase5/train_check/`）、長い学習は学習サーバで行い、このPCは評価とデータ作りに使う。
+
+| 項目 | 内容 |
+|---|---|
+| 接続 | `ssh munetou-6000ada`（鍵認証、パスワード不要）。ホスト名 `ws-rtx6000adax4-01`、ユーザー `munetou` |
+| GPU | NVIDIA RTX 6000 Ada × 4（VRAM 48GB、Ada / sm_89）。ドライバ 550.163.01（CUDA 12.4）。`uv.lock` の torch 2.11.0+cu128 がそのまま動く |
+| リポジトリ | `~/lerobot`（`vla3dsg` ブランチを clone。GitHub に ssh で接続できる） |
+| 仮想環境 | `~/environments/lerobot-vla3dsg`。venv は `~/environments/` に置くため、uv のコマンドの前に `export PATH=$HOME/.local/bin:$PATH UV_PROJECT_ENVIRONMENT=$HOME/environments/lerobot-vla3dsg` を設定する |
+| データ・チェックポイント | `~/.cache/huggingface/hub`（`lerobot/libero`、`allenai/MolmoAct2-LIBERO` など） |
+
+- 共有サーバのため、次を守る
+  - GPU は基本的に 2 枚まで使う。他のユーザーが使っていることが多いので、使う前に `nvidia-smi` で空き（メモリ・使用率）を確かめ、`CUDA_VISIBLE_DEVICES` で指定する
+  - sudo 権限はあるが、sudo を実行するときは必ず事前にユーザーの許可を得る
+- ホームディレクトリ（`/home/munetou`）の中は自由に変更してよい
+
 ## セットアップと主要コマンド
 
 ```bash
