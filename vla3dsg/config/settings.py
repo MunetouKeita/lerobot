@@ -61,7 +61,7 @@ CUSTOM_TASK_MAX_DRIFT = 0.005  # m。落ち着いた後にこれ以上動く配�
 CUSTOM_TASK_MAX_TRIALS_FACTOR = 4  # 有効な配置が n_init の何倍の試行で集まらなければ中止するか
 CUSTOM_TASK_VIS_MAX_POINTS = 400  # 見え方を測るときに使う対象物体の表面の点の数（メッシュの頂点を間引く）
 
-# スクリプト制御による pick-and-place（scripts/scripted_pick_place.py）。正解の位置へ手先を動かす
+# スクリプト制御による pick-and-place（demos/scripted.py）。正解の位置へ手先を動かす
 SCRIPTED_GAIN = 25.0  # 手先の位置の誤差（m）に掛けて、移動量の指令（-1〜1）にする
 SCRIPTED_TOL = 0.01  # m。各経由点にこれより近づいたら次へ進む
 SCRIPTED_GRASP_OFFSET = (-0.04, 0.0, 0.01)  # m。ボウルの中心から見た掴む点（ロボット側の縁）

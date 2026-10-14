@@ -56,7 +56,7 @@ SG を VLA に与える方法と環境の組み合わせで、3 つの実験を�
 - [x] Python 3.12 の仮想環境を作る（3.12.15。`uv python pin 3.12` で固定）
 - [x] PyTorch が CUDA 12.8 ビルドで `sm_120` を含むことを確認する（torch 2.11.0+cu128）
 - [x] ffmpeg を入れ、TorchCodec から使えることを確認する（ffmpeg 4.4.2、torchcodec 0.11.1）
-- [x] EGL のヘッドレス描画で LIBERO が起動し、カメラ画像を保存できることを確認する（`scripts/test_libero_env.py`）
+- [x] EGL のヘッドレス描画で LIBERO が起動し、カメラ画像を保存できることを確認する（`tests/test_envs.py`）
 - [x] チェックポイントをダウンロードする（`allenai/MolmoAct2-LIBERO`、21GB）
 - [x] 1タスク・1エピソードで `lerobot-eval` が最後まで走り、ロールアウト動画を保存できることを確認する
 - [x] 推論時のVRAM使用量と推論時間を記録する（`scripts/measure_inference.py`、`results/phase0_inference/`）
@@ -105,7 +105,7 @@ SG を VLA に与える方法と環境の組み合わせで、3 つの実験を�
 - [x] シミュレータの状態から SG を作る（`scene_graph/builder.py`）。ノード: 物体（読みやすい名前は `config/object_names.py`、同種は番号付き）。エッジ: on / in（LIBERO の成功判定と同じ述語。引き出し・棚の上面・コンロ）、agentview から見た前後左右（各物体の近い 2 物体）
 - [x] SG のテキスト化（JSON・三つ組・自然文）、トークン数を合わせた無関係な文、物体名を入れ替えた SG を作る（`scene_graph/textify.py`）
 - [x] エピソードの開始時に SG を作って指示文に加える処理を、`run_eval.py --prompt-condition` で切り替えられるようにする（`prompting/prompt_condition.py`）。実際に使ったプロンプトを `prompts.jsonl` に保存する
-- [x] `scripts/test_scene_graph.py` で単体テストする（libero_spatial の全 10 タスクで SG を画像と照らして目視確認。コンロの上・引き出しの中も正しく出る）
+- [x] `tests/test_scene_graph.py` で単体テストする（libero_spatial の全 10 タスクで SG を画像と照らして目視確認。コンロの上・引き出しの中も正しく出る）
 - [x] SG 付きの文が MolmoAct2 のプロンプト（`The task is to ... scene information: ...`）に入ることを確認する
 - [x] 条件 A が、正規化を切り替えてもベースライン（`all40_n5` の libero_spatial）と同じ結果になることを確認する（全 50 エピソードの成否が一致）
 - [x] 6 条件を評価し、成功率と動画で比較する（`results/exp1/libero_spatial_n5/README.md`、表は `comparison.md`）
@@ -128,7 +128,7 @@ SG を VLA に与える方法と環境の組み合わせで、3 つの実験を�
   - カスタムスイートは、`Benchmark` を継承したクラスの `Task.problem_folder` に絶対パスを指定し、`register_benchmark` で登録すれば `--env.task` で指定できる（scratch で確認済み）。登録は `vla3dsg/envs/` のプラグイン読み込み時に行う
 - [x] 既存タスクを1つ複製し、物体配置だけを変えたタスクがカスタムスイートとして評価スクリプトから動くことを確認する
   - `custom_tasks/<スイート>/tasks.json` のあるフォルダを、プラグイン読み込み時にスイートとして登録する（`envs/custom_suites.py`）。最大ステップ数は `tasks.json` の `max_steps` を `episode_length` に使う（`envs/libero_vla3dsg.py`）
-  - `scripts/test_custom_suite.py` で、登録・最大ステップ数・指示文・初期状態・SG を確認
+  - `tests/test_envs.py` で、登録・最大ステップ数・指示文・初期状態・SG を確認
 - [x] 隠れた物体のパターンを設計する（2026-10-13、ユーザーと決定: ボウル 2 つ・場所を指示文で指定・まずキャビネットの裏のみ）
   - libero_spatial task 0 を元に、対象のボウルだけをキャビネットの裏に置く（`vla3dsg_hidden` task 0）
 - [x] 初期状態分布（配置のばらつき）を指定し、初期状態ファイルを生成する（`scripts/make_custom_task.py`。BDDL の配置範囲を書き換え、reset と待機で落ち着いた配置 50 件を `.pruned_init` に保存。押し出し・転倒した配置は除く）
@@ -151,15 +151,15 @@ SG を VLA に与える方法と環境の組み合わせで、3 つの実験を�
 - [x] 実験1・2 の結果をまとめ、SG がゼロショットで効くかを判断する（効かない。`results/phase4/README.md`）
 - [x] 効かない場合の原因を切り分ける
   - プロンプト条件 L0（場所の指定を除く）・L1（別タスクの指示文）を追加（`settings.PROMPT_CONDITIONS`）。libero_spatial L0 88%・L1 76%、libero_goal L1 0%（別タスクの指示どおりに動く）。見えている候補からは指示文の場所の指定で選べるが、見えない物体は探さない
-  - 隠れたボウルはスクリプト制御で 50/50 掴めた（`scripts/scripted_pick_place.py`、`results/phase4/scripted_hidden_cabinet/`）。物理的にはできるタスク
-- [x] 失敗エピソードから、失敗の種類を分類する（エピソード終了時の SG を `prompts.jsonl` に記録し、`scripts/classify_outcomes.py` で集計）。実験2 の隠れありでは 20 回中 19 回、見えている方のボウルを皿に置いた。実験1 では違うボウルを掴む失敗はなく、対象の近くで止まる
+  - 隠れたボウルはスクリプト制御で 50/50 掴めた（`scripts/generate_demos.py --check`、`results/phase4/scripted_hidden_cabinet/`）。物理的にはできるタスク
+- [x] 失敗エピソードから、失敗の種類を分類する（エピソード終了時の SG を `prompts.jsonl` に記録し、`scripts/summarize_results.py` で集計）。実験2 の隠れありでは 20 回中 19 回、見えている方のボウルを皿に置いた。実験1 では違うボウルを掴む失敗はなく、対象の近くで止まる
 - [x] 追加学習ありの計画を決める（2026-10-14: 隠れた物体のデモはスクリプト制御で自動生成。案は `results/phase4/README.md` の 5 節。実験 3 のエンコーダーの構成はテキストの結果を見てから）
 
 ## Phase 5: 追加学習あり
 
 Phase 4 の結果を受けて詳細化する。
 
-方針（2026-10-14、ユーザーと合意）: 隠れた物体のデモは、スクリプト制御（`scripts/scripted_pick_place.py`）を広げて自動で作る。データを作る前に、学習が回るかを確かめる。回らなければ、学習だけ RTX A6000 のサーバ（ssh）で行う
+方針（2026-10-14、ユーザーと合意）: 隠れた物体のデモは、スクリプト制御（`demos/scripted.py`）を広げて自動で作る。データを作る前に、学習が回るかを確かめる。回らなければ、学習だけ RTX A6000 のサーバ（ssh）で行う
 
 - [x] 学習が回るかを確かめる（`results/phase5/train_check/README.md`）。`lerobot/libero` から `MolmoAct2-LIBERO` を LoRA・bf16・勾配チェックポイントで学習し、バッチ 8 で GPU メモリのピーク 29.7GB（32.6GB 中）、1.63 秒/マイクロバッチ。勾配累積・チェックポイントの保存・評価での読み込みも確認。このPCで学習できる（SG で指示文が長くなると余裕が減るため、足りなければバッチを下げるか A6000 を使う）
 - [x] 隠れた物体のデモを自動生成する（`scripts/generate_demos.py`、`vla3dsg/demos/`）。`vla3dsg_hidden` の task 0・1 で各 50 本（`data/hidden_cabinet_v1/`、記録は `results/demos/hidden_cabinet_v1/`）。形式は `lerobot/libero` と同じで、学習が回ることを確認。ただし動作の分布が公式デモと違う（上限に張り付く割合が 13〜23%、回転なし）
@@ -227,3 +227,4 @@ Phase 4 の結果を受けて詳細化する。
 | 2026-10-14 | 追加学習が回るかを確認 | `lerobot/libero`（1.9GB）で `MolmoAct2-LIBERO` を LoRA・bf16 で 40 マイクロバッチ学習。バッチ 8 で GPU メモリのピーク 29.7GB、1.63 秒/マイクロバッチ、チェックポイント 12GB。学習後のチェックポイントを `lerobot-eval --policy.path` で読み込み 2/2 成功。このPCで学習できるため、A6000 のサーバは当面使わない |
 | 2026-10-14 | 学習サーバ（RTX 6000 Ada × 4、`ssh munetou-6000ada`）の準備 | 以前の作業の `~/lerobot` と不要なキャッシュ（W&B の成果物 168GB、旧モデル・データ約 60GB、古い venv、pip のキャッシュ）を削除し、`vla3dsg` ブランチを clone。venv は `~/environments/lerobot-vla3dsg`。ドライバ 550（CUDA 12.4）で torch 2.11.0+cu128 が動作。学習は 1 枚 6.06 秒、2 枚 7.14 秒/マイクロバッチ（他のユーザーが GPU を使用率 100% 近くで使っていたため、5090 の 1.63 秒より遅い）。サーバの使い方を CLAUDE.md に追記 |
 | 2026-10-14 | デモの自動生成 | スクリプト制御を `vla3dsg/demos/` に切り出し（`make_custom_task.py`・`scripted_pick_place.py` も共通の処理を使う。隠れたボウルは引き続き 50/50）。`generate_demos.py` で `vla3dsg_hidden` の task 0・1 を各 50 本、13 分で生成。見えるボウル（task 1）はキャビネットに当たるため反対側の縁を掴む、掴む点のずらしは 0、1 エピソードの指令は 600 ステップで打ち切る（robosuite の horizon を超えるとエラーになるため）。学習の最初の損失は約 1.0（公式デモでは約 0.08） |
+| 2026-10-14 | プログラムとフォルダの整理 | テストを `tests/` に移し、環境まわりの 3 本（`test_libero_env`・`test_libero_vla3dsg_env`・`test_custom_suite`）を `tests/test_envs.py` に統合。`compare_results.py` と `classify_outcomes.py` を `summarize_results.py` に、`scripted_pick_place.py` を `generate_demos.py --check` に統合。自作タスクを作る処理（配置範囲の書き換え・配置のサンプリング・見え方の計測）を `envs/custom_task_builder.py` に、シーンの画像を `visualization/scene_overview.py` にまとめ、`make_custom_task.py` がスイート全体の確認用画像（`previews/overview.png`、6 視点）を作るようにした（タスクごとの 2 視点の画像は削除）。既存の表は統合後も同じ内容になることを確認 |

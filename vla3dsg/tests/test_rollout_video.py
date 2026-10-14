@@ -1,6 +1,6 @@
 """可視化用の render 差し替え（visualization/rollout_video.py）を確認する。
 
-    uv run python vla3dsg/scripts/test_rollout_video.py
+    uv run python vla3dsg/tests/test_rollout_video.py
 """
 
 import sys

@@ -11,12 +11,18 @@ SG を加えた指示文のデータセットは後から作る。
     uv run python vla3dsg/scripts/generate_demos.py --name hidden_cabinet_v1 --suite vla3dsg_hidden --task-ids 0 1 --n-episodes 50
 
 データセットは data/<name>/（git 管理外）、生成の記録（summary.json・conditions.json・episodes.jsonl）は results/demos/<name>/。
+
+--check を付けると、データセットは作らず、評価の初期状態（.pruned_init）でスクリプト制御が成功するか（タスクが
+物理的にできるか）を確かめる。結果は results/<name>/（summary.json、videos/ に各タスクの先頭 --n-video 本の動画）。
+
+    uv run python vla3dsg/scripts/generate_demos.py --check --name phase4/scripted_hidden_cabinet --suite vla3dsg_hidden --task-ids 0
 """
 
 import argparse
 import json
 import sys
 import time
+from typing import Any
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -24,6 +30,7 @@ from vla3dsg.config import settings  # noqa: E402
 
 settings.apply_runtime_env()
 
+import imageio  # noqa: E402
 import numpy as np  # noqa: E402
 import torch  # noqa: E402
 from libero.libero.envs import OffScreenRenderEnv  # noqa: E402
@@ -31,7 +38,7 @@ from libero.libero.envs import OffScreenRenderEnv  # noqa: E402
 from lerobot.datasets.lerobot_dataset import LeRobotDataset  # noqa: E402
 from lerobot.processor.env_processor import LiberoProcessorStep  # noqa: E402
 
-from vla3dsg.demos.placement import sample_init_state  # noqa: E402
+from vla3dsg.envs.custom_task_builder import sample_init_state  # noqa: E402
 from vla3dsg.demos.scripted import pick_and_place, settle  # noqa: E402
 from vla3dsg.scene_graph.builder import build_scene_graph  # noqa: E402
 from vla3dsg.scripts.run_eval import git_info  # noqa: E402
@@ -58,14 +65,75 @@ def to_frame(obs: dict, action: np.ndarray, task: str) -> dict:
     return {**frame, "observation.state": state, "action": action.astype(np.float32), "task": task}
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--name", required=True, help="データセットの名前（data/<name>/）")
-    parser.add_argument("--suite", required=True, help="自作スイート（custom_tasks/<suite>/）")
-    parser.add_argument("--task-ids", type=int, nargs="+", required=True)
-    parser.add_argument("--n-episodes", type=int, required=True, help="タスクごとのエピソード数")
-    args = parser.parse_args()
+def make_env(suite_dir: Path, task: dict) -> OffScreenRenderEnv:
+    size = settings.DEMO_IMAGE_SIZE
+    return OffScreenRenderEnv(bddl_file_name=str(suite_dir / task["bddl_file"]), camera_heights=size, camera_widths=size)
 
+
+def run_scripted(env: OffScreenRenderEnv, obs: dict, demo: dict, rng: np.random.Generator | None, on_step) -> dict[str, Any]:
+    """settings.DEMO_TASK_SPECS のタスクの設定で、スクリプト制御を 1 エピソード実行する。"""
+    grasp_offset = demo.get("grasp_offset", settings.SCRIPTED_GRASP_OFFSET)
+    return pick_and_place(env, obs, demo["target"], demo["dest"], demo["via"], grasp_offset=grasp_offset, rng=rng, on_step=on_step)
+
+
+def conditions(args: argparse.Namespace) -> dict:
+    return {
+        "args": vars(args),
+        "settings": {k: getattr(settings, k) for k in dir(settings) if k.startswith(("SCRIPTED_", "DEMO_")) and k != "DEMO_DIR"},
+        "git": git_info(),
+    }
+
+
+def write_json(path: Path, obj: Any) -> None:
+    path.write_text(json.dumps(obj, indent=2, ensure_ascii=False, default=str))
+
+
+def check(args: argparse.Namespace, suite_dir: Path, spec: dict) -> None:
+    res_dir = settings.RESULTS_DIR / args.name
+    if res_dir.exists():
+        raise FileExistsError(f"{res_dir} は既にある（上書きしない）")
+    (res_dir / "videos").mkdir(parents=True)
+    per_task = []
+    for task_id in args.task_ids:
+        task = spec["tasks"][task_id]
+        env = make_env(suite_dir, task)
+        init_states = torch.load(suite_dir / task["init_states_file"], weights_only=False)
+        n = min(args.n_episodes or len(init_states), len(init_states))
+        episodes = []
+        for i in range(n):
+            env.reset()
+            env.set_init_state(init_states[i])
+            obs = settle(env)
+            frames: list[np.ndarray] = []
+
+            def on_step(o: dict, _action: np.ndarray) -> None:
+                if i < args.n_video:
+                    frames.append(np.concatenate([o[f"{c}_image"][::-1, ::-1] for c in ("agentview", "robot0_eye_in_hand")], axis=1))
+
+            result = run_scripted(env, obs, settings.DEMO_TASK_SPECS[args.suite][task_id], None, on_step)
+            episodes.append({"init_state": i, **result})
+            if frames:
+                imageio.mimsave(res_dir / "videos" / f"task{task_id}_episode_{i}.mp4", frames, fps=settings.LIBERO_CONTROL_FPS)
+            print(f"task {task_id}: {episodes[-1]}")
+        env.close()
+        per_task.append(
+            {
+                "task_id": task_id,
+                "instruction": task["language"],
+                "n_success": sum(e["success"] for e in episodes),
+                "n_episodes": len(episodes),
+                "steps_max": max(e["steps"] for e in episodes),
+                "episodes": episodes,
+            }
+        )
+    write_json(res_dir / "summary.json", {"suite": args.suite, "per_task": per_task})
+    write_json(res_dir / "conditions.json", conditions(args))
+    for t in per_task:
+        print(f"task {t['task_id']}: {t['n_success']}/{t['n_episodes']}")
+    print(f"saved: {res_dir}")
+
+
+def generate(args: argparse.Namespace, suite_dir: Path, spec: dict) -> None:
     data_dir = settings.DEMO_DIR / args.name
     rec_dir = settings.RESULTS_DIR / "demos" / args.name
     for d in (data_dir, rec_dir):
@@ -73,8 +141,6 @@ def main() -> None:
             raise FileExistsError(f"{d} は既にある（上書きしない）")
     rec_dir.mkdir(parents=True)
 
-    suite_dir = settings.CUSTOM_TASKS_DIR / args.suite
-    spec = json.loads((suite_dir / "tasks.json").read_text())
     dataset = LeRobotDataset.create(
         repo_id=f"vla3dsg/{args.name}", fps=settings.DEMO_FPS, features=features(), root=data_dir, robot_type="panda"
     )
@@ -84,10 +150,7 @@ def main() -> None:
     for task_id in args.task_ids:
         task = spec["tasks"][task_id]
         demo = settings.DEMO_TASK_SPECS[args.suite][task_id]
-        size = settings.DEMO_IMAGE_SIZE
-        env = OffScreenRenderEnv(
-            bddl_file_name=str(suite_dir / task["bddl_file"]), camera_heights=size, camera_widths=size
-        )
+        env = make_env(suite_dir, task)
         counts = {"rejected_placement": 0, "failed": 0, "too_long": 0}
         seed = settings.DEMO_SEED_START
         n_saved = 0
@@ -104,10 +167,8 @@ def main() -> None:
             obs = settle(env)
             sg = build_scene_graph(env.env)
             frames: list[dict] = []
-            result = pick_and_place(
-                env, obs, demo["target"], demo["dest"], demo["via"],
-                grasp_offset=demo.get("grasp_offset", settings.SCRIPTED_GRASP_OFFSET), rng=np.random.default_rng(seed - 1),
-                on_step=lambda o, a: frames.append(to_frame(o, a, task["language"])),
+            result = run_scripted(
+                env, obs, demo, np.random.default_rng(seed - 1), lambda o, a: frames.append(to_frame(o, a, task["language"]))
             )
             if not result["success"]:
                 counts["failed"] += 1
@@ -146,18 +207,33 @@ def main() -> None:
         "elapsed_s": round(time.time() - start),
         "per_task": per_task,
     }
-    conditions = {
-        "args": vars(args),
-        "settings": {k: getattr(settings, k) for k in dir(settings) if k.startswith(("SCRIPTED_", "DEMO_")) and k != "DEMO_DIR"},
-        "git": git_info(),
-    }
-    (rec_dir / "summary.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False, default=str))
-    (rec_dir / "conditions.json").write_text(json.dumps(conditions, indent=2, ensure_ascii=False, default=str))
+    write_json(rec_dir / "summary.json", summary)
+    write_json(rec_dir / "conditions.json", conditions(args))
     with open(rec_dir / "episodes.jsonl", "w") as f:
         for e in episodes:
             f.write(json.dumps(e, ensure_ascii=False) + "\n")
     print(json.dumps(summary, indent=2, ensure_ascii=False))
     print(f"saved: {data_dir}, {rec_dir}")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--name", required=True, help="データセットの名前（data/<name>/）。--check では結果の保存先（results/<name>/）")
+    parser.add_argument("--suite", required=True, help="自作スイート（custom_tasks/<suite>/）")
+    parser.add_argument("--task-ids", type=int, nargs="+", required=True)
+    parser.add_argument("--n-episodes", type=int, help="タスクごとのエピソード数（--check では省略すると初期状態すべて）")
+    parser.add_argument("--check", action="store_true", help="評価の初期状態でスクリプト制御が成功するかだけを確かめる")
+    parser.add_argument("--n-video", type=int, default=3, help="--check で動画を保存するエピソード数（タスクごと）")
+    args = parser.parse_args()
+
+    suite_dir = settings.CUSTOM_TASKS_DIR / args.suite
+    spec = json.loads((suite_dir / "tasks.json").read_text())
+    if args.check:
+        check(args, suite_dir, spec)
+    else:
+        if args.n_episodes is None:
+            parser.error("--n-episodes が必要")
+        generate(args, suite_dir, spec)
 
 
 if __name__ == "__main__":

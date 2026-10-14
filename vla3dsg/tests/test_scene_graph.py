@@ -2,7 +2,7 @@
 
 libero_spatial の各タスクで reset 後の SG を作り、agentview 画像と各条件のプロンプトを tmp/ に保存する。
 
-    uv run python vla3dsg/scripts/test_scene_graph.py [--suite libero_spatial] [--task-ids 0 1 ...]
+    uv run python vla3dsg/tests/test_scene_graph.py [--suite libero_spatial] [--task-ids 0 1 ...]
 """
 
 import argparse

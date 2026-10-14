@@ -2,7 +2,7 @@
 
 - 日時: 2026-10-13
 - 実行: 条件ごとに `uv run python vla3dsg/scripts/run_eval.py --name exp1/libero_spatial_n5/<条件> --suite libero_spatial --n-episodes 5 --prompt-condition <条件> --annotated-video`
-- 集計: `uv run python vla3dsg/scripts/compare_results.py --root exp1/libero_spatial_n5 --names A B1 B2 B3 C D`（`comparison.md`）
+- 集計: `uv run python vla3dsg/scripts/summarize_results.py --root exp1/libero_spatial_n5 --names A B1 B2 B3 C D`（`comparison.md`）
 - 共通条件: チェックポイント `allenai/MolmoAct2-LIBERO`（float32）、`num_steps_wait=50`、シード 1000、`--policy.normalize_language=false`（元の指示文だけを正規化）、`--policy.max_sequence_length=1024`
 - コミット: `e13ec39c` に SG・プロンプト条件の未コミットの実装が乗った状態（各 `conditions.json` の `dirty: true`）。実装は本結果と同じコミットで追加
 - 所要時間: 条件ごとに 531〜710 秒（SG を加えた条件は、プロンプトが長いぶん遅い）

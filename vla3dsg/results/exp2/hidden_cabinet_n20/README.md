@@ -2,7 +2,7 @@
 
 - 日時: 2026-10-13
 - 実行: 条件ごとに `uv run python vla3dsg/scripts/run_eval.py --name exp2/hidden_cabinet_n20/<条件> --suite vla3dsg_hidden --n-episodes 20 --prompt-condition <条件> --annotated-video`
-- 集計: `uv run python vla3dsg/scripts/compare_results.py --root exp2/hidden_cabinet_n20 --names A B1 B2 B3 C D`（`comparison.md`）
+- 集計: `uv run python vla3dsg/scripts/summarize_results.py --root exp2/hidden_cabinet_n20 --names A B1 B2 B3 C D`（`comparison.md`）
 - 共通条件: 実験1 と同じ（チェックポイント `allenai/MolmoAct2-LIBERO`（float32）、`num_steps_wait=50`、シード 1000、`--policy.normalize_language=false`、`--policy.max_sequence_length=1024`）。最大ステップ数 300（元の libero_spatial は 280）
 - コミット: `b0e64fe0` に自作スイートの未コミットの実装が乗った状態（各 `conditions.json` の `dirty: true`）。実装は本結果と同じコミットで追加
 - 所要時間: 条件ごとに約 12〜13 分（計約 76 分）
@@ -21,7 +21,7 @@ libero_spatial task 0（皿とラメキンの間のボウルを皿に置く）�
 - 初期状態は各 50 件。配置後に押し出された・倒れたもの（task 0 で 2 件）は除いた
 - 対照（task 1）について: キャビネットの裏のまま見える位置を作ろうとしたが、キャビネットの右側は agentview の画角の外になるため、「キャビネットの横（見える）」にした。そのため task 0 と task 1 は、隠れの有無に加えて指示文（behind / next to）と位置も違う
 
-初期画像（agentview）: [task 0](../../../custom_tasks/vla3dsg_hidden/previews/pick_up_the_black_bowl_behind_the_wooden_cabinet_and_place_it_on_the_plate_agentview.png)、[task 1](../../../custom_tasks/vla3dsg_hidden/previews/pick_up_the_black_bowl_next_to_the_wooden_cabinet_and_place_it_on_the_plate_agentview.png)
+初期画像（agentview・手首カメラと、真上・横などの確認用の視点）: [overview.png](../../../custom_tasks/vla3dsg_hidden/previews/overview.png)
 
 task 0 のプロンプトの例（条件 B2）。SG には対象の隠れ場所（キャビネットの裏）が入る:
 

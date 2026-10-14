@@ -1,7 +1,7 @@
 # キャビネットの裏のボウルは物理的に掴めるか（スクリプト制御）
 
 - 日時: 2026-10-13
-- 実行: `uv run python vla3dsg/scripts/scripted_pick_place.py --name phase4/scripted_hidden_cabinet --suite vla3dsg_hidden --task-id 0 --target akita_black_bowl_1 --dest plate_1 --via=-0.25,0.0`
+- 実行: `uv run python vla3dsg/scripts/scripted_pick_place.py --name phase4/scripted_hidden_cabinet --suite vla3dsg_hidden --task-id 0 --target akita_black_bowl_1 --dest plate_1 --via=-0.25,0.0`（当時のスクリプト。現在は `generate_demos.py --check --name <名前> --suite vla3dsg_hidden --task-ids 0` で同じ確認ができる。2026-10-14 に統合後のスクリプトで 2 回確認した結果は 48/50・49/50。失敗はどちらも掴む前に手先が止まり、指令の上限 600 ステップに達したもの。同じ初期状態でも成否が変わることがあり、シミュレータに完全には再現しない要素がある）
 - 対象: 実験2 の隠れありタスク（`vla3dsg_hidden` task 0）の初期状態 50 件すべて
 - 方法: シミュレータの正解の位置へ手先を動かす（姿勢は初期のまま、位置の誤差に比例した指令）。ボウルのロボット側の縁を上から掴み、持ち上げ、キャビネットを避ける経由点（手前側、高さ +0.25 m）を通って皿の上へ運び、放す。制御の設定は `conditions.json`（`settings.SCRIPTED_*`）
 - 動画: `videos/episode_{0,1,2}.mp4`（git 管理外）
