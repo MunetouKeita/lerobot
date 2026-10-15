@@ -16,6 +16,12 @@ SG を加えた指示文のデータセットは後から作る。
 物理的にできるか）を確かめる。結果は results/<name>/（summary.json、videos/ に各タスクの先頭 --n-video 本の動画）。
 
     uv run python vla3dsg/scripts/generate_demos.py --check --name phase4/scripted_hidden_cabinet --suite vla3dsg_hidden --task-ids 0
+
+--report を付けると、生成済みのデータセット data/<name>/ を LIBERO の公式デモ（lerobot/libero の同じ元タスク）と比べる。
+動作の統計（report.json）、1 エピソードずつの動作の指令のグラフ（actions_vs_official.png）、縦に並べた比較動画
+（videos/compare_with_official.mp4）を results/demos/<name>/ に保存する。
+
+    uv run python vla3dsg/scripts/generate_demos.py --report --name hidden_cabinet_v2 --suite vla3dsg_hidden --task-ids 0 1
 """
 
 import argparse
@@ -72,8 +78,11 @@ def make_env(suite_dir: Path, task: dict) -> OffScreenRenderEnv:
 
 def run_scripted(env: OffScreenRenderEnv, obs: dict, demo: dict, rng: np.random.Generator | None, on_step) -> dict[str, Any]:
     """settings.DEMO_TASK_SPECS のタスクの設定で、スクリプト制御を 1 エピソード実行する。"""
-    grasp_offset = demo.get("grasp_offset", settings.SCRIPTED_GRASP_OFFSET)
-    return pick_and_place(env, obs, demo["target"], demo["dest"], demo["via"], grasp_offset=grasp_offset, rng=rng, on_step=on_step)
+    return pick_and_place(
+        env, obs, demo["target"], demo["dest"], demo["via"],
+        grasp_offset=demo.get("grasp_offset", settings.SCRIPTED_GRASP_OFFSET), grasp_yaw_deg=demo.get("grasp_yaw_deg", 0.0),
+        rng=rng, on_step=on_step,
+    )
 
 
 def conditions(args: argparse.Namespace) -> dict:
@@ -216,6 +225,103 @@ def generate(args: argparse.Namespace, suite_dir: Path, spec: dict) -> None:
     print(f"saved: {data_dir}, {rec_dir}")
 
 
+def load_episode(ds: LeRobotDataset, ep: int) -> tuple[list[np.ndarray], np.ndarray, np.ndarray]:
+    """(2 視点を横に並べた画像, 動作, 状態)"""
+    e = ds.meta.episodes[ep]
+    frames, actions, states = [], [], []
+    for i in range(e["dataset_from_index"], e["dataset_to_index"]):
+        f = ds[i]
+        frames.append(np.concatenate([(f[k].permute(1, 2, 0).numpy() * 255).astype(np.uint8) for k in IMAGE_KEYS.values()], 1))
+        actions.append(f["action"].numpy())
+        states.append(f["observation.state"].numpy())
+    return frames, np.array(actions), np.array(states)
+
+
+def action_stats(actions: np.ndarray, states: np.ndarray) -> dict:
+    moved = np.linalg.norm(np.diff(states[:, :3], axis=0), axis=1)
+    return {
+        "steps": len(actions),
+        "move_abs_mean": np.abs(actions[:, :3]).mean(0).round(3).tolist(),
+        "move_saturated_frac": (np.abs(actions[:, :3]) > 0.9).mean(0).round(3).tolist(),
+        "rot_abs_mean": np.abs(actions[:, 3:6]).mean(0).round(3).tolist(),
+        "stalled_frac": round(float((moved < settings.DEMO_REPORT_STALL_MOVE).mean()), 3),  # 手先がほぼ動かないステップの割合
+    }
+
+
+def report(args: argparse.Namespace, spec: dict) -> None:
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from huggingface_hub import snapshot_download
+    from PIL import Image, ImageDraw, ImageFont
+
+    rec_dir = settings.RESULTS_DIR / "demos" / args.name
+    gen = LeRobotDataset(f"vla3dsg/{args.name}", root=settings.DEMO_DIR / args.name, video_backend="pyav")
+    off_root = snapshot_download(settings.DEMO_OFFICIAL_DATASET, repo_type="dataset")
+    off = LeRobotDataset(settings.DEMO_OFFICIAL_DATASET, root=off_root, video_backend="pyav")
+    episodes = [json.loads(line) for line in (rec_dir / "episodes.jsonl").read_text().splitlines()]
+
+    # 公式デモ: 元タスク（tasks.json の base）の先頭 DEMO_REPORT_N_EPISODES 本
+    off_task_index = {}
+    for t in off.meta.tasks.itertuples():
+        off_task_index[t.Index] = int(t.task_index)
+    off_eps = {}
+    for e in range(off.meta.total_episodes):
+        off_eps.setdefault(int(off.hf_dataset[int(off.meta.episodes[e]["dataset_from_index"])]["task_index"]), []).append(e)
+    rows, result = [], {}
+    for task_id in args.task_ids:
+        task = spec["tasks"][task_id]
+        base_language = task["base"].split("/")[1].replace("_", " ")
+        groups = {
+            f"official ({task['base']})": (off, off_eps[off_task_index[base_language]][: settings.DEMO_REPORT_N_EPISODES]),
+            f"generated (task {task_id})": (
+                gen, [e["episode_index"] for e in episodes if e["task_id"] == task_id][: settings.DEMO_REPORT_N_EPISODES]
+            ),
+        }
+        for label, (ds, eps) in groups.items():
+            loaded = [load_episode(ds, ep) for ep in eps]
+            per = [action_stats(a, st) for _, a, st in loaded]
+            result[label] = {k: np.mean([p[k] for p in per], axis=0).round(3).tolist() for k in per[0]}
+            if label not in {r[0] for r in rows}:
+                rows.append((label, *loaded[0][:2]))
+    write_json(rec_dir / "report.json", {"n_episodes_each": settings.DEMO_REPORT_N_EPISODES, "stats": result})
+
+    fig, axes = plt.subplots(len(rows), 1, figsize=(11, 2.7 * len(rows)), sharex=True)
+    for ax, (label, _, actions) in zip(axes, rows):
+        for k, name in enumerate(["x", "y", "z", "rx", "ry", "rz", "gripper"]):
+            ax.plot(actions[:, k], label=name, lw=1.2, ls="-" if k < 3 else (":" if k < 6 else "--"))
+        for v in (settings.SCRIPTED_ACTION_MAX, -settings.SCRIPTED_ACTION_MAX):
+            ax.axhline(v, color="gray", lw=0.5)
+        ax.set_title(label)
+        ax.set_ylim(-1.1, 1.1)
+        ax.set_ylabel("action")
+    axes[0].legend(ncol=7, fontsize=8, loc="upper right")
+    axes[-1].set_xlabel("step")
+    fig.tight_layout()
+    fig.savefig(rec_dir / "actions_vs_official.png", dpi=110)
+
+    font, small = ImageFont.truetype(settings.DEMO_FONT_PATH, 20), ImageFont.truetype(settings.DEMO_FONT_PATH, 14)
+    n = max(len(f) for _, f, _ in rows)
+    video = []
+    for t in range(n):
+        tiles = []
+        for label, frames, actions in rows:
+            k = min(t, len(frames) - 1)
+            im = Image.fromarray(frames[k])
+            draw = ImageDraw.Draw(im)
+            draw.text((6, 4), label, fill=(255, 255, 0), font=font, stroke_width=2, stroke_fill=(0, 0, 0))
+            a = actions[k]
+            text = f"step {k}/{len(frames)}{' (done)' if t >= len(frames) else ''}  move=({a[0]:+.2f},{a[1]:+.2f},{a[2]:+.2f}) rot=({a[3]:+.2f},{a[4]:+.2f},{a[5]:+.2f})"
+            draw.text((6, settings.DEMO_IMAGE_SIZE - 30), text, fill=(255, 255, 255), font=small, stroke_width=2, stroke_fill=(0, 0, 0))
+            tiles.append(np.array(im))
+        video.append(np.concatenate(tiles, 0))
+    (rec_dir / "videos").mkdir(exist_ok=True)
+    imageio.mimsave(rec_dir / "videos" / "compare_with_official.mp4", video, fps=settings.LIBERO_CONTROL_FPS)
+    print(json.dumps(result, indent=2, ensure_ascii=False))
+    print(f"saved: {rec_dir}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--name", required=True, help="データセットの名前（data/<name>/）。--check では結果の保存先（results/<name>/）")
@@ -224,12 +330,15 @@ def main() -> None:
     parser.add_argument("--n-episodes", type=int, help="タスクごとのエピソード数（--check では省略すると初期状態すべて）")
     parser.add_argument("--check", action="store_true", help="評価の初期状態でスクリプト制御が成功するかだけを確かめる")
     parser.add_argument("--n-video", type=int, default=3, help="--check で動画を保存するエピソード数（タスクごと）")
+    parser.add_argument("--report", action="store_true", help="生成済みのデータセットを公式デモと比べる")
     args = parser.parse_args()
 
     suite_dir = settings.CUSTOM_TASKS_DIR / args.suite
     spec = json.loads((suite_dir / "tasks.json").read_text())
     if args.check:
         check(args, suite_dir, spec)
+    elif args.report:
+        report(args, spec)
     else:
         if args.n_episodes is None:
             parser.error("--n-episodes が必要")

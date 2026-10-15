@@ -162,7 +162,7 @@ Phase 4 の結果を受けて詳細化する。
 方針（2026-10-14、ユーザーと合意）: 隠れた物体のデモは、スクリプト制御（`demos/scripted.py`）を広げて自動で作る。データを作る前に、学習が回るかを確かめる。回らなければ、学習だけ RTX A6000 のサーバ（ssh）で行う
 
 - [x] 学習が回るかを確かめる（`results/phase5/train_check/README.md`）。`lerobot/libero` から `MolmoAct2-LIBERO` を LoRA・bf16・勾配チェックポイントで学習し、バッチ 8 で GPU メモリのピーク 29.7GB（32.6GB 中）、1.63 秒/マイクロバッチ。勾配累積・チェックポイントの保存・評価での読み込みも確認。このPCで学習できる（SG で指示文が長くなると余裕が減るため、足りなければバッチを下げるか A6000 を使う）
-- [x] 隠れた物体のデモを自動生成する（`scripts/generate_demos.py`、`vla3dsg/demos/`）。`vla3dsg_hidden` の task 0・1 で各 50 本（`data/hidden_cabinet_v1/`、記録は `results/demos/hidden_cabinet_v1/`）。形式は `lerobot/libero` と同じで、学習が回ることを確認。ただし動作の分布が公式デモと違う（上限に張り付く割合が 13〜23%、回転なし）
+- [x] 隠れた物体のデモを自動生成する（`scripts/generate_demos.py`、`vla3dsg/demos/scripted.py`）。`vla3dsg_hidden` の task 0・1 で各 50 本（`data/hidden_cabinet_v2/`、記録と公式デモとの比較は `results/demos/hidden_cabinet_v2/README.md`）。形式は `lerobot/libero` と同じで、学習が回ることを確認。最初の v1 は、掴むときに指が縁に乗って押し続ける区間がエピソードの約半分あったため作り直した
 - [ ] 実験1・2: SG テキスト付きの指示文で MolmoAct2 をファインチューニングし、追加学習なしと比較する
 - [ ] 実験3: SG エンコーダーを追加して学習し、テキストで与える場合と比較する
 
@@ -228,3 +228,4 @@ Phase 4 の結果を受けて詳細化する。
 | 2026-10-14 | 学習サーバ（RTX 6000 Ada × 4、`ssh munetou-6000ada`）の準備 | 以前の作業の `~/lerobot` と不要なキャッシュ（W&B の成果物 168GB、旧モデル・データ約 60GB、古い venv、pip のキャッシュ）を削除し、`vla3dsg` ブランチを clone。venv は `~/environments/lerobot-vla3dsg`。ドライバ 550（CUDA 12.4）で torch 2.11.0+cu128 が動作。学習は 1 枚 6.06 秒、2 枚 7.14 秒/マイクロバッチ（他のユーザーが GPU を使用率 100% 近くで使っていたため、5090 の 1.63 秒より遅い）。サーバの使い方を CLAUDE.md に追記 |
 | 2026-10-14 | デモの自動生成 | スクリプト制御を `vla3dsg/demos/` に切り出し（`make_custom_task.py`・`scripted_pick_place.py` も共通の処理を使う。隠れたボウルは引き続き 50/50）。`generate_demos.py` で `vla3dsg_hidden` の task 0・1 を各 50 本、13 分で生成。見えるボウル（task 1）はキャビネットに当たるため反対側の縁を掴む、掴む点のずらしは 0、1 エピソードの指令は 600 ステップで打ち切る（robosuite の horizon を超えるとエラーになるため）。学習の最初の損失は約 1.0（公式デモでは約 0.08） |
 | 2026-10-14 | プログラムとフォルダの整理 | テストを `tests/` に移し、環境まわりの 3 本（`test_libero_env`・`test_libero_vla3dsg_env`・`test_custom_suite`）を `tests/test_envs.py` に統合。`compare_results.py` と `classify_outcomes.py` を `summarize_results.py` に、`scripted_pick_place.py` を `generate_demos.py --check` に統合。自作タスクを作る処理（配置範囲の書き換え・配置のサンプリング・見え方の計測）を `envs/custom_task_builder.py` に、シーンの画像を `visualization/scene_overview.py` にまとめ、`make_custom_task.py` がスイート全体の確認用画像（`previews/overview.png`、6 視点）を作るようにした（タスクごとの 2 視点の画像は削除）。既存の表は統合後も同じ内容になることを確認 |
+| 2026-10-15 | デモを作り直す（v2） | v1 の隠れありのデモは、開いた指が y 方向に並ぶのにロボット側（x 方向）の縁を掴もうとしたため、片方の指が縁に乗って下りられず、約半分のステップで押し続けていた。手先を 90° 回して掴む、止まったら次の動作へ進む、3 軸まとめた速さと指令の変化量の制限、向きの補正と小さな揺らぎ、掴む・置く直前だけゆっくり下ろす、に変更。止まっている割合 51%→6%、長さ 275→191 ステップ、回転の指令は公式デモと同程度。比較は `generate_demos.py --report`。学習の最初の損失は 1.0→0.7（公式デモは 0.08）。v1 のデータと記録は削除 |

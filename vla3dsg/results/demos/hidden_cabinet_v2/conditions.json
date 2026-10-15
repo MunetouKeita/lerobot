@@ -1,12 +1,15 @@
 {
   "args": {
-    "name": "hidden_cabinet_v1",
+    "name": "hidden_cabinet_v2",
     "suite": "vla3dsg_hidden",
     "task_ids": [
       0,
       1
     ],
-    "n_episodes": 50
+    "n_episodes": 50,
+    "check": false,
+    "n_video": 3,
+    "report": false
   },
   "settings": {
     "DEMO_EPISODES_PER_TASK": 1,
@@ -15,6 +18,12 @@
     "DEMO_GRASP_JITTER": 0.0,
     "DEMO_HOLD_LAST_S": 1.0,
     "DEMO_IMAGE_SIZE": 256,
+    "DEMO_MOVE_NOISE": 0.02,
+    "DEMO_NOISE_THETA": 0.1,
+    "DEMO_OFFICIAL_DATASET": "lerobot/libero",
+    "DEMO_REPORT_N_EPISODES": 20,
+    "DEMO_REPORT_STALL_MOVE": 0.001,
+    "DEMO_ROT_NOISE": 0.01,
     "DEMO_SEED_START": 100000,
     "DEMO_TASK_SPECS": {
       "vla3dsg_hidden": {
@@ -26,7 +35,8 @@
               -0.25,
               0.0
             ]
-          ]
+          ],
+          "grasp_yaw_deg": 90.0
         },
         "1": {
           "target": "akita_black_bowl_1",
@@ -41,6 +51,7 @@
       }
     },
     "DEMO_VIA_JITTER": 0.02,
+    "SCRIPTED_ACCEL": 0.1,
     "SCRIPTED_ACTION_MAX": 0.9375,
     "SCRIPTED_APPROACH_DZ": 0.12,
     "SCRIPTED_GAIN": 25.0,
@@ -52,11 +63,17 @@
     "SCRIPTED_LIFT_DZ": 0.15,
     "SCRIPTED_MAX_STEPS": 600,
     "SCRIPTED_RELEASE_DZ": 0.04,
+    "SCRIPTED_ROT_GAIN": 1.0,
+    "SCRIPTED_SLOW_DZ": 0.03,
+    "SCRIPTED_SLOW_SPEED": 0.3,
+    "SCRIPTED_SPEED": 0.8,
+    "SCRIPTED_STALL_MOVE": 0.002,
+    "SCRIPTED_STALL_STEPS": 10,
     "SCRIPTED_TOL": 0.01,
     "SCRIPTED_VIA_DZ": 0.25
   },
   "git": {
-    "commit": "15c599ca11dcf4a0e2e75b697a7b7407d1ff1c05",
+    "commit": "ddf6e240f9e5055d4f0646b2c0dedc5a5489ca5c",
     "upstream_base": "200ee53596d464bd28f6595cdb31be69a2b5e379",
     "dirty": true
   }

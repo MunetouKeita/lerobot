@@ -1,14 +1,20 @@
 """シミュレータの正解の位置を使ったスクリプト制御（pick-and-place）。
 
-手先の姿勢は初期のまま、位置の誤差に比例した移動量の指令を出す。上から近づいて縁を掴み、持ち上げ、
-経由点を通って置き場所の上へ運び、放す。
+上から近づいて縁を掴み、持ち上げ、経由点を通って置き場所の上へ運び、放す。動作の指令は人によるデモに近づける:
+- 移動は位置の誤差に比例させ、3 軸まとめて速さ（ベクトルの大きさ）を制限し、1 ステップあたりの変化量も制限する
+  （加速・減速をなめらかにし、動作の切り替えも急にしない）
+- 回転は、手先の向きを初期の向きに保つように小さく補正する
+- rng を渡すと、移動と回転にゆっくり変化する小さな揺らぎ（オルンシュタイン＝ウーレンベック過程）を加える
+- 目標に届かずに手先が止まったら（物体に当たって押し続ける状態）、待たずに次の動作へ進む
 """
 
+from collections import deque
 from collections.abc import Callable
 from typing import Any
 
 import numpy as np
 from libero.libero.envs import OffScreenRenderEnv
+from scipy.spatial.transform import Rotation
 
 from vla3dsg.config import settings
 
@@ -25,10 +31,15 @@ def body_pos(env: OffScreenRenderEnv, name: str) -> np.ndarray:
 
 
 class Runner:
-    def __init__(self, env: OffScreenRenderEnv, obs: dict, on_step: StepCallback | None = None):
-        self.env, self.obs, self.on_step = env, obs, on_step
+    def __init__(
+        self, env: OffScreenRenderEnv, obs: dict, on_step: StepCallback | None = None, rng: np.random.Generator | None = None
+    ):
+        self.env, self.obs, self.on_step, self.rng = env, obs, on_step, rng
         self.steps = 0
         self.done = False  # LIBERO は成功した時点でエピソードを終え、以降の動作指令はエラーになる
+        self.ref_rot = Rotation.from_quat(obs["robot0_eef_quat"])  # 保つ手先の向き（x, y, z, w）
+        self.prev = np.zeros(6)  # 直前の移動・回転の指令
+        self.noise = np.zeros(6)
 
     def step(self, action: list[float] | np.ndarray) -> None:
         # robosuite はエピソード長の上限（horizon）を超えると動作指令をエラーにするが、LIBERO は終了フラグを
@@ -42,16 +53,37 @@ class Runner:
         self.obs, _, self.done, _ = self.env.step(action)
         self.steps += 1
 
-    def go(self, target: np.ndarray, grip: float, max_steps: int = 150) -> None:
+    def command(self, move: np.ndarray, grip: float, max_speed: float = settings.SCRIPTED_SPEED) -> None:
+        """移動の指令（希望）を、速さ・変化量の制限、向きの補正、揺らぎを加えて送る。"""
+        speed = np.linalg.norm(move)
+        if speed > max_speed:
+            move = move * (max_speed / speed)
+        rot = (self.ref_rot * Rotation.from_quat(self.obs["robot0_eef_quat"]).inv()).as_rotvec() * settings.SCRIPTED_ROT_GAIN
+        cmd = np.r_[move, rot]
+        if self.rng is not None:
+            sigma = np.r_[np.full(3, settings.DEMO_MOVE_NOISE), np.full(3, settings.DEMO_ROT_NOISE)]
+            self.noise += -settings.DEMO_NOISE_THETA * self.noise + sigma * self.rng.standard_normal(6)
+            cmd = cmd + self.noise
+        cmd = self.prev + np.clip(cmd - self.prev, -settings.SCRIPTED_ACCEL, settings.SCRIPTED_ACCEL)
+        self.prev = cmd
+        self.step(np.r_[cmd, grip])
+
+    def go(self, target: np.ndarray, grip: float, max_steps: int = 150, max_speed: float = settings.SCRIPTED_SPEED) -> None:
+        history: deque[np.ndarray] = deque(maxlen=settings.SCRIPTED_STALL_STEPS + 1)
         for _ in range(max_steps):
-            err = target - self.obs["robot0_eef_pos"]
+            pos = self.obs["robot0_eef_pos"]
+            err = target - pos
             if self.done or self.steps >= settings.SCRIPTED_MAX_STEPS or np.linalg.norm(err) < settings.SCRIPTED_TOL:
                 return
-            self.step(np.r_[err * settings.SCRIPTED_GAIN, 0, 0, 0, grip])
+            history.append(pos.copy())
+            # 目標に届かないまま止まった（物体に当たっている）ら、押し続けずに次の動作へ進む
+            if len(history) == history.maxlen and np.linalg.norm(history[-1] - history[0]) < settings.SCRIPTED_STALL_MOVE:
+                return
+            self.command(err * settings.SCRIPTED_GAIN, grip, max_speed)
 
     def hold(self, grip: float, n: int) -> None:
         for _ in range(n):
-            self.step([0, 0, 0, 0, 0, 0, grip])
+            self.command(np.zeros(3), grip)
 
 
 def pick_and_place(
@@ -61,20 +93,26 @@ def pick_and_place(
     dest: str,
     via: list[tuple[float, float]],
     grasp_offset: tuple[float, float, float] = settings.SCRIPTED_GRASP_OFFSET,
+    grasp_yaw_deg: float = 0.0,
     rng: np.random.Generator | None = None,
     on_step: StepCallback | None = None,
 ) -> dict[str, Any]:
     """target を掴んで dest の上に置く。grasp_offset は target の中心から見た掴む点。
-    rng を渡すと、掴む点と経由点を少しずらす（デモの多様性のため）。"""
+    grasp_yaw_deg だけ手先を鉛直軸まわりに回してから掴む（開いた指は初期の向きでは y 方向に並ぶ。縁の壁を挟むには、
+    指を掴む点から target の中心へ向かう方向に並べる）。
+    rng を渡すと、経由点をずらし、動作に揺らぎを加える（デモの多様性のため）。"""
 
     def jitter(scale: float, n: int) -> np.ndarray:
         return rng.uniform(-scale, scale, n) if rng is not None else np.zeros(n)
 
-    r = Runner(env, obs, on_step)
+    r = Runner(env, obs, on_step, rng)
+    r.ref_rot = Rotation.from_euler("z", grasp_yaw_deg, degrees=True) * r.ref_rot
     start = body_pos(env, target)
     grasp = start + np.array(grasp_offset) + np.r_[jitter(settings.DEMO_GRASP_JITTER, 2), 0]
     r.go(grasp + [0, 0, settings.SCRIPTED_APPROACH_DZ], OPEN)
-    r.go(grasp, OPEN)
+    # 掴む直前（最後の SCRIPTED_SLOW_DZ）だけ、止まったときに勢いが残らないようにゆっくり下ろす
+    r.go(grasp + [0, 0, settings.SCRIPTED_SLOW_DZ], OPEN)
+    r.go(grasp, OPEN, max_speed=settings.SCRIPTED_SLOW_SPEED)
     r.hold(CLOSE, 15)
     r.go(grasp + [0, 0, settings.SCRIPTED_LIFT_DZ], CLOSE)
     lifted = float(body_pos(env, target)[2] - start[2])
@@ -83,7 +121,8 @@ def pick_and_place(
         r.go(np.r_[np.array([x, y]) + jitter(settings.DEMO_VIA_JITTER, 2), grasp[2] + settings.SCRIPTED_VIA_DZ], CLOSE)
     d = body_pos(env, dest)
     r.go(np.r_[d[:2] + offset, grasp[2] + settings.SCRIPTED_LIFT_DZ], CLOSE)
-    r.go(np.r_[d[:2] + offset, grasp[2] + settings.SCRIPTED_RELEASE_DZ], CLOSE)
+    r.go(np.r_[d[:2] + offset, grasp[2] + settings.SCRIPTED_RELEASE_DZ + settings.SCRIPTED_SLOW_DZ], CLOSE)
+    r.go(np.r_[d[:2] + offset, grasp[2] + settings.SCRIPTED_RELEASE_DZ], CLOSE, max_speed=settings.SCRIPTED_SLOW_SPEED)
     r.hold(OPEN, 15)
     r.go(np.r_[d[:2], grasp[2] + settings.SCRIPTED_VIA_DZ], OPEN, max_steps=30)
     r.hold(OPEN, 20)

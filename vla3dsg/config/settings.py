@@ -63,6 +63,13 @@ CUSTOM_TASK_VIS_MAX_POINTS = 400  # 見え方を測るときに使う対象物�
 
 # スクリプト制御による pick-and-place（demos/scripted.py）。正解の位置へ手先を動かす
 SCRIPTED_GAIN = 25.0  # 手先の位置の誤差（m）に掛けて、移動量の指令（-1〜1）にする
+SCRIPTED_SPEED = 0.8  # 移動の指令の大きさ（3 軸まとめたベクトルの長さ）の上限
+SCRIPTED_SLOW_SPEED = 0.3  # 掴む・置く直前に下ろすときの速さの上限
+SCRIPTED_SLOW_DZ = 0.03  # m。掴む・置く高さのこれだけ上から、ゆっくり下ろす
+SCRIPTED_ACCEL = 0.1  # 移動・回転の指令の 1 ステップあたりの変化量の上限（加速・減速をなめらかにする）
+SCRIPTED_ROT_GAIN = 1.0  # 手先の向きの初期からのずれ（回転ベクトル、rad）に掛けて、回転の指令にする
+SCRIPTED_STALL_STEPS = 10  # このステップ数の間に
+SCRIPTED_STALL_MOVE = 0.002  # m。手先がこれだけしか動かなければ、止まった（物体に当たっている）とみなして次の動作へ進む
 SCRIPTED_TOL = 0.01  # m。各経由点にこれより近づいたら次へ進む
 SCRIPTED_GRASP_OFFSET = (-0.04, 0.0, 0.01)  # m。ボウルの中心から見た掴む点（ロボット側の縁）
 SCRIPTED_APPROACH_DZ = 0.12  # m。掴む点の上のこの高さから下ろす
@@ -79,11 +86,20 @@ DEMO_IMAGE_SIZE = 256  # lerobot/libero と同じ
 DEMO_FPS = 10  # lerobot/libero の表記に合わせる（実際の制御は 20Hz で、1 フレーム = 1 制御ステップ）
 DEMO_GRASP_JITTER = 0.0  # m。掴む点を水平方向にずらす幅（縁を掴む動作はずれに敏感で、0.005 でも半分ほど掴み損ねるため 0）
 DEMO_VIA_JITTER = 0.02  # m。経由点を水平方向にずらす幅
-# タスクごとのスクリプト制御の設定: 掴む物体、置き場所、経由点（世界座標の x, y）、掴む点（省略時は SCRIPTED_GRASP_OFFSET）
+DEMO_MOVE_NOISE = 0.02  # 移動の指令に加える揺らぎ（1 ステップあたりの標準偏差）
+DEMO_ROT_NOISE = 0.01  # 回転の指令に加える揺らぎ
+DEMO_OFFICIAL_DATASET = "lerobot/libero"  # 比べる公式デモ（generate_demos.py --report）
+DEMO_REPORT_N_EPISODES = 20  # 統計に使うエピソード数（各グループ）
+DEMO_REPORT_STALL_MOVE = 0.001  # m。1 ステップの手先の移動がこれ未満なら「止まっている」と数える
+DEMO_NOISE_THETA = 0.1  # 揺らぎが 0 に戻る速さ（オルンシュタイン＝ウーレンベック過程）
+# タスクごとのスクリプト制御の設定: 掴む物体、置き場所、経由点（世界座標の x, y）、掴む点（省略時は SCRIPTED_GRASP_OFFSET）、
+# 掴む前に手先を鉛直軸まわりに回す角度（度）。開いた指は初期の向きでは y 方向に並ぶため、x 方向の縁を掴むときは 90° 回して
+# 指が縁の壁を挟むようにする（回さないと片方の指が縁に乗って下りられず、押し続ける）
 DEMO_TASK_SPECS = {
     "vla3dsg_hidden": {
-        0: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [(-0.25, 0.0)]},  # キャビネットを避けて手前を通る
-        # ボウルがキャビネットのすぐ横にあり、ロボット側の縁ではグリッパーがキャビネットに当たるため、反対側の縁を掴む
+        # ロボット側の縁を掴み、キャビネットを避けて手前を通る（y 方向の縁を掴むと、腕の前腕がキャビネットに当たる）
+        0: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [(-0.25, 0.0)], "grasp_yaw_deg": 90.0},
+        # ボウルがキャビネットのすぐ横にあり、ロボット側の縁ではグリッパーがキャビネットに当たるため、反対側（+y 側）の縁を掴む
         1: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [], "grasp_offset": (0.0, 0.04, 0.01)},
     },
 }

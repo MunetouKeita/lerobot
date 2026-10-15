@@ -1,8 +1,8 @@
 {
-  "dataset": "vla3dsg/data/hidden_cabinet_v1",
+  "dataset": "vla3dsg/data/hidden_cabinet_v2",
   "n_episodes": 100,
-  "n_frames": 18896,
-  "elapsed_s": 790,
+  "n_frames": 16706,
+  "elapsed_s": 758,
   "per_task": [
     {
       "task_id": 0,
@@ -12,9 +12,9 @@
       "rejected_placement": 1,
       "failed": 1,
       "too_long": 0,
-      "steps_min": 269,
-      "steps_max": 279,
-      "n_frames": 13718
+      "steps_min": 183,
+      "steps_max": 202,
+      "n_frames": 9546
     },
     {
       "task_id": 1,
@@ -24,9 +24,9 @@
       "rejected_placement": 0,
       "failed": 0,
       "too_long": 0,
-      "steps_min": 92,
-      "steps_max": 234,
-      "n_frames": 5178
+      "steps_min": 130,
+      "steps_max": 170,
+      "n_frames": 7160
     }
   ]
 }
