@@ -46,6 +46,7 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 | `vla3dsg/visualization/` | 可視化。ロールアウトの動画（`rollout_video.py`: agentview と手首カメラを並べた実時間の動画。各タスク先頭 10 本＋失敗エピソードを保存）と、自作スイートのシーンを 6 視点で描画した画像（`scene_overview.py`） |
 | `vla3dsg/scripts/run_eval.py` | 評価の実行と結果の保存（条件・git 情報つき）。`--annotated-video` で可視化動画を保存 |
 | `vla3dsg/scripts/make_demo_video.py` | デモ動画の作成。各タスク 1 エピソードを等倍で連結し、「指示：<日本語訳>」「成功率：k/n」（全エピソードの結果）のテロップを付ける。`--keep-failures-only` でデモ動画と失敗動画だけを残す |
+| `vla3dsg/scripts/make_comparison_video.py` | 複数の動画をラベル付きで格子状に並べた比較動画を作る（ゼミ・報告用。例: `results/seminar/<日付>/videos/`） |
 | `vla3dsg/scripts/make_custom_task.py` | 既存タスクの物体配置を変えた自作タスクを作る（初期状態の生成、対象物体が隠れているかの計測、確認用の画像）。`--overview` で画像だけを作り直す |
 | `vla3dsg/scripts/generate_demos.py` | 自作タスクのデモをスクリプト制御で自動生成し、LeRobot 形式のデータセット（`lerobot/libero` と同じ観測・動作の形式）に保存する。`--check` で評価の初期状態でスクリプト制御が成功するか（タスクが物理的にできるか）を確かめ、`--report` で生成したデモを公式デモと比べる（動作の統計・グラフ・比較動画） |
 | `vla3dsg/scripts/measure_inference.py` | 推論時間と GPU メモリの計測 |
