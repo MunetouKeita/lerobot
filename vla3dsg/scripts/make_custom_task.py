@@ -39,7 +39,9 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--suite", required=True)
     parser.add_argument("--name", help="タスク名（ファイル名にも使う）")
-    parser.add_argument("--base", help="元のタスク（<スイート>/<タスク名>）")
+    parser.add_argument(
+        "--base", help="元のタスク。LIBERO のタスク（<スイート>/<タスク名>）か、custom_tasks/ からの BDDL のパス（例: vla3dsg_occluded/scene.bddl）"
+    )
     parser.add_argument("--language", help="ポリシーに渡す指示文")
     parser.add_argument("--region", action="append", default=[], help="<領域名>=x_min,y_min,x_max,y_max（複数可）")
     parser.add_argument("--target", help="見え方を測る対象物体（例: akita_black_bowl_1）")
@@ -56,8 +58,11 @@ def main() -> None:
         if getattr(args, required) is None:
             parser.error(f"--{required} が必要")
 
-    base_suite, base_task = args.base.split("/")
-    bddl = (Path(get_libero_path("bddl_files")) / base_suite / f"{base_task}.bddl").read_text()
+    if args.base.endswith(".bddl"):
+        bddl = (settings.CUSTOM_TASKS_DIR / args.base).read_text()
+    else:
+        base_suite, base_task = args.base.split("/")
+        bddl = (Path(get_libero_path("bddl_files")) / base_suite / f"{base_task}.bddl").read_text()
     for spec in args.region:
         region, values = spec.split("=")
         bddl = set_region_range(bddl, region, tuple(float(v) for v in values.split(",")))

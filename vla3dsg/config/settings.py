@@ -89,6 +89,7 @@ DEMO_VIA_JITTER = 0.02  # m。経由点を水平方向にずらす幅
 DEMO_MOVE_NOISE = 0.02  # 移動の指令に加える揺らぎ（1 ステップあたりの標準偏差）
 DEMO_ROT_NOISE = 0.01  # 回転の指令に加える揺らぎ
 DEMO_OFFICIAL_DATASET = "lerobot/libero"  # 比べる公式デモ（generate_demos.py --report）
+DEMO_OFFICIAL_TASK = "libero_spatial/pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate"  # 自作のシーンのタスクと比べる公式デモ
 DEMO_REPORT_N_EPISODES = 20  # 統計に使うエピソード数（各グループ）
 DEMO_REPORT_STALL_MOVE = 0.001  # m。1 ステップの手先の移動がこれ未満なら「止まっている」と数える
 DEMO_NOISE_THETA = 0.1  # 揺らぎが 0 に戻る速さ（オルンシュタイン＝ウーレンベック過程）
@@ -101,6 +102,14 @@ DEMO_TASK_SPECS = {
         0: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [(-0.25, 0.0)], "grasp_yaw_deg": 90.0},
         # ボウルがキャビネットのすぐ横にあり、ロボット側の縁ではグリッパーがキャビネットに当たるため、反対側（+y 側）の縁を掴む
         1: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [], "grasp_offset": (0.0, 0.04, 0.01)},
+    },
+    # 遮る物体を 2 つ（木のキャビネット・電子レンジ）に増やし、場所は SG にだけ書くスイート
+    "vla3dsg_occluded": {
+        0: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [(-0.25, 0.0)], "grasp_yaw_deg": 90.0},  # キャビネットの裏
+        # 電子レンジの裏: 指を x 方向に並べると電子レンジ側の指が壁に近すぎて掴み損ねるため、-y 側の縁を回さずに掴む
+        1: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [(-0.28, 0.05)], "grasp_offset": (0.0, -0.04, 0.01)},
+        2: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [], "grasp_yaw_deg": 90.0},  # キャビネットの横
+        3: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [], "grasp_yaw_deg": 90.0},  # 電子レンジの横
     },
 }
 

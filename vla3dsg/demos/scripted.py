@@ -109,7 +109,10 @@ def pick_and_place(
     r.ref_rot = Rotation.from_euler("z", grasp_yaw_deg, degrees=True) * r.ref_rot
     start = body_pos(env, target)
     grasp = start + np.array(grasp_offset) + np.r_[jitter(settings.DEMO_GRASP_JITTER, 2), 0]
-    r.go(grasp + [0, 0, settings.SCRIPTED_APPROACH_DZ], OPEN)
+    # まず今の高さのまま対象の真上へ動き、それから下ろす（斜めに下りると、背の高い固定物の角に当たることがある）
+    above = grasp + [0, 0, settings.SCRIPTED_APPROACH_DZ]
+    r.go(np.r_[above[:2], max(above[2], r.obs["robot0_eef_pos"][2])], OPEN)
+    r.go(above, OPEN)
     # 掴む直前（最後の SCRIPTED_SLOW_DZ）だけ、止まったときに勢いが残らないようにゆっくり下ろす
     r.go(grasp + [0, 0, settings.SCRIPTED_SLOW_DZ], OPEN)
     r.go(grasp, OPEN, max_speed=settings.SCRIPTED_SLOW_SPEED)

@@ -162,7 +162,12 @@ Phase 4 の結果を受けて詳細化する。
 方針（2026-10-14、ユーザーと合意）: 隠れた物体のデモは、スクリプト制御（`demos/scripted.py`）を広げて自動で作る。データを作る前に、学習が回るかを確かめる。回らなければ、学習だけ RTX A6000 のサーバ（ssh）で行う
 
 - [x] 学習が回るかを確かめる（`results/phase5/train_check/README.md`）。`lerobot/libero` から `MolmoAct2-LIBERO` を LoRA・bf16・勾配チェックポイントで学習し、バッチ 8 で GPU メモリのピーク 29.7GB（32.6GB 中）、1.63 秒/マイクロバッチ。勾配累積・チェックポイントの保存・評価での読み込みも確認。このPCで学習できる（SG で指示文が長くなると余裕が減るため、足りなければバッチを下げるか A6000 を使う）
-- [x] 隠れた物体のデモを自動生成する（`scripts/generate_demos.py`、`vla3dsg/demos/scripted.py`）。`vla3dsg_hidden` の task 0・1 で各 50 本（`data/hidden_cabinet_v2/`、記録と公式デモとの比較は `results/demos/hidden_cabinet_v2/README.md`）。形式は `lerobot/libero` と同じで、学習が回ることを確認。最初の v1 は、掴むときに指が縁に乗って押し続ける区間がエピソードの約半分あったため作り直した
+- [x] スクリプト制御で隠れた物体のデモを自動生成する仕組みを作る（`scripts/generate_demos.py`、`vla3dsg/demos/scripted.py`）。形式は `lerobot/libero` と同じで、学習が回ることを確認。`--report` で公式デモと動作を比べられる。最初のデモ（古いスイート `vla3dsg_hidden` 向け、v1・v2）で、掴むときに指が縁に乗って押し続ける問題を見つけて直した（記録は `results/demos/occluded_v1/README.md` に引き継ぎ、削除）
+- [x] 隠れる場所を増やし、場所は SG にだけ書くスイートを作る（2026-10-15、ユーザーと決定: 遮る物体を増やす、見えているおとりのボウルは残す）。`custom_tasks/vla3dsg_occluded/`: 木のキャビネットと電子レンジの裏（隠れあり 2 タスク）と、それぞれの横（見える 2 タスク）。指示文は全タスク共通の "pick up the black bowl 1 and place it on the plate"
+  - 今までのタスク（`vla3dsg_hidden`）は指示文に場所（behind the wooden cabinet）があり、隠れ場所も 1 か所のため、追加学習すれば SG なしでも解けてしまい、SG の効果を測れないため
+- [x] `vla3dsg_occluded` のデモを各 50 本（計 200 本）生成する（`data/occluded_v1/`、`results/demos/occluded_v1/README.md`）
+- [ ] `vla3dsg_occluded` で、追加学習なしの条件（A・B1〜B3 など）を評価する（追加学習ありと比べる基準）
+- [ ] 学習データの構成を決める（案: `occluded_v1` ＋ 公式の libero_spatial のデモ。SG なし（A）と SG あり（例: B2）の 2 モデル）
 - [ ] 実験1・2: SG テキスト付きの指示文で MolmoAct2 をファインチューニングし、追加学習なしと比較する
 - [ ] 実験3: SG エンコーダーを追加して学習し、テキストで与える場合と比較する
 
@@ -229,3 +234,4 @@ Phase 4 の結果を受けて詳細化する。
 | 2026-10-14 | デモの自動生成 | スクリプト制御を `vla3dsg/demos/` に切り出し（`make_custom_task.py`・`scripted_pick_place.py` も共通の処理を使う。隠れたボウルは引き続き 50/50）。`generate_demos.py` で `vla3dsg_hidden` の task 0・1 を各 50 本、13 分で生成。見えるボウル（task 1）はキャビネットに当たるため反対側の縁を掴む、掴む点のずらしは 0、1 エピソードの指令は 600 ステップで打ち切る（robosuite の horizon を超えるとエラーになるため）。学習の最初の損失は約 1.0（公式デモでは約 0.08） |
 | 2026-10-14 | プログラムとフォルダの整理 | テストを `tests/` に移し、環境まわりの 3 本（`test_libero_env`・`test_libero_vla3dsg_env`・`test_custom_suite`）を `tests/test_envs.py` に統合。`compare_results.py` と `classify_outcomes.py` を `summarize_results.py` に、`scripted_pick_place.py` を `generate_demos.py --check` に統合。自作タスクを作る処理（配置範囲の書き換え・配置のサンプリング・見え方の計測）を `envs/custom_task_builder.py` に、シーンの画像を `visualization/scene_overview.py` にまとめ、`make_custom_task.py` がスイート全体の確認用画像（`previews/overview.png`、6 視点）を作るようにした（タスクごとの 2 視点の画像は削除）。既存の表は統合後も同じ内容になることを確認 |
 | 2026-10-15 | デモを作り直す（v2） | v1 の隠れありのデモは、開いた指が y 方向に並ぶのにロボット側（x 方向）の縁を掴もうとしたため、片方の指が縁に乗って下りられず、約半分のステップで押し続けていた。手先を 90° 回して掴む、止まったら次の動作へ進む、3 軸まとめた速さと指令の変化量の制限、向きの補正と小さな揺らぎ、掴む・置く直前だけゆっくり下ろす、に変更。止まっている割合 51%→6%、長さ 275→191 ステップ、回転の指令は公式デモと同程度。比較は `generate_demos.py --report`。学習の最初の損失は 1.0→0.7（公式デモは 0.08）。v1 のデータと記録は削除 |
+| 2026-10-15 | 隠れ場所 2 つ・場所は SG にだけ書くスイートとデモ | `vla3dsg_occluded`（キャビネットと電子レンジの裏・横の 4 タスク、指示文は共通）を作成。電子レンジの設置面が大きく、皿などが押し出されたため、設置面の範囲を測って配置を決め直した。`make_custom_task.py --base` に自作のシーンの BDDL を指定できるようにした。スクリプト制御は、水平に動いてから下ろす（電子レンジの角に当たるため）、電子レンジの裏は -y 側の縁を掴む（壁が近く 39/50 だったため）に変更し、評価の初期状態で 46〜50/50。デモ 200 本を 29 分で生成。古いスイート向けのデモ（hidden_cabinet_v2）は削除 |

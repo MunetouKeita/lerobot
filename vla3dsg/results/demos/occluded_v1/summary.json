@@ -1,0 +1,56 @@
+{
+  "dataset": "vla3dsg/data/occluded_v1",
+  "n_episodes": 200,
+  "n_frames": 36358,
+  "elapsed_s": 1741,
+  "per_task": [
+    {
+      "task_id": 0,
+      "task": "pick up the black bowl 1 and place it on the plate",
+      "n_episodes": 50,
+      "n_trials": 60,
+      "rejected_placement": 9,
+      "failed": 1,
+      "too_long": 0,
+      "steps_min": 199,
+      "steps_max": 287,
+      "n_frames": 11291
+    },
+    {
+      "task_id": 1,
+      "task": "pick up the black bowl 1 and place it on the plate",
+      "n_episodes": 50,
+      "n_trials": 60,
+      "rejected_placement": 9,
+      "failed": 1,
+      "too_long": 0,
+      "steps_min": 184,
+      "steps_max": 214,
+      "n_frames": 9645
+    },
+    {
+      "task_id": 2,
+      "task": "pick up the black bowl 1 and place it on the plate",
+      "n_episodes": 50,
+      "n_trials": 96,
+      "rejected_placement": 39,
+      "failed": 7,
+      "too_long": 0,
+      "steps_min": 136,
+      "steps_max": 187,
+      "n_frames": 7614
+    },
+    {
+      "task_id": 3,
+      "task": "pick up the black bowl 1 and place it on the plate",
+      "n_episodes": 50,
+      "n_trials": 74,
+      "rejected_placement": 22,
+      "failed": 2,
+      "too_long": 0,
+      "steps_min": 135,
+      "steps_max": 202,
+      "n_frames": 7808
+    }
+  ]
+}

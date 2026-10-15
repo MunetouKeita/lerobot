@@ -272,9 +272,11 @@ def report(args: argparse.Namespace, spec: dict) -> None:
     rows, result = [], {}
     for task_id in args.task_ids:
         task = spec["tasks"][task_id]
-        base_language = task["base"].split("/")[1].replace("_", " ")
+        # 元が LIBERO のタスクならその公式デモ、自作のシーンなら settings.DEMO_OFFICIAL_TASK と比べる
+        base = task["base"] if not task["base"].endswith(".bddl") else settings.DEMO_OFFICIAL_TASK
+        base_language = base.split("/")[1].replace("_", " ")
         groups = {
-            f"official ({task['base']})": (off, off_eps[off_task_index[base_language]][: settings.DEMO_REPORT_N_EPISODES]),
+            f"official ({base})": (off, off_eps[off_task_index[base_language]][: settings.DEMO_REPORT_N_EPISODES]),
             f"generated (task {task_id})": (
                 gen, [e["episode_index"] for e in episodes if e["task_id"] == task_id][: settings.DEMO_REPORT_N_EPISODES]
             ),
