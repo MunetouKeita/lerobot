@@ -1,0 +1,39 @@
+{
+  "out": "results/seminar/2026-10-15/videos/exp2_hidden_vs_visible.mp4",
+  "title": "実験2　ボウルを皿に置く（追加学習なし）",
+  "crop": "agentview",
+  "groups": [
+    {
+      "label": "隠れている（キャビネットの裏）",
+      "color": "#d9480f",
+      "videos": [
+        {
+          "caption": "元の指示文のみ",
+          "result": "失敗",
+          "path": "results/exp2/hidden_cabinet_n20/A/videos/vla3dsg_hidden_0/eval_episode_0.mp4"
+        },
+        {
+          "caption": "＋SG（三つ組）",
+          "result": "失敗",
+          "path": "results/exp2/hidden_cabinet_n20/B2/videos/vla3dsg_hidden_0/eval_episode_0.mp4"
+        }
+      ]
+    },
+    {
+      "label": "見えている（キャビネットの横）",
+      "color": "#2b8a3e",
+      "videos": [
+        {
+          "caption": "元の指示文のみ",
+          "result": "成功",
+          "path": "results/exp2/hidden_cabinet_n20/A/videos/vla3dsg_hidden_1/eval_episode_0.mp4"
+        },
+        {
+          "caption": "＋SG（三つ組）",
+          "result": "成功",
+          "path": "results/exp2/hidden_cabinet_n20/B2/videos/vla3dsg_hidden_1/eval_episode_0.mp4"
+        }
+      ]
+    }
+  ]
+}

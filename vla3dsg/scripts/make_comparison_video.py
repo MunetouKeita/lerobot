@@ -1,15 +1,23 @@
-"""複数の動画を、ラベルを付けて格子状に並べた 1 本の比較動画にする（ゼミ・報告用）。
+"""複数の評価動画を、短いキャプションと結果を付けて横に並べた比較動画にする（ゼミ・報告用）。
 
-短い動画は最後のフレームを止めて、いちばん長い動画に合わせる。ラベルは各動画の上に表示する。
+並べ方はレイアウトの JSON で指定する。動画はまとまり（group）ごとに色付きの枠で囲み、枠の上に見出しを付ける。
+各動画の下にキャプションを付け、動画が終わった時点で結果（成功・失敗。失敗は赤）を表示する。短い動画は最後の
+フレームを止めて、いちばん長い動画に合わせる。
 
-    uv run python vla3dsg/scripts/make_comparison_video.py --out results/seminar/xxx/videos/compare.mp4 --cols 3 \\
-        --title "実験1: libero_spatial task 7 episode 4" --crop agentview \\
-        --video "A 元の指示文のみ（成功）=results/exp1/libero_spatial_n5/A/videos/libero_spatial_7/eval_episode_4.mp4" ...
+    uv run python vla3dsg/scripts/make_comparison_video.py --layout results/seminar/2026-10-15/layouts/exp1.json
 
-パスは vla3dsg/ からの相対パス。--crop agentview は、run_eval.py の動画（左が agentview、右が手首カメラ）の左半分だけを使う。
+レイアウトの例（パスは vla3dsg/ からの相対パス）:
+
+    {"out": "results/seminar/2026-10-15/videos/exp1.mp4", "title": "...", "crop": "agentview",
+     "groups": [{"label": "SG なし", "color": "#555555",
+                 "videos": [{"caption": "元の指示文のみ", "result": "成功", "path": "results/exp1/.../eval_episode_4.mp4"}]}]}
+
+crop が "agentview" のとき、run_eval.py の動画（左が agentview、右が手首カメラ）の左半分だけを使い、上端に焼き込まれた
+カメラ名を切り落とす。
 """
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -20,56 +28,83 @@ import imageio.v3 as iio  # noqa: E402
 import numpy as np  # noqa: E402
 from PIL import Image, ImageDraw, ImageFont  # noqa: E402
 
-LABEL_H = 40
-TITLE_H = 48
+TILE = 320  # 各動画の幅・高さ（px）
+LABEL_CROP = 20  # run_eval.py の動画の上端に焼き込まれたカメラ名の高さ（px）
+GAP, PAD, BORDER = 12, 10, 4  # 動画の間隔、枠の内側の余白、枠の線の太さ
+TITLE_H, GROUP_H, CAPTION_H = 52, 40, 64
+RESULT_COLORS = {"成功": (20, 20, 20), "失敗": (220, 30, 30)}
 
 
-def text_bar(width: int, height: int, text: str, size: int) -> np.ndarray:
-    """白地に黒の 1 行の文字。幅に収まらなければ文字を小さくする。"""
-    im = Image.new("RGB", (width, height), (255, 255, 255))
-    draw = ImageDraw.Draw(im)
-    font = ImageFont.truetype(settings.DEMO_FONT_PATH, size)
-    while size > 10 and draw.textlength(text, font=font) > width - 16:
-        size -= 1
-        font = ImageFont.truetype(settings.DEMO_FONT_PATH, size)
-    draw.text((8, (height - size) // 2 - 2), text, fill=(0, 0, 0), font=font)
-    return np.array(im)
+def font(size: int) -> ImageFont.FreeTypeFont:
+    return ImageFont.truetype(settings.DEMO_FONT_PATH, size)
+
+
+def load(path: str, crop: str) -> list[Image.Image]:
+    frames = iio.imread(settings.VLA3DSG_DIR / path, plugin="pyav")
+    if crop == "agentview":
+        frames = frames[:, LABEL_CROP:, : frames.shape[2] // 2]
+    return [Image.fromarray(f).resize((TILE, TILE)) for f in frames]
+
+
+def centered(draw: ImageDraw.ImageDraw, x0: int, x1: int, y: int, text: str, f: ImageFont.FreeTypeFont, fill) -> None:
+    draw.text(((x0 + x1 - draw.textlength(text, font=f)) / 2, y), text, font=f, fill=fill)
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--out", required=True, help="出力先（vla3dsg/ からの相対パス）")
-    parser.add_argument("--video", action="append", required=True, help="<ラベル>=<動画のパス>（並べる順に複数）")
-    parser.add_argument("--cols", type=int, default=2)
-    parser.add_argument("--title", default="")
-    parser.add_argument("--crop", choices=["none", "agentview"], default="none")
-    parser.add_argument("--fps", type=int, default=settings.LIBERO_CONTROL_FPS)
+    parser.add_argument("--layout", required=True, help="レイアウトの JSON（vla3dsg/ からの相対パス）")
     args = parser.parse_args()
+    layout = json.loads((settings.VLA3DSG_DIR / args.layout).read_text())
 
-    clips = []
-    for spec in args.video:
-        label, path = spec.split("=", 1)
-        frames = iio.imread(settings.VLA3DSG_DIR / path, plugin="pyav")
-        if args.crop == "agentview":
-            frames = frames[:, :, : frames.shape[2] // 2]
-        clips.append((label, frames))
-    h, w = clips[0][1].shape[1:3]
-    n = max(len(f) for _, f in clips)
-    rows = (len(clips) + args.cols - 1) // args.cols
-    labels = [text_bar(w, LABEL_H, label, 20) for label, _ in clips]
-    blank = np.full((h + LABEL_H, w, 3), 255, np.uint8)
-    title = text_bar(w * args.cols, TITLE_H, args.title, 26) if args.title else None
+    groups = [[(v, load(v["path"], layout.get("crop", "none"))) for v in g["videos"]] for g in layout["groups"]]
+    n = max(len(frames) for g in groups for _, frames in g)
 
-    out = settings.VLA3DSG_DIR / args.out
-    out.parent.mkdir(parents=True, exist_ok=True)
+    # 各まとまりの枠の位置
+    boxes, x = [], GAP
+    for g in groups:
+        w = 2 * (PAD + BORDER) + len(g) * TILE + (len(g) - 1) * GAP
+        boxes.append((x, x + w))
+        x += w + GAP
+    width = x
+    title_h = TITLE_H if layout.get("title") else 0
+    top = title_h + GROUP_H
+    height = top + 2 * (PAD + BORDER) + TILE + CAPTION_H + GAP
+
+    # 動画以外の部分（背景・タイトル・枠・見出し・キャプション）
+    base = Image.new("RGB", (width, height), (255, 255, 255))
+    draw = ImageDraw.Draw(base)
+    if layout.get("title"):
+        draw.text((GAP, 10), layout["title"], font=font(28), fill=(0, 0, 0))
+    tile_pos = []
+    for (x0, x1), g, spec in zip(boxes, groups, layout["groups"]):
+        color = spec.get("color", "#555555")
+        draw.rectangle([x0, top, x1 - 1, height - GAP - 1], outline=color, width=BORDER)
+        centered(draw, x0, x1, title_h + 4, spec["label"], font(26), color)
+        for i, (v, _) in enumerate(g):
+            tx = x0 + BORDER + PAD + i * (TILE + GAP)
+            ty = top + BORDER + PAD
+            tile_pos.append((tx, ty))
+            centered(draw, tx, tx + TILE, ty + TILE + 6, v["caption"], font(24), (0, 0, 0))
+
+    clips = [c for g in groups for c in g]
     video = []
     for t in range(n):
-        tiles = [np.concatenate([labels[i], np.asarray(Image.fromarray(f[min(t, len(f) - 1)]).resize((w, h)))], 0) for i, (_, f) in enumerate(clips)]
-        tiles += [blank] * (rows * args.cols - len(tiles))
-        grid = np.concatenate([np.concatenate(tiles[r * args.cols : (r + 1) * args.cols], 1) for r in range(rows)], 0)
-        video.append(np.concatenate([title, grid], 0) if title is not None else grid)
-    iio.imwrite(out, np.stack(video), fps=args.fps, codec="libx264", plugin="pyav")
-    print(f"saved: {out}（{n} フレーム、{len(clips)} 本）")
+        frame = base.copy()
+        d = ImageDraw.Draw(frame)
+        for (tx, ty), (v, frames) in zip(tile_pos, clips):
+            frame.paste(frames[min(t, len(frames) - 1)], (tx, ty))
+            if t >= len(frames) - 1:  # 動画が終わったら結果を出す
+                centered(d, tx, tx + TILE, ty + TILE + 34, v["result"], font(24), RESULT_COLORS[v["result"]])
+        video.append(np.asarray(frame))
+    for _ in range(int(settings.LIBERO_CONTROL_FPS * layout.get("hold_last_s", 2.0))):
+        video.append(video[-1])
+
+    out = settings.VLA3DSG_DIR / layout["out"]
+    out.parent.mkdir(parents=True, exist_ok=True)
+    # libx264 は幅・高さが偶数である必要がある
+    arr = np.stack(video)[:, : height // 2 * 2, : width // 2 * 2]
+    iio.imwrite(out, arr, fps=settings.LIBERO_CONTROL_FPS, codec="libx264", plugin="pyav")
+    print(f"saved: {out}（{len(video)} フレーム、{len(clips)} 本）")
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 # ゼミ報告（2026-10-15）: VLA×3DSG の進捗
 
-モデルは MolmoAct2（LIBERO 向けにファインチューニング済みの `allenai/MolmoAct2-LIBERO`）。ここまではすべて **追加学習なし**（ゼロショット）。動画は `videos/`（git 管理外。`scripts/make_comparison_video.py` で作成）。
+モデルは MolmoAct2（LIBERO 向けにファインチューニング済みの `allenai/MolmoAct2-LIBERO`）。ここまではすべて **追加学習なし**（ゼロショット）。動画は `videos/`（git 管理外）。実験1・2 の比較動画は `layouts/*.json` の並べ方で `scripts/make_comparison_video.py --layout <JSON>` から作り直せる（agentview のみ、キャプションと結果つき、失敗は赤）。
 
 ## 1. 環境を変えずに、関係性を言語指示に加えた結果（実験1）
 
@@ -45,7 +45,7 @@
 
 ### 動画
 
-- `videos/1_exp1_conditions_task7_ep4.mp4`: 同じエピソード（task 7 episode 4）を 6 条件で並べた比較。A・C・D は成功し、正しい SG を加えた B1〜B3 は失敗する
+- `videos/exp1_conditions.mp4`（`layouts/exp1.json`）: 同じエピソード（task 7 episode 4）を 6 条件で並べた比較。「SG なし」「SG あり」「対照」を枠で分けた。元の指示文のみ・対照は成功し、正しい SG を加えた 3 条件は失敗する
 - 各条件の全エピソード: `results/exp1/libero_spatial_n5/<条件>/videos/`
 
 ## 2. 環境の作成方法
@@ -107,8 +107,8 @@
 
 ### 動画
 
-- `videos/3_exp2_hidden_vs_visible.mp4`: 隠れ／見える × SG なし／あり。隠れでは SG があっても見えている方のボウルを置き、見えれば SG の有無によらず成功する
-- `videos/3_hidden_policy_vs_scripted.mp4`: 同じ隠れたボウルを、MolmoAct2（失敗）とスクリプト制御（成功）で比べたもの
+- `videos/exp2_hidden_vs_visible.mp4`（`layouts/exp2.json`）: 「隠れている」「見えている」を枠で分け、それぞれ元の指示文のみ・＋SG（三つ組）。隠れていると SG があっても見えている方のボウルを置き、見えていれば SG の有無によらず成功する
+- `videos/exp2_policy_vs_scripted.mp4`（`layouts/exp2_scripted.json`）: 同じ隠れたボウルを、MolmoAct2（失敗）とスクリプト制御（成功）で比べたもの
 
 ## まとめと次の予定
 

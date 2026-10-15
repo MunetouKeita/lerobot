@@ -1,0 +1,23 @@
+{
+  "out": "results/seminar/2026-10-15/videos/exp2_policy_vs_scripted.mp4",
+  "title": "実験2　隠れたボウルは物理的には掴める",
+  "crop": "agentview",
+  "groups": [
+    {
+      "label": "隠れている（キャビネットの裏）",
+      "color": "#d9480f",
+      "videos": [
+        {
+          "caption": "MolmoAct2",
+          "result": "失敗",
+          "path": "results/exp2/hidden_cabinet_n20/A/videos/vla3dsg_hidden_0/eval_episode_0.mp4"
+        },
+        {
+          "caption": "スクリプト制御",
+          "result": "成功",
+          "path": "results/phase4/scripted_hidden_cabinet/videos/episode_0.mp4"
+        }
+      ]
+    }
+  ]
+}

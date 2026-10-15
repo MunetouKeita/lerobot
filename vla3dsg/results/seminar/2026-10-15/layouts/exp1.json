@@ -1,0 +1,55 @@
+{
+  "out": "results/seminar/2026-10-15/videos/exp1_conditions.mp4",
+  "title": "実験1　指示「コンロの上のボウルを皿に置く」に、場面の関係性（SG）を加える",
+  "crop": "agentview",
+  "groups": [
+    {
+      "label": "SG なし",
+      "color": "#444444",
+      "videos": [
+        {
+          "caption": "元の指示文のみ",
+          "result": "成功",
+          "path": "results/exp1/libero_spatial_n5/A/videos/libero_spatial_7/eval_episode_4.mp4"
+        }
+      ]
+    },
+    {
+      "label": "SG あり",
+      "color": "#1f5fbf",
+      "videos": [
+        {
+          "caption": "＋SG（JSON）",
+          "result": "失敗",
+          "path": "results/exp1/libero_spatial_n5/B1/videos/libero_spatial_7/eval_episode_4.mp4"
+        },
+        {
+          "caption": "＋SG（三つ組）",
+          "result": "失敗",
+          "path": "results/exp1/libero_spatial_n5/B2/videos/libero_spatial_7/eval_episode_4.mp4"
+        },
+        {
+          "caption": "＋SG（自然文）",
+          "result": "失敗",
+          "path": "results/exp1/libero_spatial_n5/B3/videos/libero_spatial_7/eval_episode_4.mp4"
+        }
+      ]
+    },
+    {
+      "label": "対照",
+      "color": "#888888",
+      "videos": [
+        {
+          "caption": "＋無関係な文",
+          "result": "成功",
+          "path": "results/exp1/libero_spatial_n5/C/videos/libero_spatial_7/eval_episode_4.mp4"
+        },
+        {
+          "caption": "＋誤った SG",
+          "result": "成功",
+          "path": "results/exp1/libero_spatial_n5/D/videos/libero_spatial_7/eval_episode_4.mp4"
+        }
+      ]
+    }
+  ]
+}
