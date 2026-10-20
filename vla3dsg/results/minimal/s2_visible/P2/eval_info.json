@@ -1,0 +1,200 @@
+{
+  "per_task": [
+    {
+      "task_group": "vla3dsg_occluded",
+      "task_id": 2,
+      "metrics": {
+        "sum_rewards": [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        "max_rewards": [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        "successes": [
+          false,
+          false,
+          true,
+          false,
+          true,
+          false,
+          false,
+          false,
+          true,
+          false
+        ],
+        "video_paths": [
+          "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_0.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_1.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_2.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_3.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_4.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_5.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_6.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_7.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_8.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_9.mp4"
+        ],
+        "predicted_video_paths": []
+      },
+      "n_episodes": 10,
+      "n_success": 3,
+      "pc_success": 30.0,
+      "pc_success_ci95": [
+        10.779126740630101,
+        60.322185253885465
+      ]
+    },
+    {
+      "task_group": "vla3dsg_occluded",
+      "task_id": 3,
+      "metrics": {
+        "sum_rewards": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "max_rewards": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "successes": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "video_paths": [
+          "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_0.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_1.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_2.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_3.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_4.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_5.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_6.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_7.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_8.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_9.mp4"
+        ],
+        "predicted_video_paths": []
+      },
+      "n_episodes": 10,
+      "n_success": 0,
+      "pc_success": 0.0,
+      "pc_success_ci95": [
+        2.7755575615628914e-15,
+        27.753279986288916
+      ]
+    }
+  ],
+  "per_group": {
+    "vla3dsg_occluded": {
+      "avg_sum_reward": 0.15,
+      "avg_max_reward": 0.15,
+      "pc_success": 15.0,
+      "n_episodes": 20,
+      "n_success": 3,
+      "pc_success_ci95": [
+        5.236874589621659,
+        36.04188647407569
+      ],
+      "video_paths": [
+        "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_0.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_1.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_2.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_3.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_4.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_5.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_6.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_7.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_8.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_9.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_0.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_1.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_2.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_3.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_4.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_5.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_6.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_7.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_8.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_9.mp4"
+      ],
+      "predicted_video_paths": []
+    }
+  },
+  "overall": {
+    "avg_sum_reward": 0.15,
+    "avg_max_reward": 0.15,
+    "pc_success": 15.0,
+    "n_episodes": 20,
+    "n_success": 3,
+    "pc_success_ci95": [
+      5.236874589621659,
+      36.04188647407569
+    ],
+    "eval_s": 555.8421740531921,
+    "eval_ep_s": 27.792108714580536,
+    "video_paths": [
+      "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_0.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_1.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_2.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_3.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_4.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_5.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_6.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_7.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_8.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_2/eval_episode_9.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_0.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_1.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_2.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_3.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_4.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_5.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_6.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_7.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_8.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/minimal/s2_visible/P2/videos/vla3dsg_occluded_3/eval_episode_9.mp4"
+    ],
+    "predicted_video_paths": []
+  }
+}
