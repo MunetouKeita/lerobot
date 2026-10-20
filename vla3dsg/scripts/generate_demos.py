@@ -15,7 +15,7 @@ SG を加えた指示文のデータセットは後から作る。
 --check を付けると、データセットは作らず、評価の初期状態（.pruned_init）でスクリプト制御が成功するか（タスクが
 物理的にできるか）を確かめる。結果は results/<name>/（summary.json、videos/ に各タスクの先頭 --n-video 本の動画）。
 
-    uv run python vla3dsg/scripts/generate_demos.py --check --name phase4/scripted_hidden_cabinet --suite vla3dsg_hidden --task-ids 0
+    uv run python vla3dsg/scripts/generate_demos.py --check --name analysis/scripted_hidden_cabinet --suite vla3dsg_hidden --task-ids 0
 
 --report を付けると、生成済みのデータセット data/<name>/ を LIBERO の公式デモ（lerobot/libero の同じ元タスク）と比べる。
 動作の統計（report.json）、1 エピソードずつの動作の指令のグラフ（actions_vs_official.png）、縦に並べた比較動画

@@ -3,6 +3,8 @@
 from dataclasses import dataclass
 from typing import Any
 
+import draccus
+
 from lerobot.envs.configs import EnvConfig, LiberoEnv
 
 from vla3dsg.config import settings
@@ -32,3 +34,19 @@ class LiberoVla3dsgEnv(LiberoEnv):
         kwargs = super().gym_kwargs
         kwargs["num_steps_wait"] = self.num_steps_wait
         return kwargs
+
+
+@dataclass
+class _Wrapper:
+    env: EnvConfig
+
+
+def parse_config(suite: str, *args: str) -> EnvConfig:
+    """lerobot-eval の --env.* と同じく解析した環境設定（args は "task_ids=[0]" のような --env. の後ろの部分）。"""
+    argv = ["--env.type=libero_vla3dsg", f"--env.task={suite}", *(f"--env.{a}" for a in args)]
+    return draccus.parse(_Wrapper, args=argv).env
+
+
+def make_env(suite: str, task_id: int, *args: str) -> Any:
+    """1 タスク・1 並列の環境（gymnasium の VectorEnv）。テストや確認用。"""
+    return parse_config(suite, f"task_ids=[{task_id}]", *args).create_envs(n_envs=1, use_async_envs=False)[suite][task_id]

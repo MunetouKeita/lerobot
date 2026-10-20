@@ -13,7 +13,6 @@ import argparse
 import json
 import sys
 import time
-from dataclasses import dataclass
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -21,7 +20,6 @@ from vla3dsg.config import settings  # noqa: E402
 
 settings.apply_runtime_env()
 
-import draccus  # noqa: E402
 import numpy as np  # noqa: E402
 from libero.libero import benchmark  # noqa: E402
 from PIL import Image  # noqa: E402
@@ -30,22 +28,12 @@ from lerobot.configs.parser import load_plugin  # noqa: E402
 from lerobot.envs.configs import EnvConfig, LiberoEnv  # noqa: E402
 from lerobot.envs.libero import get_libero_dummy_action  # noqa: E402
 
+from vla3dsg.envs.libero_vla3dsg import make_env, parse_config  # noqa: E402
 from vla3dsg.scene_graph import textify  # noqa: E402
 from vla3dsg.scene_graph.builder import build_scene_graph  # noqa: E402
 
 N_STEPS = 20
 OUT_DIR = settings.TMP_DIR / "test_envs"
-
-
-@dataclass
-class _Wrapper:
-    env: EnvConfig
-
-
-def parse_env(suite: str, *args: str) -> EnvConfig:
-    # lerobot-eval の --env.* と同じく、親の設定のフィールドとして解析する
-    argv = ["--env.type=libero_vla3dsg", f"--env.task={suite}", *(f"--env.{a}" for a in args)]
-    return draccus.parse(_Wrapper, args=argv).env
 
 
 def save_image(img: np.ndarray, path: Path) -> None:
@@ -94,17 +82,15 @@ def check_rendering(suite: str, task_id: int) -> None:
 
 def check_env_type(suite: str, task_id: int) -> None:
     assert "libero_vla3dsg" in EnvConfig.get_known_choices()
-    cfg = parse_env(suite, f"task_ids=[{task_id}]")
+    cfg = parse_config(suite, f"task_ids=[{task_id}]")
     assert cfg.num_steps_wait == settings.LIBERO_NUM_STEPS_WAIT
     assert cfg.gym_kwargs["num_steps_wait"] == settings.LIBERO_NUM_STEPS_WAIT
-    assert parse_env(suite, "num_steps_wait=10").num_steps_wait == 10
+    assert parse_config(suite, "num_steps_wait=10").num_steps_wait == 10
 
     # 環境まで値が届き、待ちステップを増やすと reset 直後の動きが小さくなること
     speeds = {}
     for n in (10, settings.LIBERO_NUM_STEPS_WAIT):
-        vec_env = parse_env(suite, f"task_ids=[{task_id}]", f"num_steps_wait={n}").create_envs(
-            n_envs=1, use_async_envs=False
-        )[suite][task_id]
+        vec_env = make_env(suite, task_id, f"num_steps_wait={n}")
         vec_env.reset(seed=settings.SEED)
         inner = vec_env.envs[0]
         assert inner.num_steps_wait == n, f"env.num_steps_wait={inner.num_steps_wait}, expected {n}"
@@ -119,7 +105,7 @@ def check_custom_suite(suite: str) -> None:
     assert suite in benchmark.get_benchmark_dict(), "自作スイートが登録されていない"
     spec = json.loads((settings.CUSTOM_TASKS_DIR / suite / "tasks.json").read_text())
     for task_id, task in enumerate(spec["tasks"]):
-        cfg = parse_env(suite, f"task_ids=[{task_id}]")
+        cfg = parse_config(suite, f"task_ids=[{task_id}]")
         assert cfg.episode_length == spec["max_steps"], cfg.episode_length
         vec_env = cfg.create_envs(n_envs=1, use_async_envs=False)[suite][task_id]
         inner = vec_env.envs[0]

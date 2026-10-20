@@ -3,9 +3,9 @@
 - 日時: 2026-10-07
 - 実行:
   ```bash
-  uv run python vla3dsg/scripts/run_eval.py --name samples/four_suites_t0_t5_n20 \
+  uv run python vla3dsg/scripts/run_eval.py --name baseline/demo_video \
       --suite libero_spatial,libero_object,libero_goal,libero_10 --task-ids 0 5 --n-episodes 20 --annotated-video
-  uv run python vla3dsg/scripts/make_demo_video.py --name samples/four_suites_t0_t5_n20 --keep-failures-only
+  uv run python vla3dsg/scripts/make_demo_video.py --name baseline/demo_video --keep-failures-only
   ```
 - 条件: `conditions.json`（チェックポイント `allenai/MolmoAct2-LIBERO`、float32、`num_steps_wait=50`、シード 1000、元のタスク指示のみ）
 - コミット: 実行時は `4feca8b0` に動画保存の変更（先頭 10 本＋失敗）が未コミットで乗った状態（`conditions.json` の `dirty: true`）。変更は本結果と同じコミットで追加

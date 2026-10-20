@@ -2,7 +2,7 @@
 
 - 日時: 2026-10-14
 - コミット: `3004e9d8`
-- 目的: 追加学習（Phase 5）を、このPC（RTX 5090、VRAM 32GB）で行えるかを確かめる。回らなければ RTX A6000 のサーバで学習だけ行う予定だった
+- 目的: 追加学習を、このPC（RTX 5090、VRAM 32GB）で行えるかを確かめる。回らなければ RTX A6000 のサーバで学習だけ行う予定だった
 - データ: `lerobot/libero`（LIBERO 4 スイートの公式デモを LeRobot v3.0 形式にしたもの。1693 エピソード、1.9GB、10fps）
 - 初期の重み: `allenai/MolmoAct2-LIBERO`（`--policy.checkpoint_path`）
 - 設定（`train_config.json`）: LoRA（VLM、rank 64）＋アクションエキスパートは全パラメータ、bf16、勾配チェックポイント、`num_flow_timesteps=8`、画像の拡張あり、`compile_model=false`。学習するパラメータは 7.4 億（全体 56 億）

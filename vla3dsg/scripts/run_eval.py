@@ -5,7 +5,7 @@ lerobot-eval の出力先も results/<name>/ にする（eval_info.json と vide
 
     uv run python vla3dsg/scripts/run_eval.py --name baseline/all40_n5 --suite libero_spatial,libero_object,libero_goal,libero_10 \
         --task-ids 0 1 2 3 4 5 6 7 8 9 --n-episodes 5 --annotated-video
-    uv run python vla3dsg/scripts/run_eval.py --name samples/all_suites --suite libero_spatial,libero_goal \
+    uv run python vla3dsg/scripts/run_eval.py --name baseline/xxx --suite libero_spatial,libero_goal \
         --task-ids 0 5 --n-episodes 2 --annotated-video
 """
 

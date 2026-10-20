@@ -6,7 +6,7 @@
 
 run_eval.py の結果（results/<name>/summary.json と results/<name>/videos/）を使う。
 
-    uv run python vla3dsg/scripts/make_demo_video.py --name samples/four_suites_t0_t5_n2
+    uv run python vla3dsg/scripts/make_demo_video.py --name baseline/demo_video
 """
 
 import argparse
