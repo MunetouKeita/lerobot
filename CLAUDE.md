@@ -15,7 +15,7 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 ## 大きな方針
 
 1. LIBERO環境を構築し、MolmoAct2（LIBERO向けファインチューニング済みモデル）が動くことを確認する
-2. SG の与え方と環境を変えた次の 3 つの実験を、追加学習なし（ゼロショット）とありで比較する。まず追加学習なしで色々な条件を比較する（詳細は `progress_management.md` の「実験の方針」）
+2. SG の与え方と環境を変えた次の 3 つの実験を、追加学習なし（ゼロショット）とありで比較する。まず追加学習なしで色々な条件を比較する（詳細は `progress_management.md` の「現在の設計方針」）
    - 実験1: 環境は変えず、SG のような関係性を JSON・テキストにして指示文に加える
    - 実験2: 隠れた物体のあるシーンに環境を変え、SG をテキストで加える
    - 実験3: テキストではなく、SG エンコーダーを追加して入力する（学習なしでは意味をなさないため、追加学習ありのみ）
@@ -38,7 +38,7 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 | `vla3dsg/config/settings.py` | 設定値（パス、シード、チェックポイント、評価引数 `molmoact2_eval_args` など）の一元管理 |
 | `vla3dsg/config/instructions_ja.py` | LIBERO の指示文の日本語訳（デモ動画のテロップ用） |
 | `vla3dsg/config/object_names.py` | SG のノード名に使う物体の読みやすい名前 |
-| `vla3dsg/scene_graph/` | シミュレータの状態から正解の SG を作る（`builder.py`）、テキスト化と対照条件（`textify.py`） |
+| `vla3dsg/scene_graph/` | シミュレータの状態から正解の SG を作る（`builder.py`: 全物体どうしの関係、`relevant.py`: 掴む対象を同じ種類の別の物体と見分ける最小の関係だけの小さな SG）、テキスト化と対照条件（`textify.py`） |
 | `vla3dsg/prompting/` | プロンプト条件に従ってエピソードごとに指示文を差し替える（`prompt_condition.py`） |
 | `vla3dsg/envs/` | `lerobot-eval` にプラグインとして読み込ませる環境設定（環境タイプ `libero_vla3dsg`）、自作スイートの登録（`custom_suites.py`）、自作タスクを作る処理（`custom_task_builder.py`: 配置範囲の書き換え・配置のサンプリング・見え方の計測） |
 | `vla3dsg/custom_tasks/<スイート>/` | 自作タスク（BDDL・初期状態 `.pruned_init`・`tasks.json`・確認用の画像 `previews/overview.png`）。`tasks.json` のあるフォルダは `--suite <スイート>` で評価できる |
@@ -59,7 +59,7 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 | `vla3dsg/progress_management.md` | 詳細計画と進捗 |
 
 - カスタムシーンの登録やプロンプト改変は、`vla3dsg/` 側のコード（ラッパー、`ProcessorStep` の追加、LIBEROへのベンチマーク登録処理など）で実現する
-- やむを得ず `src/lerobot/` を変更する場合は、理由と差分を `progress_management.md` の作業ログに記録する
+- やむを得ず `src/lerobot/` を変更する場合は、理由と差分を `progress_management.md` の作業記録に残す
 - ブランチ: 作業は `vla3dsg` ブランチで行い、`main` は upstream（`huggingface/lerobot`）の追従用にする。remote は `origin`（フォーク）と `upstream`（本家）
   - upstream の取り込み: `git fetch upstream` → `main` を `upstream/main` に早送りして `origin` に push → `vla3dsg` を `main` にリベース → `uv sync` とテスト・1 エピソード評価で動作確認
 - 使用した LeRobot のコミットを記録する。このファイルは upstream の `CLAUDE.md`（`AGENTS.md` へのシンボリックリンク）を通常ファイルで置き換えているため、upstream を取り込むと競合しうる。その場合は `AGENTS.md` 側の更新内容を確認して反映する
@@ -104,7 +104,7 @@ export MKL_NUM_THREADS=1
 
 ### 学習サーバ（RTX 6000 Ada）
 
-追加学習はこのPCでも回るが（`vla3dsg/results/phase5/train_check/`）、長い学習は学習サーバで行い、このPCは評価とデータ作りに使う。
+追加学習はこのPCでも回るが（`vla3dsg/results/training/train_check/`）、長い学習は学習サーバで行い、このPCは評価とデータ作りに使う。
 
 | 項目 | 内容 |
 |---|---|
@@ -131,12 +131,12 @@ git lfs install && git lfs pull                     # LeRobot のテスト用ア
 ```bash
 uv run python vla3dsg/tests/test_<対象>.py          # 本研究のモジュールテスト
 uv run python vla3dsg/scripts/run_eval.py --name baseline/xxx --suite libero_goal --n-episodes 5   # 評価（結果は results/<name>/）
-uv run python vla3dsg/scripts/run_eval.py --name samples/xxx --suite libero_spatial,libero_goal --task-ids 0 5 --n-episodes 20 --annotated-video
-uv run python vla3dsg/scripts/run_eval.py --name exp1/xxx/B1 --suite libero_spatial --n-episodes 5 --prompt-condition B1 --annotated-video   # プロンプト条件（A・B1〜B3・C・D、切り分け用の L0・L1。settings.PROMPT_CONDITIONS）
-uv run python vla3dsg/scripts/make_custom_task.py --suite vla3dsg_hidden --name <タスク名> --base libero_spatial/<元のタスク名> --language "<指示文>" --region <領域名>=x0,y0,x1,y1 --target <物体> --occluder <遮る物体>   # 自作タスク（--preview で 1 件だけ tmp/ に試作）
+uv run python vla3dsg/scripts/run_eval.py --name baseline/xxx --suite libero_spatial,libero_goal --task-ids 0 5 --n-episodes 20 --annotated-video
+uv run python vla3dsg/scripts/run_eval.py --name exp1/xxx/B1 --suite libero_spatial --n-episodes 5 --prompt-condition B1 --annotated-video   # プロンプト条件（A・B1〜B3・C・D、切り分け用の L0・L1、最小の実験の P1〜P5・P3h。settings.PROMPT_CONDITIONS）
+uv run python vla3dsg/scripts/make_custom_task.py --suite vla3dsg_hidden --name <タスク名> --base libero_spatial/<元のタスク名> --language "<指示文>" --region <領域名>=x0,y0,x1,y1 --target <物体> --occluder <遮る物体>   # 自作タスク（--preview で 1 件だけ tmp/ に試作。--remove-object で物体を除き、--location-language で場所を書いた指示文を持たせる）
 uv run python vla3dsg/scripts/generate_demos.py --name <名前> --suite vla3dsg_hidden --task-ids 0 1 --n-episodes 50   # デモの自動生成（タスクごとの設定は settings.DEMO_TASK_SPECS）
 uv run python vla3dsg/scripts/summarize_results.py --root exp1/xxx --names A B1 B2 B3 C D   # 条件の比較表（<root>/comparison.md・outcomes.md）
-uv run python vla3dsg/scripts/make_demo_video.py --name samples/xxx --keep-failures-only   # デモ動画（results/<name>/videos/demo_with_captions.mp4）と失敗動画だけを残す
+uv run python vla3dsg/scripts/make_demo_video.py --name baseline/xxx --keep-failures-only   # デモ動画（results/<name>/videos/demo_with_captions.mp4）と失敗動画だけを残す
 uv run pytest tests -svv --maxfail=10               # LeRobot 本体のテスト（本体を変更した場合）
 pre-commit run --all-files                          # Lint・フォーマット（ruff、typos、bandit など）
 ```
@@ -166,16 +166,14 @@ pre-commit run --all-files                          # Lint・フォーマット�
 
 本研究のコード（`vla3dsg/`）:
 
-- 設定値は `vla3dsg/config/settings.py` に一元管理する
-- コメントは日本語で、最低限必要なものだけ簡潔に書く
-- モジュールなど小さなまとまりごとに `vla3dsg/tests/test_<対象>.py` でテストしてから評価パイプラインに組み込む
-- 評価は `vla3dsg/scripts/run_eval.py` で行い、結果は条件（チェックポイント、スイート、タスクID、シード、プロンプト条件、git コミット）とともに `vla3dsg/results/<名前>/` に保存して再現できるようにする。同じ名前の結果は上書きしない
+- 設定値は `vla3dsg/config/settings.py` にまとめ、スクリプトからは `from vla3dsg.config import settings` で参照する（`vla3dsg` はパッケージとして扱う）
+- テストは `vla3dsg/tests/test_<対象>.py` に置く
+- 評価は `vla3dsg/scripts/run_eval.py` で行い、結果は条件（チェックポイント、スイート、タスクID、シード、プロンプト条件、git コミット）とともに `vla3dsg/results/<名前>/` に保存する
 - 評価結果は成功率だけでなく、動画で確認できるように保存する（`run_eval.py --annotated-video`。各タスク先頭 10 本＋失敗エピソード。動画は `results/<名前>/videos/`）
 - LIBERO評価では `policy.per_episode_seed=true` と `policy.eval_seed` を使い、シードを固定する
 - LIBERO評価では環境タイプ `libero_vla3dsg` を使う（`num_steps_wait` の既定値が 50。MolmoAct2 の報告値と同じ条件）。リポジトリのルートで次のように指定する
   - `run_eval.py` はこの指定を自動で行う。`lerobot-eval` を直接使う場合は `PYTHONPATH=. uv run lerobot-eval --env.discover_packages_path=vla3dsg.envs --env.type=libero_vla3dsg ...`
 - 評価では MolmoAct2 の指示文の正規化を切り（`--policy.normalize_language=false`）、元の指示文だけを `prompting/prompt_condition.py` で正規化する。SG のテキスト（JSON の括弧など）を壊さないため。系列長の上限も `--policy.max_sequence_length=1024` に広げる（`settings.molmoact2_eval_args` で自動）
-- `vla3dsg` はパッケージとして扱う。スクリプトからは `from vla3dsg.config import settings` で import する
 - LeRobot の import は絶対 import（`from lerobot.module import X`）を使う
 
 LeRobot 本体（`src/lerobot/`）を変更する場合は、公式のルールに従う:
@@ -184,11 +182,59 @@ LeRobot 本体（`src/lerobot/`）を変更する場合は、公式のルール�
 - import はトップレベルで行う。同じモジュール内の兄弟ファイル間は相対 import、モジュールをまたぐ場合は絶対 import
 - オプション依存は、モジュール先頭で `TYPE_CHECKING or _foo_available` によりガードし、使用時に `require_package(...)` で確認する。`utils/import_utils.py` の `_foo_available` フラグを再利用し、`is_package_available` は呼ばない
 
-共通:
+## 共通の方針
 
-- 不明点や方針に関わる判断は、勝手に決めずに確認を求めること
-- 作業の区切りごとに `vla3dsg/progress_management.md` のチェックボックスと作業ログを更新すること
-- コミットメッセージや PR の説明に、Claude が作業したことを示す内容（`Co-Authored-By: Claude` など）を含めない
+他のプロジェクトでも共通の方針。このリポジトリでの具体的な場所やコマンドは、上の各節を参照する。
+
+### 安全と影響範囲
+
+- 違法行為は行わない
+- 共有サーバの他のユーザーや、PC 内の他のプロジェクトに影響する可能性のある作業は、事前にユーザーの許可を得る（例: 他のユーザー・他のプロジェクトのプロセスを止める、共有の設定・ディレクトリを変える、sudo を使う、GPU を多く使う）
+
+### 設定の一元管理
+
+- パス、モデル名、しきい値、接続情報などの設定値は `config/settings.py` に一元的にまとめる（このリポジトリでは `vla3dsg/config/settings.py`）
+- モジュールやスクリプトに設定値を直接書かず、settings から参照する
+- 接続情報などの秘匿情報は `.env` から読み込む（`.env` は git 管理外）
+
+### コメント
+
+- コメントは日本語で、簡単に書く
+- 処理の意図が分かりにくい箇所にだけ付け、コードを読めば分かることは書かない
+
+### 変更の進め方
+
+- 不明点や方針に関わる判断は、勝手に決めずに確認を求める
+- 既存モジュールの大きな変更や設計の変更は、方針をユーザーに相談してから行う
+- フォルダ構成やファイル名の変更は、案を示して確認を取ってから行う
+- 時間のかかる実験や新しい検証は、目的・方法・所要時間の見込みを示した計画を立ててから進める
+- フォルダ構成や実験設定は、なるべくシンプルにする。実験は、条件を変えながら何度も行うより、複数の条件をまとめた少ない回数の実験にする。複雑になる場合は数回の実験に分けてもよいが、上位互換となる実験や結果が得られたら、古いほうは削除する
+- モジュールなど小さなまとまりごとにテストしてから、全体の処理に組み込む
+- 実験結果は条件（設定・データ・シード・git のコミットなど）とともに保存し、再現できるようにする。同じ名前の結果は上書きしない
+
+### Git
+
+- コミットは内容ごと（コード、ドキュメント、整理など）に分け、メッセージは既存に合わせて日本語の `feat:` / `fix:` / `docs:` / `chore:` 形式にする（このリポジトリでは `feat(vla3dsg): ...` のようにスコープを付ける）
+- コミットや push は、ユーザーに指示されたときだけ行う
+- コミットメッセージや PR に、Claude を共同制作者として書かない（`Co-Authored-By: Claude ...` や「Generated with Claude Code」などの行を付けない）
+
+### ドキュメント（進捗管理）のまとめ方
+
+- 進捗管理のファイルは、このリポジトリでは `vla3dsg/progress_management.md`。作業の区切りごとにチェックボックスと作業記録を更新する
+- CLAUDE.md には進捗に依存しない情報だけを書き、方針・進捗・実験結果は進捗管理のファイルに書く
+- 実験結果は、大きなまとまりごと（例: 抽出、翻訳、描画）に分け、各実験を「概要、目的、結果、読み取れること」の順に書く
+- 上位互換の実験やデータが得られたら、古いほうの表や記述は削除する。重複する表はまとめ、方針や決定事項以外の重要度が低い記録は圧縮する
+- 解決した課題は、概要とユーザーの方針（決定事項）だけを残し、そこに至るまでの不要な過程（試行錯誤、途中の数値など）は削除する。ただし、どうしてそうしたか（判断の理由）と、今後課題になりそうな検証結果（うまくいかなかった方法とその原因、残っている制約など）は消さない
+- 専門用語には「用語の補足」の ※ を付ける
+- 日付ごとの作業記録は、1 日 1 行の表にまとめる
+- 背景を知らない人にも分かる書き方にする
+
+### コミュニケーション
+
+- 回答は敬語・日本語で行う
+- 外部の資料を引用する場合は、存在を確認したうえで URL を示す
+- 処理を実行するときは、所要時間の概算を先に伝える。長い処理では、途中でも残り時間の見込みを伝える
+- 現状を聞かれたときは、目的・方式・結果（表）・分かっていること・未解決の課題・次の候補の順に、簡潔にまとめる
 
 ## 参考リンク
 
