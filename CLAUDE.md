@@ -132,8 +132,8 @@ git lfs install && git lfs pull                     # LeRobot のテスト用ア
 uv run python vla3dsg/tests/test_<対象>.py          # 本研究のモジュールテスト
 uv run python vla3dsg/scripts/run_eval.py --name baseline/xxx --suite libero_goal --n-episodes 5   # 評価（結果は results/<name>/）
 uv run python vla3dsg/scripts/run_eval.py --name baseline/xxx --suite libero_spatial,libero_goal --task-ids 0 5 --n-episodes 20 --annotated-video
-uv run python vla3dsg/scripts/run_eval.py --name exp1/xxx/B1 --suite libero_spatial --n-episodes 5 --prompt-condition B1 --annotated-video   # プロンプト条件（A・B1〜B3・C・D、切り分け用の L0・L1、最小の実験の P1〜P5・P3h。settings.PROMPT_CONDITIONS）
-uv run python vla3dsg/scripts/make_custom_task.py --suite vla3dsg_hidden --name <タスク名> --base libero_spatial/<元のタスク名> --language "<指示文>" --region <領域名>=x0,y0,x1,y1 --target <物体> --occluder <遮る物体>   # 自作タスク（--preview で 1 件だけ tmp/ に試作。--remove-object で物体を除き、--location-language で場所を書いた指示文を持たせる）
+uv run python vla3dsg/scripts/run_eval.py --name exp1/xxx/B1 --suite libero_spatial --n-episodes 5 --prompt-condition B1 --annotated-video   # プロンプト条件（A・B1〜B3・C・D、切り分け用の L0・L1、最小の実験の P1〜P5 と、隠れていることを加える P1h〜P5h。settings.PROMPT_CONDITIONS）
+uv run python vla3dsg/scripts/make_custom_task.py --suite vla3dsg_hidden --name <タスク名> --base libero_spatial/<元のタスク名> --language "<指示文>" --region <領域名>=x0,y0,x1,y1 --target <物体> --occluder <遮る物体>   # 自作タスク（--preview で 1 件だけ tmp/ に試作。--remove-object で物体を除く）
 uv run python vla3dsg/scripts/generate_demos.py --name <名前> --suite vla3dsg_hidden --task-ids 0 1 --n-episodes 50   # デモの自動生成（タスクごとの設定は settings.DEMO_TASK_SPECS）
 uv run python vla3dsg/scripts/summarize_results.py --root exp1/xxx --names A B1 B2 B3 C D   # 条件の比較表（<root>/comparison.md・outcomes.md）
 uv run python vla3dsg/scripts/make_demo_video.py --name baseline/xxx --keep-failures-only   # デモ動画（results/<name>/videos/demo_with_captions.mp4）と失敗動画だけを残す

@@ -109,24 +109,29 @@ VLA※1 の言語指示に 3D シーングラフ（SG※2）の情報を加え�
 - 概要: 指示文の条件 × シーンを 1 回の評価でまとめて比べる（2026-10-20、ユーザーと決定）
 - 目的: 実験1・2 への疑問（元の指示文に場所がある、SG が長すぎる、対象と SG だけを与えたら、おとりのない隠れたシーンなら掴めるか）をまとめて確かめる。追加学習ありと比べる基準にもする
 
-| 条件 | 指示文 |
-|---|---|
-| P1 | 場所を書いた指示文（例: pick up the black bowl behind the wooden cabinet and place it on the plate） |
-| P2 | 対象だけ（場所なし。例: pick up the black bowl 1 and place it on the plate） |
-| P3 | P2 ＋ 対象を同じ種類の別の物体と見分ける最小の関係だけの SG（1〜2 本。`scene_graph/relevant.py`。例: (black bowl 1, behind, wooden cabinet)） |
-| P3h | P3 で、隠れていれば hidden を付ける（例: (black bowl 1, behind, wooden cabinet, hidden)） |
-| P4 | P2 ＋ 全部の関係の SG（8〜10 本） |
-| P5 | P2 ＋ 誤った SG（おとりの P3 の関係を、対象の名前で書いたもの） |
+場所の渡し方（P1〜P5）と、隠れていることを伝えるか（h）の 2 つの軸で比べる。
+
+| 場所の渡し方 | h なし | h あり（隠れていればその事実を加える） |
+|---|---|---|
+| P1 SG から作った、場所を書いた指示文（LIBERO の指示文と同じ形） | pick up the black bowl behind the wooden cabinet and place it on the plate | pick up the black bowl that is hidden behind the wooden cabinet and place it on the plate |
+| P2 対象だけ（場所なし） | pick up the black bowl 1 and place it on the plate | pick up the black bowl 1 that is hidden and place it on the plate |
+| P3 P2 ＋ 対象を見分ける最小の関係だけの SG（1〜2 本。`scene_graph/relevant.py`） | … scene information: (black bowl 1, behind, wooden cabinet) | … (black bowl 1, behind, wooden cabinet, hidden) |
+| P4 P2 ＋ 全部の関係の SG（8〜10 本） | … scene information: （10 本前後の関係） | 対象の最初の関係に hidden を付ける |
+| P5 P2 ＋ 誤った SG（おとりの P3 の関係を、対象の名前で書く） | … scene information: (black bowl 1, right of, plate) | 最初の関係に hidden を付ける（場所は誤り、隠れていることは正しい） |
+
+- h の意味は「対象が隠れているという事実を加える」にそろえ、場所の情報とは独立に付け外しする（2026-10-20、ユーザーの提案）。隠れていないシーンでは h の有無で文が変わらないため、h の条件は隠れたシーンだけで回す
+- P1・P1h を SG から作る理由（2026-10-20、ユーザーの指摘）: 同じ情報（SG の場所）でも、三つ組を後ろに付けるより、学習時と同じ「場所を書いた指示文」の形で渡すほうが効く可能性がある。P1（SG から作った指示文）と P3（三つ組）で、同じ情報の渡し方を比べる。SG は「人が場所を書く代わりに、ロボットが指示文を作るための情報源」として使う。人が書いた指示文（LIBERO の公式の指示文）は、libero_spatial では実験1 の A（96%）を参照する
+- SG から作った指示文は、libero_spatial では半分ほどのタスクで公式の指示文と同じ文になり、残りは言い方が違う（例: 「皿とラメキンの間」→「皿の奥でコンロの手前」）
 
 | シーン | タスク | 回数 | 条件 |
 |---|---|---|---|
 | S1 標準 | libero_spatial 10 タスク | 各 5 | P1〜P5 |
 | S2 新シーン・見える | `vla3dsg_occluded` task 2・3 | 各 10 | P1〜P5 |
-| S3 新シーン・隠れ（おとりあり） | task 0・1 | 各 10 | P1〜P5、P3h |
-| S4 新シーン・隠れ（おとりなし） | task 4・5 | 各 10 | P1〜P4、P3h |
+| S3 新シーン・隠れ（おとりあり） | task 0・1 | 各 10 | P1〜P5、P1h〜P5h |
+| S4 新シーン・隠れ（おとりなし） | task 4・5 | 各 10 | P1〜P4、P1h〜P4h（おとりがないため P5 はなし） |
 
 - 測るもの: 成功率と、どちらのボウルを皿に置いたか（`summarize_results.py` の outcomes）
-- 所要時間の見込み: 約 2.5 時間（このPC）
+- 所要時間の見込み: 約 3 時間（このPC）
 
 ### 3. 追加学習の準備
 
@@ -139,7 +144,7 @@ VLA※1 の言語指示に 3D シーングラフ（SG※2）の情報を加え�
 
 #### 3-2. 隠れた物体のシーン（`custom_tasks/vla3dsg_occluded/`）
 
-- 概要: libero_spatial task 0 の物体に電子レンジを加え、ボウル 1（対象）をキャビネット・電子レンジの裏（隠れ）と横（見える）に置いた 6 タスク。task 0・1 は隠れ、task 2・3 は見える（おとりあり）、task 4・5 は隠れ（おとりなし）。指示文は場所を書かず（"pick up the black bowl 1 and place it on the plate"）、P1 用に場所を書いた指示文も持つ
+- 概要: libero_spatial task 0 の物体に電子レンジを加え、ボウル 1（対象）をキャビネット・電子レンジの裏（隠れ）と横（見える）に置いた 6 タスク。task 0・1 は隠れ、task 2・3 は見える（おとりあり）、task 4・5 は隠れ（おとりなし）。指示文は場所を書かず（"pick up the black bowl 1 and place it on the plate"）（場所を書いた指示文は、評価のときに SG から作る）
 - 目的: SG にしかない情報（どこに隠れているか）で、SG の効果を測れるようにする（実験2 のシーンは指示文に場所があり、隠れ場所も 1 か所のため、追加学習すれば SG なしでも解けてしまう）
 - 結果: 隠れたタスクは agentview から見える割合 0%（電子レンジの裏は、初期姿勢の手首カメラにわずかに映る）。隠れた 2 タスクは agentview の画像がほぼ同じで、画像からはどちらに隠れているかわからない
 - 確認用の画像: `custom_tasks/vla3dsg_occluded/previews/overview.png`（6 視点）
