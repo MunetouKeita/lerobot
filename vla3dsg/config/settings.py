@@ -96,12 +96,6 @@ DEMO_NOISE_THETA = 0.1  # 揺らぎが 0 に戻る速さ（オルンシュタイ
 # 掴む前に手先を鉛直軸まわりに回す角度（度）。開いた指は初期の向きでは y 方向に並ぶため、x 方向の縁を掴むときは 90° 回して
 # 指が縁の壁を挟むようにする（回さないと片方の指が縁に乗って下りられず、押し続ける）
 DEMO_TASK_SPECS = {
-    "vla3dsg_hidden": {
-        # ロボット側の縁を掴み、キャビネットを避けて手前を通る（y 方向の縁を掴むと、腕の前腕がキャビネットに当たる）
-        0: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [(-0.25, 0.0)], "grasp_yaw_deg": 90.0},
-        # ボウルがキャビネットのすぐ横にあり、ロボット側の縁ではグリッパーがキャビネットに当たるため、反対側（+y 側）の縁を掴む
-        1: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [], "grasp_offset": (0.0, 0.04, 0.01)},
-    },
     # 遮る物体を 2 つ（木のキャビネット・電子レンジ）に増やし、場所は SG にだけ書くスイート
     "vla3dsg_occluded": {
         0: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [(-0.25, 0.0)], "grasp_yaw_deg": 90.0},  # キャビネットの裏
@@ -124,12 +118,6 @@ SG_LANDMARK_OBJECTS = ("plate",)  # 固定物のほかに、位置の手がか�
 # プロンプト条件（run_eval.py --prompt-condition）
 PROMPT_CONDITIONS = {
     "A": "元の指示文のみ",
-    "B1": "指示文 + SG（JSON）",
-    "B2": "指示文 + SG（三つ組の列挙）",
-    "B3": "指示文 + SG（自然文）",
-    "C": "指示文 + SG（JSON）と同じトークン数の無関係な文",
-    "D": "指示文 + 物体名を入れ替えた SG（JSON）",
-    # 最小の実験（2026-10-20）: 場所は指示文に書くか SG にだけ書くか、SG の長さ、SG の内容を使っているか
     "P1": "P3 の SG から作った、場所を書いた指示文（LIBERO の指示文と同じ形。例: pick up the black bowl behind the wooden cabinet and place it on the plate）",
     "P1h": "P1 で、対象が隠れていればそれも書く（例: pick up the black bowl that is hidden behind the wooden cabinet and place it on the plate）",
     "P2": "対象だけの指示文（場所なし。例: pick up the black bowl 1 and place it on the plate）",
@@ -140,20 +128,8 @@ PROMPT_CONDITIONS = {
     "P4h": "P4 で、対象が隠れていれば対象の最初の関係に hidden を付ける",
     "P5": "P2 + 誤った SG（同じ種類の別の物体の P3 の関係を、対象の名前で書いたもの）",
     "P5h": "P5 で、対象が隠れていれば最初の関係に hidden を付ける（場所は誤り、隠れていることは正しい）",
-    # 原因の切り分け（Phase 4）: ポリシーが指示文の場所の指定を使っているか
-    "L0": "場所の指定を除いた指示文（例: pick up the black bowl and place it on the plate）",
-    "L1": "同じスイートの別タスクの指示文（タスク ID を PROMPT_OTHER_TASK_OFFSET ずらす）",
 }
-# 条件 L0: "pick up the black bowl <場所> and place it on the plate" の <場所> を除く（libero_spatial 形式の指示文のみ）
-PROMPT_LOCATION_PATTERN = r"^(pick up the black bowl) .+? (and place it on the plate)$"
-PROMPT_OTHER_TASK_OFFSET = 5  # 条件 L1
 PROMPT_SG_LABEL = "scene information"  # 指示文と追加テキストの区切り: "<指示文>. <ラベル>: <テキスト>"
-FILLER_TEXT = (
-    "the history of the printing press began in the fifteenth century and changed how people shared ideas "
-    "across many countries. musicians often practice scales every morning to keep their fingers flexible and "
-    "their timing precise. a quiet library in the evening can be a good place to read novels about distant "
-    "mountains, old sailing ships and long journeys across the sea."
-)
 # SG を加えると指示文が長くなるため、系列長の上限を広げる（既定は指示文 32 トークン分の見込み）
 MOLMOACT2_MAX_SEQUENCE_LENGTH = 1024
 

@@ -7,12 +7,12 @@
 4. 初期状態（.pruned_init）と tasks.json を保存し、スイートの全タスクを複数の視点で描画した確認用の画像
    （previews/overview.png、visualization/scene_overview.py）を作り直す
 
-    uv run python vla3dsg/scripts/make_custom_task.py --suite vla3dsg_hidden --name <タスク名> \\
-        --base libero_spatial/<元のタスク名> --language "<指示文>" \\
-        --region akita_black_bowl_1_region=-0.30,-0.34,-0.28,-0.32 --target akita_black_bowl_1 --occluder wooden_cabinet_1
+    uv run python vla3dsg/scripts/make_custom_task.py --suite vla3dsg_occluded --name behind_wooden_cabinet \\
+        --base vla3dsg_occluded/scene.bddl --language "pick up the black bowl 1 and place it on the plate" \\
+        --region target_region=-0.21,-0.34,-0.19,-0.32 --target akita_black_bowl_1 --occluder wooden_cabinet_1
 
 --preview を付けると、初期状態を 1 件だけ作って画像と見え方を tmp/ に保存する（custom_tasks/ には書かない）。
---overview だけを付けると、タスクは作らず確認用の画像だけを作り直す（例: --suite vla3dsg_hidden --overview）。
+--overview だけを付けると、タスクは作らず確認用の画像だけを作り直す（例: --suite vla3dsg_occluded --overview）。
 """
 
 import argparse

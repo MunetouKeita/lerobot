@@ -4,16 +4,13 @@ LeRobot の LiberoEnv.reset を差し替え、reset 後（物体が落ち着い�
 `task_description`（lerobot-eval がポリシーに渡す指示文）を書き換える。LeRobot 本体のファイルは変更しない。
 エピソードの終了時（成功または最大ステップ数）の SG も記録し、どの物体をどこに置いたかを後から分類できるようにする。
 
-MolmoAct2 の前処理の正規化は SG のテキスト（JSON の括弧など）を壊すため、評価では
+MolmoAct2 の前処理の正規化は SG のテキスト（三つ組の括弧など）を壊すため、評価では
 `--policy.normalize_language=false` とし、元の指示文だけをここで同じ関数で正規化する。
 """
 
-import re
-import zlib
 from functools import cache
 from typing import Any
 
-import numpy as np
 from transformers import AutoTokenizer
 
 from lerobot.envs.libero import LiberoEnv
@@ -52,59 +49,31 @@ def _wrong_relevant(env: Any, sg: SceneGraph) -> SceneGraph:
     return SceneGraph(nodes=[rename.get(n, n) for n in wrong.nodes], relations=relations, target=sg.target)
 
 
-def compose_prompt(
-    instruction: str,
-    condition: str,
-    sg: SceneGraph,
-    rng: np.random.Generator,
-    other_instruction: str = "",
-    env: Any = None,
-) -> str:
+def compose_prompt(instruction: str, condition: str, sg: SceneGraph, env: Any) -> str:
     """条件に応じた指示文を返す。条件 A は元の指示文の正規化のみ（モデルへの入力はこれまでと同一）。
 
     P1〜P5 では、小さな SG を作るために env（LIBERO の BDDL 環境）を使う。末尾の h（P1h〜P5h）は、対象が隠れていれば
     その事実を加える（場所の情報とは独立。P5h は「場所は誤り、隠れていることは正しい」）。
     """
-    base = _normalize_question_text(instruction)
     if condition == "A":
-        return base
-    if condition in ("P1", "P1h", "P2", "P2h", "P3", "P3h", "P4", "P4h", "P5", "P5h"):
-        kind, hidden = condition[:2], condition.endswith("h") and target_is_hidden(env)
-        if kind == "P1":
-            # SG の小さな関係から、場所を書いた指示文（LIBERO の指示文と同じ形）を作る
-            return textify.to_instruction(build_relevant_scene_graph(env, hidden=hidden), hidden=hidden)
-        if kind == "P2":
-            # 場所を書かず、対象を SG のノード名で指す
-            return f"pick up the {sg.target}{' that is hidden' if hidden else ''} and place it on the plate"
-        if kind == "P3":
-            given = build_relevant_scene_graph(env)
-        elif kind == "P4":
-            given = sg
-        else:
-            given = _wrong_relevant(env, sg)
-        extra = textify.to_triples(mark_hidden(given) if hidden else given)
-        return f"pick up the {sg.target} and place it on the plate. {settings.PROMPT_SG_LABEL}: {extra}"
-    if condition == "L0":
-        stripped, n = re.subn(settings.PROMPT_LOCATION_PATTERN, r"\1 \2", base)
-        if n != 1:
-            raise ValueError(f"条件 L0 に対応しない指示文: {base!r}")
-        return stripped
-    if condition == "L1":
-        return _normalize_question_text(other_instruction)
-    if condition == "B1":
-        extra = textify.to_json(sg)
-    elif condition == "B2":
-        extra = textify.to_triples(sg)
-    elif condition == "B3":
-        extra = textify.to_natural(sg)
-    elif condition == "C":
-        # SG（JSON）とトークン数をそろえる
-        extra = textify.filler(count_tokens(textify.to_json(sg)), count_tokens)
-    elif condition == "D":
-        extra = textify.to_json(textify.shuffled(sg, rng))
-    else:
+        return _normalize_question_text(instruction)
+    if condition not in settings.PROMPT_CONDITIONS:
         raise ValueError(f"Unknown prompt condition {condition!r}. Expected one of {list(settings.PROMPT_CONDITIONS)}")
-    return f"{base}. {settings.PROMPT_SG_LABEL}: {extra}"
+    kind, hidden = condition[:2], condition.endswith("h") and target_is_hidden(env)
+    if kind == "P1":
+        # SG の小さな関係から、場所を書いた指示文（LIBERO の指示文と同じ形）を作る
+        return textify.to_instruction(build_relevant_scene_graph(env, hidden=hidden), hidden=hidden)
+    if kind == "P2":
+        # 場所を書かず、対象を SG のノード名で指す
+        return f"pick up the {sg.target}{' that is hidden' if hidden else ''} and place it on the plate"
+    if kind == "P3":
+        given = build_relevant_scene_graph(env)
+    elif kind == "P4":
+        given = sg
+    else:
+        given = _wrong_relevant(env, sg)
+    extra = textify.to_triples(mark_hidden(given) if hidden else given)
+    return f"pick up the {sg.target} and place it on the plate. {settings.PROMPT_SG_LABEL}: {extra}"
 
 
 def install(condition: str) -> None:
@@ -115,12 +84,7 @@ def install(condition: str) -> None:
     if _installed:
         return
     _installed = True
-    orig_init, orig_reset, orig_step = LiberoEnv.__init__, LiberoEnv.reset, LiberoEnv.step
-
-    def init(self: LiberoEnv, task_suite: Any, task_id: int, *args: Any, **kwargs: Any) -> None:
-        orig_init(self, task_suite, task_id, *args, **kwargs)
-        n_tasks = task_suite.get_num_tasks()
-        self._other_task_description = task_suite.get_task((task_id + settings.PROMPT_OTHER_TASK_OFFSET) % n_tasks).language
+    orig_reset, orig_step = LiberoEnv.reset, LiberoEnv.step
 
     def reset(self: LiberoEnv, *args: Any, **kwargs: Any) -> Any:
         out = orig_reset(self, *args, **kwargs)
@@ -128,20 +92,15 @@ def install(condition: str) -> None:
             self._orig_task_description = self.task_description
             self._prompt_episode = 0
         sg = build_scene_graph(self._env.env)
-        # 条件 D の入れ替えはタスクとエピソードごとに固定する
-        seed = zlib.crc32(f"{self.task}:{self._prompt_episode}".encode())
-        rng = np.random.default_rng(seed)
-        prompt = compose_prompt(
-            self._orig_task_description, condition, sg, rng, self._other_task_description, self._env.env
-        )
+        prompt = compose_prompt(self._orig_task_description, condition, sg, self._env.env)
         self.task_description = prompt
         self._prompt_step = 0
         self._prompt_record = {
-                "task": self.task,
-                "task_id": self.task_id,
-                "episode": self._prompt_episode,
-                "condition": condition,
-                "prompt": prompt,
+            "task": self.task,
+            "task_id": self.task_id,
+            "episode": self._prompt_episode,
+            "condition": condition,
+            "prompt": prompt,
             "scene_graph": sg.to_dict(),
             "target": sg.target,
         }
@@ -158,6 +117,5 @@ def install(condition: str) -> None:
             self._prompt_record["final_scene_graph"] = build_scene_graph(self._env.env).to_dict()
         return out
 
-    LiberoEnv.__init__ = init
     LiberoEnv.reset = reset
     LiberoEnv.step = step

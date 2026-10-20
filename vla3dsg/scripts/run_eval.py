@@ -71,7 +71,7 @@ def main() -> None:
         "--prompt-condition",
         default="A",
         choices=list(settings.PROMPT_CONDITIONS),
-        help="指示文の条件（A: 元の指示文のみ、B1〜B3: SG を追加、C・D: 対照条件）",
+        help="指示文の条件（A: 元の指示文のみ、P1〜P5・P1h〜P5h: settings.PROMPT_CONDITIONS）",
     )
     args = parser.parse_args()
 

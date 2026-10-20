@@ -2,9 +2,9 @@
 
 - comparison.md: 条件ごと・タスクごとの成功率と、プロンプトの長さ（summary.json と prompts.jsonl から）
 - outcomes.md: 各エピソードで何をどこに置いたか。開始時と終了時の SG を比べ、終了時に新しくできた on / in の関係
-  （例: "black bowl 2 on plate"）を数える。終了時の SG がない結果（2026-10-13 の実験2 以前）では作らない
+  （例: "black bowl 2 on plate"）を数える。終了時の SG がない結果では作らない
 
-    uv run python vla3dsg/scripts/summarize_results.py --root exp1/libero_spatial_n5 --names A B1 B2 B3 C D
+    uv run python vla3dsg/scripts/summarize_results.py --root minimal/s1_spatial --names P1 P2 P3 P4 P5
 """
 
 import argparse

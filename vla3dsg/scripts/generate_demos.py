@@ -8,20 +8,20 @@
 動作は 7 次元）。指示文はタスクの元の指示文。エピソード開始時の SG は episodes.jsonl に保存し、
 SG を加えた指示文のデータセットは後から作る。
 
-    uv run python vla3dsg/scripts/generate_demos.py --name hidden_cabinet_v1 --suite vla3dsg_hidden --task-ids 0 1 --n-episodes 50
+    uv run python vla3dsg/scripts/generate_demos.py --name occluded_v1 --suite vla3dsg_occluded --task-ids 0 1 2 3 --n-episodes 50
 
 データセットは data/<name>/（git 管理外）、生成の記録（summary.json・conditions.json・episodes.jsonl）は results/demos/<name>/。
 
 --check を付けると、データセットは作らず、評価の初期状態（.pruned_init）でスクリプト制御が成功するか（タスクが
 物理的にできるか）を確かめる。結果は results/<name>/（summary.json、videos/ に各タスクの先頭 --n-video 本の動画）。
 
-    uv run python vla3dsg/scripts/generate_demos.py --check --name analysis/scripted_hidden_cabinet --suite vla3dsg_hidden --task-ids 0
+    uv run python vla3dsg/scripts/generate_demos.py --check --name demos/check_occluded --suite vla3dsg_occluded --task-ids 0 1 2 3
 
 --report を付けると、生成済みのデータセット data/<name>/ を LIBERO の公式デモ（lerobot/libero の同じ元タスク）と比べる。
 動作の統計（report.json）、1 エピソードずつの動作の指令のグラフ（actions_vs_official.png）、縦に並べた比較動画
 （videos/compare_with_official.mp4）を results/demos/<name>/ に保存する。
 
-    uv run python vla3dsg/scripts/generate_demos.py --report --name hidden_cabinet_v2 --suite vla3dsg_hidden --task-ids 0 1
+    uv run python vla3dsg/scripts/generate_demos.py --report --name occluded_v1 --suite vla3dsg_occluded --task-ids 0 1 2 3
 """
 
 import argparse

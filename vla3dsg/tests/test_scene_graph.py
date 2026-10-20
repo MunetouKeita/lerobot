@@ -36,49 +36,37 @@ def main() -> None:
     args = parser.parse_args()
 
     load_plugin("vla3dsg.envs")
-    prompt_condition.install("B1")
+    prompt_condition.install("P3")
     out_dir = settings.TMP_DIR / "test_scene_graph"
     out_dir.mkdir(parents=True, exist_ok=True)
-    rng = np.random.default_rng(0)
 
     task_ids = args.task_ids if args.task_ids else list(range(benchmark.get_benchmark_dict()[args.suite]().n_tasks))
     for task_id in task_ids:
         vec_env = make_env(args.suite, task_id)
         obs, _ = vec_env.reset(seed=settings.SEED)
         inner = vec_env.envs[0]
-        sg = build_scene_graph(inner._env.env)
+        env = inner._env.env
+        sg = build_scene_graph(env)
+        relevant = build_relevant_scene_graph(env)
 
         assert len(sg.nodes) == len(set(sg.nodes)), f"ノード名が重複している: {sg.nodes}"
         assert sg.relations, "関係が 1 つもない"
-        assert all(s in sg.nodes for s, _, _ in sg.relations), "関係の主語がノードにない"
-        # 条件 B1 の指示文が書き換わり、記録されていること
-        assert inner.task_description.endswith(textify.to_json(sg)), inner.task_description
-        assert prompt_condition.records[-1]["task_id"] == task_id
-        # 対照条件
-        instruction = inner._orig_task_description
-        env = inner._env.env
-        c = prompt_condition.compose_prompt(instruction, "C", sg, rng)
-        d = prompt_condition.compose_prompt(instruction, "D", sg, rng)
-        n_b1, n_c = prompt_condition.count_tokens(inner.task_description), prompt_condition.count_tokens(c)
-        assert 0 <= n_c - n_b1 <= 3, (n_b1, n_c)
-        assert d != inner.task_description
-        if args.suite.startswith("libero_"):
-            assert prompt_condition.compose_prompt(instruction, "A", sg, rng) == instruction  # LIBERO の指示文は正規化しても同じ
-            assert prompt_condition.compose_prompt(instruction, "L0", sg, rng) == "pick up the black bowl and place it on the plate"
-            assert prompt_condition.compose_prompt(instruction, "L1", sg, rng, inner._other_task_description) != instruction
-
-        # 最小の実験の条件（P1〜P5）
-        def compose(k: str) -> str:
-            return prompt_condition.compose_prompt(
-                instruction, k, sg, np.random.default_rng(1), inner._other_task_description, env
-            )
-
-        assert compose("P1") == textify.to_instruction(build_relevant_scene_graph(env))
-        assert compose("P2") == f"pick up the {sg.target} and place it on the plate"
-        relevant = build_relevant_scene_graph(env)
+        assert all(r[0] in sg.nodes for r in sg.relations), "関係の主語がノードにない"
         assert 1 <= len(relevant.relations) <= settings.SG_RELEVANT_MAX and all(r[0] == sg.target for r in relevant.relations)
-        assert ("hidden" in compose("P3h")) == ("hidden" in textify.to_triples(build_relevant_scene_graph(env, hidden=True)))
+        # 条件 P3 の指示文が書き換わり、記録されていること
+        assert inner.task_description.endswith(textify.to_triples(relevant)), inner.task_description
+        assert prompt_condition.records[-1]["task_id"] == task_id
+
+        instruction = inner._orig_task_description
+
+        def compose(k: str) -> str:
+            return prompt_condition.compose_prompt(instruction, k, sg, env)
+
+        if args.suite.startswith("libero_"):
+            assert compose("A") == instruction  # LIBERO の指示文は正規化しても同じ
+        assert compose("P1") == textify.to_instruction(relevant)
         assert compose("P1").startswith("pick up the black bowl ") and compose("P1").endswith(" and place it on the plate")
+        assert compose("P2") == f"pick up the {sg.target} and place it on the plate"
         # h の条件は、対象が隠れているときだけ文が変わる
         for k in ("P1", "P2", "P3", "P4"):
             assert ("hidden" in compose(f"{k}h")) == target_is_hidden(env), (k, compose(f"{k}h"))
@@ -91,7 +79,7 @@ def main() -> None:
         for k in settings.PROMPT_CONDITIONS:
             try:
                 prompts[k] = compose(k)
-            except ValueError as e:  # このタスクでは作れない条件（例: おとりのないシーンの P5、自作タスクの L0）
+            except ValueError as e:  # このタスクでは作れない条件（例: おとりのないシーンの P5）
                 prompts[k] = f"（なし: {e}）"
         (out_dir / f"{args.suite}_{task_id}.json").write_text(
             json.dumps({"instruction": instruction, "scene_graph": sg.to_dict(), "prompts": prompts}, indent=2, ensure_ascii=False)
