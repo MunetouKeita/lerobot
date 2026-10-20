@@ -23,6 +23,25 @@ def set_region_range(bddl: str, region: str, rng: tuple[float, float, float, flo
     return pattern.sub(lambda m: m.group(1) + "(" + " ".join(f"{v}" for v in rng) + ")", bddl, count=1)
 
 
+def remove_object(bddl: str, obj_id: str) -> str:
+    """BDDL の :objects と :init から物体を取り除く（例: おとりのボウルを除いたシーン）。"""
+    objects = re.search(r"\(:objects(.*?)\n  \)", bddl, re.S)
+    if objects is None or not re.search(rf"\b{re.escape(obj_id)}\b", objects.group(1)):
+        raise ValueError(f"BDDL の :objects に {obj_id!r} がない")
+    lines = []
+    for line in objects.group(1).splitlines():
+        if re.search(rf"\b{re.escape(obj_id)}\b", line):
+            names, _, category = line.partition(" - ")
+            rest = [n for n in names.split() if n != obj_id]
+            if not rest:
+                continue
+            line = "    " + " ".join(rest) + " - " + category
+        lines.append(line)
+    bddl = bddl[: objects.start(1)] + "\n".join(lines) + bddl[objects.end(1) :]
+    # :init の (On <obj_id> ...) などを消す
+    return re.sub(rf"\n\s*\((On|In) {re.escape(obj_id)} [^)]*\)", "", bddl)
+
+
 def _target_points(model: mujoco.MjModel, data: mujoco.MjData, target: str) -> tuple[np.ndarray, set[int]]:
     """対象物体の見た目用メッシュの頂点（世界座標）と、対象物体の geom の ID。"""
     geoms = {g for g in range(model.ngeom) if model.body(model.geom_bodyid[g]).name.startswith(f"{target}_")}
@@ -38,33 +57,37 @@ def _target_points(model: mujoco.MjModel, data: mujoco.MjData, target: str) -> t
     return points[::step], geoms
 
 
-def visible_points(env: OffScreenRenderEnv, target: str) -> dict[str, tuple[int, int]]:
-    """カメラごとに、(画角内にある対象物体の表面の点の数, そのうちカメラから直接見える点の数)。
+def ray_hits(model: mujoco.MjModel, data: mujoco.MjData, target: str, cam: str) -> list[str | None]:
+    """カメラの画角内にある対象物体の表面の点ごとに、カメラからその点へ飛ばした光線が最初に当たる body の名前。
 
-    カメラから各点へ光線を飛ばし（mujoco.mj_ray）、最初に当たる geom が対象物体なら見えているとする。
+    最初に当たったのが対象物体（その点か、同じ物体の手前側の面）なら、その方向に対象が見えている。
     robosuite・mujoco.Renderer のセグメンテーション描画は、この環境（numpy 2、robosuite の描画コンテキストと併用）では
     正しく動かないため、描画に頼らない方法にしている。
     """
+    points, _ = _target_points(model, data, target)
+    cam_id = model.camera(cam).id
+    origin = data.cam_xpos[cam_id].copy()
+    rot = data.cam_xmat[cam_id].reshape(3, 3)  # 列: カメラの x・y・z 軸（-z が視線方向）
+    tan_half = np.tan(np.deg2rad(model.cam_fovy[cam_id]) / 2)
+    geom_id = np.zeros(1, dtype=np.int32)
+    hits: list[str | None] = []
+    for p in points:
+        local = rot.T @ (p - origin)
+        if local[2] >= 0 or abs(local[0] / -local[2]) > tan_half or abs(local[1] / -local[2]) > tan_half:
+            continue  # カメラの後ろ、または画角の外
+        vec = (p - origin) / np.linalg.norm(p - origin)
+        hit = mujoco.mj_ray(model, data, origin, vec, None, 1, -1, geom_id) >= 0
+        hits.append(model.body(model.geom_bodyid[int(geom_id[0])]).name if hit else None)
+    return hits
+
+
+def visible_points(env: OffScreenRenderEnv, target: str) -> dict[str, tuple[int, int]]:
+    """カメラごとに、(画角内にある対象物体の表面の点の数, そのうちカメラから直接見える点の数)。"""
     model, data = env.env.sim.model._model, env.env.sim.data._data
-    points, geoms = _target_points(model, data, target)
     result = {}
     for cam in CAMERAS:
-        cam_id = model.camera(cam).id
-        origin = data.cam_xpos[cam_id].copy()
-        rot = data.cam_xmat[cam_id].reshape(3, 3)  # 列: カメラの x・y・z 軸（-z が視線方向）
-        half = np.deg2rad(model.cam_fovy[cam_id]) / 2
-        in_view = visible = 0
-        geom_id = np.zeros(1, dtype=np.int32)
-        for p in points:
-            local = rot.T @ (p - origin)
-            if local[2] >= 0 or abs(local[0] / -local[2]) > np.tan(half) or abs(local[1] / -local[2]) > np.tan(half):
-                continue  # カメラの後ろ、または画角の外
-            in_view += 1
-            vec = (p - origin) / np.linalg.norm(p - origin)
-            # 最初に当たったのが対象物体（その点か、同じ物体の手前側の面）なら、その方向に対象が見えている
-            if mujoco.mj_ray(model, data, origin, vec, None, 1, -1, geom_id) >= 0 and int(geom_id[0]) in geoms:
-                visible += 1
-        result[cam] = (in_view, visible)
+        hits = ray_hits(model, data, target, cam)
+        result[cam] = (len(hits), sum(1 for h in hits if h is not None and h.startswith(f"{target}_")))
     return result
 
 

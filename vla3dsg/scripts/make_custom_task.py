@@ -31,7 +31,13 @@ from libero.libero import get_libero_path  # noqa: E402
 from libero.libero.envs import OffScreenRenderEnv  # noqa: E402
 from PIL import Image  # noqa: E402
 
-from vla3dsg.envs.custom_task_builder import body_positions, sample_init_state, set_region_range, visibility  # noqa: E402
+from vla3dsg.envs.custom_task_builder import (  # noqa: E402
+    body_positions,
+    remove_object,
+    sample_init_state,
+    set_region_range,
+    visibility,
+)
 from vla3dsg.visualization.scene_overview import render_overview  # noqa: E402
 
 
@@ -43,7 +49,9 @@ def main() -> None:
         "--base", help="元のタスク。LIBERO のタスク（<スイート>/<タスク名>）か、custom_tasks/ からの BDDL のパス（例: vla3dsg_occluded/scene.bddl）"
     )
     parser.add_argument("--language", help="ポリシーに渡す指示文")
+    parser.add_argument("--location-language", help="場所を書いた指示文（プロンプト条件 P1 で使う。--language に場所を書かない場合）")
     parser.add_argument("--region", action="append", default=[], help="<領域名>=x_min,y_min,x_max,y_max（複数可）")
+    parser.add_argument("--remove-object", action="append", default=[], help="シーンから取り除く物体（例: akita_black_bowl_2。複数可）")
     parser.add_argument("--target", help="見え方を測る対象物体（例: akita_black_bowl_1）")
     parser.add_argument("--occluder", help="対象を遮っている固定物（見え方の比較用）")
     parser.add_argument("--max-steps", type=int, default=settings.CUSTOM_TASK_MAX_STEPS)
@@ -63,6 +71,8 @@ def main() -> None:
     else:
         base_suite, base_task = args.base.split("/")
         bddl = (Path(get_libero_path("bddl_files")) / base_suite / f"{base_task}.bddl").read_text()
+    for obj_id in args.remove_object:
+        bddl = remove_object(bddl, obj_id)
     for spec in args.region:
         region, values = spec.split("=")
         bddl = set_region_range(bddl, region, tuple(float(v) for v in values.split(",")))
@@ -115,10 +125,12 @@ def main() -> None:
             {
                 "name": args.name,
                 "language": args.language,
+                **({"language_with_location": args.location_language} if args.location_language else {}),
                 "bddl_file": f"{args.name}.bddl",
                 "init_states_file": f"{args.name}.pruned_init",
                 "base": args.base,
                 "regions": args.region,
+                "removed_objects": args.remove_object,
                 "visibility": stats,
             }
         ]

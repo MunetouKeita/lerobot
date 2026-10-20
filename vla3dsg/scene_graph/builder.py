@@ -22,6 +22,7 @@ TABLE_PREFIXES = ("main_table", "kitchen_table", "living_room_table", "study_tab
 class SceneGraph:
     nodes: list[str]
     relations: list[tuple[str, str, str]] = field(default_factory=list)
+    target: str | None = None  # 掴む対象のノード名（BDDL の obj_of_interest の先頭の物体）。to_dict には含めない
 
     def to_dict(self) -> dict[str, Any]:
         return {"objects": self.nodes, "relations": [list(r) for r in self.relations]}
@@ -100,7 +101,8 @@ def build_scene_graph(env: Any) -> SceneGraph:
     """LIBERO の BDDL 環境（OffScreenRenderEnv の .env）から SG を作る。"""
     names = _display_names(env)
     ids = list(names)
-    sg = SceneGraph(nodes=[names[i] for i in ids])
+    target_id = next((i for i in env.obj_of_interest if i in env.objects_dict), None)
+    sg = SceneGraph(nodes=[names[i] for i in ids], target=names.get(target_id))
     support = _support_relations(env, names)
     for obj_id, (rel, target) in support.items():
         sg.relations.append((names[obj_id], rel, target))

@@ -33,7 +33,6 @@ SEED = 1000
 EVAL_SEED = 1000
 
 # LIBERO 環境
-LIBERO_SUITES = ["libero_spatial", "libero_object", "libero_goal", "libero_10"]
 LIBERO_OBS_SIZE = 360  # LeRobot の LiberoEnv 設定の既定値（縦横共通）
 # reset 後の no-op ステップ数。MolmoAct2 の LIBERO 報告値は 50 で測定されている
 LIBERO_NUM_STEPS_WAIT = 50
@@ -117,6 +116,10 @@ DEMO_TASK_SPECS = {
 SG_NEAREST_K = 2  # 各物体について前後左右の関係を付ける近傍の数
 SG_NEXT_TO_MAX_DIST = 0.03  # m。これより近い物体は前後左右ではなく "next to"
 SG_ON_MIN_DZ = 0.005  # m。接触していて、相手よりこれ以上高いと "on"
+# 掴む対象についての小さな SG（scene_graph/relevant.py）
+SG_RELEVANT_MAX = 2  # 関係の最大数
+SG_HIDDEN_MAX_VISIBLE = 0.2  # agentview から見える点の割合がこれ未満なら「隠れている」
+SG_LANDMARK_OBJECTS = ("plate",)  # 固定物のほかに、位置の手がかりにする（大きくて動かない）物体の種類
 
 # プロンプト条件（run_eval.py --prompt-condition）
 PROMPT_CONDITIONS = {
@@ -126,6 +129,13 @@ PROMPT_CONDITIONS = {
     "B3": "指示文 + SG（自然文）",
     "C": "指示文 + SG（JSON）と同じトークン数の無関係な文",
     "D": "指示文 + 物体名を入れ替えた SG（JSON）",
+    # 最小の実験（2026-10-20）: 場所は指示文に書くか SG にだけ書くか、SG の長さ、SG の内容を使っているか
+    "P1": "場所を書いた指示文（LIBERO のタスクでは元の指示文、自作タスクでは tasks.json の language_with_location）",
+    "P2": "対象だけの指示文（場所なし。例: pick up the black bowl 1 and place it on the plate）",
+    "P3": "P2 + 掴む対象を見分ける最小の関係だけの SG（三つ組、1〜2 本。scene_graph/relevant.py）",
+    "P3h": "P3 で、対象が隠れていれば関係に hidden を付ける",
+    "P4": "P2 + 全部の関係の SG（三つ組）",
+    "P5": "P2 + 誤った SG（同じ種類の別の物体の P3 の関係を、対象の名前で書いたもの）",
     # 原因の切り分け（Phase 4）: ポリシーが指示文の場所の指定を使っているか
     "L0": "場所の指定を除いた指示文（例: pick up the black bowl and place it on the plate）",
     "L1": "同じスイートの別タスクの指示文（タスク ID を PROMPT_OTHER_TASK_OFFSET ずらす）",

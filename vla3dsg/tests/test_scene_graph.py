@@ -1,14 +1,14 @@
 """SG の生成（scene_graph/）とプロンプト条件（prompting/prompt_condition.py）を確認する。
 
-libero_spatial の各タスクで reset 後の SG を作り、agentview 画像と各条件のプロンプトを tmp/ に保存する。
+スイート（既定は libero_spatial）の各タスクで reset 後の SG を作り、agentview 画像と各条件のプロンプトを tmp/ に保存する。
+最小の実験の条件（P1〜P5）の指示文と、掴む対象についての小さな SG（scene_graph/relevant.py）も確かめる。
 
-    uv run python vla3dsg/tests/test_scene_graph.py [--suite libero_spatial] [--task-ids 0 1 ...]
+    uv run python vla3dsg/tests/test_scene_graph.py [--suite libero_spatial|vla3dsg_occluded] [--task-ids 0 1 ...]
 """
 
 import argparse
 import json
 import sys
-from dataclasses import dataclass
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -16,27 +16,23 @@ from vla3dsg.config import settings  # noqa: E402
 
 settings.apply_runtime_env()
 
-import draccus  # noqa: E402
+from libero.libero import benchmark  # noqa: E402
 import numpy as np  # noqa: E402
 from PIL import Image  # noqa: E402
 
 from lerobot.configs.parser import load_plugin  # noqa: E402
-from lerobot.envs.configs import EnvConfig  # noqa: E402
 
+from vla3dsg.envs.libero_vla3dsg import make_env  # noqa: E402
 from vla3dsg.prompting import prompt_condition  # noqa: E402
 from vla3dsg.scene_graph import textify  # noqa: E402
 from vla3dsg.scene_graph.builder import build_scene_graph  # noqa: E402
-
-
-@dataclass
-class _Wrapper:
-    env: EnvConfig
+from vla3dsg.scene_graph.relevant import build_relevant_scene_graph  # noqa: E402
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--suite", default="libero_spatial")
-    parser.add_argument("--task-ids", type=int, nargs="*", default=list(range(10)))
+    parser.add_argument("--task-ids", type=int, nargs="*", help="省略するとスイートの全タスク")
     args = parser.parse_args()
 
     load_plugin("vla3dsg.envs")
@@ -45,10 +41,9 @@ def main() -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     rng = np.random.default_rng(0)
 
-    for task_id in args.task_ids:
-        argv = ["--env.type=libero_vla3dsg", f"--env.task={args.suite}", f"--env.task_ids=[{task_id}]"]
-        cfg = draccus.parse(_Wrapper, args=argv).env
-        vec_env = cfg.create_envs(n_envs=1, use_async_envs=False)[args.suite][task_id]
+    task_ids = args.task_ids if args.task_ids else list(range(benchmark.get_benchmark_dict()[args.suite]().n_tasks))
+    for task_id in task_ids:
+        vec_env = make_env(args.suite, task_id)
         obs, _ = vec_env.reset(seed=settings.SEED)
         inner = vec_env.envs[0]
         sg = build_scene_graph(inner._env.env)
@@ -61,25 +56,45 @@ def main() -> None:
         assert prompt_condition.records[-1]["task_id"] == task_id
         # 対照条件
         instruction = inner._orig_task_description
+        env = inner._env.env
         c = prompt_condition.compose_prompt(instruction, "C", sg, rng)
         d = prompt_condition.compose_prompt(instruction, "D", sg, rng)
         n_b1, n_c = prompt_condition.count_tokens(inner.task_description), prompt_condition.count_tokens(c)
         assert 0 <= n_c - n_b1 <= 3, (n_b1, n_c)
         assert d != inner.task_description
-        assert prompt_condition.compose_prompt(instruction, "A", sg, rng) == instruction  # LIBERO の指示文は正規化しても同じ
-        assert prompt_condition.compose_prompt(instruction, "L0", sg, rng) == "pick up the black bowl and place it on the plate"
-        assert prompt_condition.compose_prompt(instruction, "L1", sg, rng, inner._other_task_description) != instruction
+        if args.suite.startswith("libero_"):
+            assert prompt_condition.compose_prompt(instruction, "A", sg, rng) == instruction  # LIBERO の指示文は正規化しても同じ
+            assert prompt_condition.compose_prompt(instruction, "L0", sg, rng) == "pick up the black bowl and place it on the plate"
+            assert prompt_condition.compose_prompt(instruction, "L1", sg, rng, inner._other_task_description) != instruction
 
-        prompts = {
-            k: prompt_condition.compose_prompt(instruction, k, sg, np.random.default_rng(1), inner._other_task_description)
-            for k in settings.PROMPT_CONDITIONS
-        }
+        # 最小の実験の条件（P1〜P5）
+        def compose(k: str) -> str:
+            return prompt_condition.compose_prompt(
+                instruction, k, sg, np.random.default_rng(1), inner._other_task_description, inner._location_description, env
+            )
+
+        assert compose("P1") == inner._location_description.lower(), compose("P1")
+        assert compose("P2") == f"pick up the {sg.target} and place it on the plate"
+        relevant = build_relevant_scene_graph(env)
+        assert 1 <= len(relevant.relations) <= settings.SG_RELEVANT_MAX and all(r[0] == sg.target for r in relevant.relations)
+        assert ("hidden" in compose("P3h")) == ("hidden" in textify.to_triples(build_relevant_scene_graph(env, hidden=True)))
+        n_bowls = sum(1 for n in sg.nodes if n.startswith("black bowl"))
+        if n_bowls > 1:
+            assert compose("P5") != compose("P3")
+        prompts = {}
+        for k in settings.PROMPT_CONDITIONS:
+            try:
+                prompts[k] = compose(k)
+            except ValueError as e:  # このタスクでは作れない条件（例: おとりのないシーンの P5、自作タスクの L0）
+                prompts[k] = f"（なし: {e}）"
         (out_dir / f"{args.suite}_{task_id}.json").write_text(
             json.dumps({"instruction": instruction, "scene_graph": sg.to_dict(), "prompts": prompts}, indent=2, ensure_ascii=False)
         )
         Image.fromarray(np.ascontiguousarray(obs["pixels"]["image"][0][::-1, ::-1])).save(out_dir / f"{args.suite}_{task_id}.png")
         print(f"task {task_id}: {instruction}")
-        print(f"  {textify.to_triples(sg)}")
+        for k in ("P1", "P2", "P3", "P3h", "P5"):
+            print(f"  {k}: {prompts[k]}")
+        print(f"  P4 の関係の数: {len(sg.relations)}")
         vec_env.close()
 
     print(f"saved: {out_dir}")

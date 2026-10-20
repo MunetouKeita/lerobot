@@ -4,6 +4,7 @@
     {
       "name": "behind_wooden_cabinet",
       "language": "pick up the black bowl 1 and place it on the plate",
+      "language_with_location": "pick up the black bowl behind the wooden cabinet and place it on the plate",
       "bddl_file": "behind_wooden_cabinet.bddl",
       "init_states_file": "behind_wooden_cabinet.pruned_init",
       "base": "vla3dsg_occluded/scene.bddl",
@@ -34,6 +35,7 @@
     {
       "name": "behind_microwave",
       "language": "pick up the black bowl 1 and place it on the plate",
+      "language_with_location": "pick up the black bowl behind the microwave and place it on the plate",
       "bddl_file": "behind_microwave.bddl",
       "init_states_file": "behind_microwave.pruned_init",
       "base": "vla3dsg_occluded/scene.bddl",
@@ -64,6 +66,7 @@
     {
       "name": "next_to_wooden_cabinet",
       "language": "pick up the black bowl 1 and place it on the plate",
+      "language_with_location": "pick up the black bowl next to the wooden cabinet and place it on the plate",
       "bddl_file": "next_to_wooden_cabinet.bddl",
       "init_states_file": "next_to_wooden_cabinet.pruned_init",
       "base": "vla3dsg_occluded/scene.bddl",
@@ -94,6 +97,7 @@
     {
       "name": "next_to_microwave",
       "language": "pick up the black bowl 1 and place it on the plate",
+      "language_with_location": "pick up the black bowl next to the microwave and place it on the plate",
       "bddl_file": "next_to_microwave.bddl",
       "init_states_file": "next_to_microwave.pruned_init",
       "base": "vla3dsg_occluded/scene.bddl",
@@ -118,6 +122,74 @@
         "visible_points_first": {
           "agentview": 399,
           "robot0_eye_in_hand": 399
+        }
+      }
+    },
+    {
+      "name": "behind_wooden_cabinet_no_decoy",
+      "language": "pick up the black bowl and place it on the plate",
+      "language_with_location": "pick up the black bowl behind the wooden cabinet and place it on the plate",
+      "bddl_file": "behind_wooden_cabinet_no_decoy.bddl",
+      "init_states_file": "behind_wooden_cabinet_no_decoy.pruned_init",
+      "base": "vla3dsg_occluded/scene.bddl",
+      "regions": [
+        "target_region=-0.21,-0.34,-0.19,-0.32"
+      ],
+      "removed_objects": [
+        "akita_black_bowl_2"
+      ],
+      "visibility": {
+        "target": "akita_black_bowl_1",
+        "occluder": "wooden_cabinet_1",
+        "n_init": 50,
+        "n_rejected": 6,
+        "target_position_last": [
+          -0.207,
+          -0.34,
+          0.898
+        ],
+        "agentview_visible_ratio": {
+          "mean": 0.0,
+          "max": 0.0
+        },
+        "wrist_visible_ratio_first": null,
+        "visible_points_first": {
+          "agentview": 0,
+          "robot0_eye_in_hand": 0
+        }
+      }
+    },
+    {
+      "name": "behind_microwave_no_decoy",
+      "language": "pick up the black bowl and place it on the plate",
+      "language_with_location": "pick up the black bowl behind the microwave and place it on the plate",
+      "bddl_file": "behind_microwave_no_decoy.bddl",
+      "init_states_file": "behind_microwave_no_decoy.pruned_init",
+      "base": "vla3dsg_occluded/scene.bddl",
+      "regions": [
+        "target_region=-0.24,0.30,-0.22,0.32"
+      ],
+      "removed_objects": [
+        "akita_black_bowl_2"
+      ],
+      "visibility": {
+        "target": "akita_black_bowl_1",
+        "occluder": "microwave_1",
+        "n_init": 50,
+        "n_rejected": 9,
+        "target_position_last": [
+          -0.236,
+          0.312,
+          0.898
+        ],
+        "agentview_visible_ratio": {
+          "mean": 0.0,
+          "max": 0.0
+        },
+        "wrist_visible_ratio_first": null,
+        "visible_points_first": {
+          "agentview": 0,
+          "robot0_eye_in_hand": 0
         }
       }
     }

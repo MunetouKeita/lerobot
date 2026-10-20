@@ -14,7 +14,7 @@ def to_json(sg: SceneGraph) -> str:
 
 
 def to_triples(sg: SceneGraph) -> str:
-    return "; ".join(f"({s}, {r}, {o})" for s, r, o in sg.relations)
+    return "; ".join("(" + ", ".join(r) + ")" for r in sg.relations)
 
 
 def to_natural(sg: SceneGraph) -> str:
@@ -40,7 +40,7 @@ def shuffled(sg: SceneGraph, rng: np.random.Generator) -> SceneGraph:
         return text
 
     relations = [(rename(s), r, rename(o)) for s, r, o in sg.relations]
-    return SceneGraph(nodes=[mapping[n] for n in nodes], relations=relations)
+    return SceneGraph(nodes=[mapping[n] for n in nodes], relations=relations, target=sg.target)
 
 
 def filler(n_tokens: int, count_tokens: Callable[[str], int]) -> str:
