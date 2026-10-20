@@ -38,7 +38,7 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 | `vla3dsg/config/settings.py` | 設定値（パス、シード、チェックポイント、評価引数 `molmoact2_eval_args` など）の一元管理 |
 | `vla3dsg/config/instructions_ja.py` | LIBERO の指示文の日本語訳（デモ動画のテロップ用） |
 | `vla3dsg/config/object_names.py` | SG のノード名に使う物体の読みやすい名前 |
-| `vla3dsg/scene_graph/` | シミュレータの状態から正解の SG を作る（`builder.py`: 全物体どうしの関係、`relevant.py`: 掴む対象を同じ種類の別の物体と見分ける最小の関係だけの小さな SG）、テキスト化と対照条件（`textify.py`） |
+| `vla3dsg/scene_graph/` | シミュレータの状態から正解の SG を作る（`builder.py`: 全物体どうしの関係、`relevant.py`: 掴む対象を同じ種類の別の物体と見分ける最小の関係だけの小さな SG）、テキスト化（`textify.py`: 三つ組と、場所を書いた指示文） |
 | `vla3dsg/prompting/` | プロンプト条件に従ってエピソードごとに指示文を差し替える（`prompt_condition.py`） |
 | `vla3dsg/envs/` | `lerobot-eval` にプラグインとして読み込ませる環境設定（環境タイプ `libero_vla3dsg`）、自作スイートの登録（`custom_suites.py`）、自作タスクを作る処理（`custom_task_builder.py`: 配置範囲の書き換え・配置のサンプリング・見え方の計測） |
 | `vla3dsg/custom_tasks/<スイート>/` | 自作タスク（BDDL・初期状態 `.pruned_init`・`tasks.json`・確認用の画像 `previews/overview.png`）。`tasks.json` のあるフォルダは `--suite <スイート>` で評価できる |
@@ -113,6 +113,7 @@ export MKL_NUM_THREADS=1
 | リポジトリ | `~/lerobot`（`vla3dsg` ブランチを clone。GitHub に ssh で接続できる） |
 | 仮想環境 | `~/environments/lerobot-vla3dsg`。venv は `~/environments/` に置くため、uv のコマンドの前に `export PATH=$HOME/.local/bin:$PATH UV_PROJECT_ENVIRONMENT=$HOME/environments/lerobot-vla3dsg` を設定する |
 | データ・チェックポイント | `~/.cache/huggingface/hub`（`lerobot/libero`、`allenai/MolmoAct2-LIBERO` など） |
+| 描画（評価） | システムの EGL の設定（`/usr/share/glvnd/egl_vendor.d/`）に NVIDIA の分がなく、そのままでは LIBERO の画面なし描画が失敗する。ホームの `~/.config/egl/10_nvidia.json` を作ってあり、評価の前に `export __EGL_VENDOR_LIBRARY_FILENAMES=$HOME/.config/egl/10_nvidia.json` を設定する（sudo 不要）。LIBERO の設定 `~/.libero/config.yaml` は既定値で作成済み |
 
 - 共有サーバのため、次を守る
   - GPU は基本的に 2 枚まで使う。他のユーザーが使っていることが多いので、使う前に `nvidia-smi` で空き（メモリ・使用率）を確かめ、`CUDA_VISIBLE_DEVICES` で指定する
@@ -132,10 +133,10 @@ git lfs install && git lfs pull                     # LeRobot のテスト用ア
 uv run python vla3dsg/tests/test_<対象>.py          # 本研究のモジュールテスト
 uv run python vla3dsg/scripts/run_eval.py --name baseline/xxx --suite libero_goal --n-episodes 5   # 評価（結果は results/<name>/）
 uv run python vla3dsg/scripts/run_eval.py --name baseline/xxx --suite libero_spatial,libero_goal --task-ids 0 5 --n-episodes 20 --annotated-video
-uv run python vla3dsg/scripts/run_eval.py --name exp1/xxx/B1 --suite libero_spatial --n-episodes 5 --prompt-condition B1 --annotated-video   # プロンプト条件（A・B1〜B3・C・D、切り分け用の L0・L1、最小の実験の P1〜P5 と、隠れていることを加える P1h〜P5h。settings.PROMPT_CONDITIONS）
-uv run python vla3dsg/scripts/make_custom_task.py --suite vla3dsg_hidden --name <タスク名> --base libero_spatial/<元のタスク名> --language "<指示文>" --region <領域名>=x0,y0,x1,y1 --target <物体> --occluder <遮る物体>   # 自作タスク（--preview で 1 件だけ tmp/ に試作。--remove-object で物体を除く）
-uv run python vla3dsg/scripts/generate_demos.py --name <名前> --suite vla3dsg_hidden --task-ids 0 1 --n-episodes 50   # デモの自動生成（タスクごとの設定は settings.DEMO_TASK_SPECS）
-uv run python vla3dsg/scripts/summarize_results.py --root exp1/xxx --names A B1 B2 B3 C D   # 条件の比較表（<root>/comparison.md・outcomes.md）
+uv run python vla3dsg/scripts/run_eval.py --name minimal/xxx/P3 --suite vla3dsg_occluded --task-ids 0 1 --n-episodes 10 --prompt-condition P3 --annotated-video   # プロンプト条件（元の指示文 A、場所の渡し方 P1〜P5 と隠れていることを加える P1h〜P5h。settings.PROMPT_CONDITIONS）
+uv run python vla3dsg/scripts/make_custom_task.py --suite vla3dsg_occluded --name <タスク名> --base vla3dsg_occluded/scene.bddl --language "<指示文>" --region <領域名>=x0,y0,x1,y1 --target <物体> --occluder <遮る物体>   # 自作タスク（--preview で 1 件だけ tmp/ に試作。--remove-object で物体を除く）
+uv run python vla3dsg/scripts/generate_demos.py --name <名前> --suite vla3dsg_occluded --task-ids 0 1 2 3 --n-episodes 50   # デモの自動生成（タスクごとの設定は settings.DEMO_TASK_SPECS）
+uv run python vla3dsg/scripts/summarize_results.py --root minimal/xxx --names P1 P2 P3 P4 P5   # 条件の比較表（<root>/comparison.md・outcomes.md）
 uv run python vla3dsg/scripts/make_demo_video.py --name baseline/xxx --keep-failures-only   # デモ動画（results/<name>/videos/demo_with_captions.mp4）と失敗動画だけを残す
 uv run pytest tests -svv --maxfail=10               # LeRobot 本体のテスト（本体を変更した場合）
 pre-commit run --all-files                          # Lint・フォーマット（ruff、typos、bandit など）
