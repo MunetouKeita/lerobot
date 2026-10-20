@@ -49,7 +49,6 @@ def main() -> None:
         "--base", help="元のタスク。LIBERO のタスク（<スイート>/<タスク名>）か、custom_tasks/ からの BDDL のパス（例: vla3dsg_occluded/scene.bddl）"
     )
     parser.add_argument("--language", help="ポリシーに渡す指示文")
-    parser.add_argument("--location-language", help="場所を書いた指示文（プロンプト条件 P1 で使う。--language に場所を書かない場合）")
     parser.add_argument("--region", action="append", default=[], help="<領域名>=x_min,y_min,x_max,y_max（複数可）")
     parser.add_argument("--remove-object", action="append", default=[], help="シーンから取り除く物体（例: akita_black_bowl_2。複数可）")
     parser.add_argument("--target", help="見え方を測る対象物体（例: akita_black_bowl_1）")
@@ -125,7 +124,6 @@ def main() -> None:
             {
                 "name": args.name,
                 "language": args.language,
-                **({"language_with_location": args.location_language} if args.location_language else {}),
                 "bddl_file": f"{args.name}.bddl",
                 "init_states_file": f"{args.name}.pruned_init",
                 "base": args.base,

@@ -4,7 +4,6 @@
     {
       "name": "behind_wooden_cabinet",
       "language": "pick up the black bowl 1 and place it on the plate",
-      "language_with_location": "pick up the black bowl behind the wooden cabinet and place it on the plate",
       "bddl_file": "behind_wooden_cabinet.bddl",
       "init_states_file": "behind_wooden_cabinet.pruned_init",
       "base": "vla3dsg_occluded/scene.bddl",
@@ -35,7 +34,6 @@
     {
       "name": "behind_microwave",
       "language": "pick up the black bowl 1 and place it on the plate",
-      "language_with_location": "pick up the black bowl behind the microwave and place it on the plate",
       "bddl_file": "behind_microwave.bddl",
       "init_states_file": "behind_microwave.pruned_init",
       "base": "vla3dsg_occluded/scene.bddl",
@@ -66,7 +64,6 @@
     {
       "name": "next_to_wooden_cabinet",
       "language": "pick up the black bowl 1 and place it on the plate",
-      "language_with_location": "pick up the black bowl next to the wooden cabinet and place it on the plate",
       "bddl_file": "next_to_wooden_cabinet.bddl",
       "init_states_file": "next_to_wooden_cabinet.pruned_init",
       "base": "vla3dsg_occluded/scene.bddl",
@@ -97,7 +94,6 @@
     {
       "name": "next_to_microwave",
       "language": "pick up the black bowl 1 and place it on the plate",
-      "language_with_location": "pick up the black bowl next to the microwave and place it on the plate",
       "bddl_file": "next_to_microwave.bddl",
       "init_states_file": "next_to_microwave.pruned_init",
       "base": "vla3dsg_occluded/scene.bddl",
@@ -128,7 +124,6 @@
     {
       "name": "behind_wooden_cabinet_no_decoy",
       "language": "pick up the black bowl and place it on the plate",
-      "language_with_location": "pick up the black bowl behind the wooden cabinet and place it on the plate",
       "bddl_file": "behind_wooden_cabinet_no_decoy.bddl",
       "init_states_file": "behind_wooden_cabinet_no_decoy.pruned_init",
       "base": "vla3dsg_occluded/scene.bddl",
@@ -162,7 +157,6 @@
     {
       "name": "behind_microwave_no_decoy",
       "language": "pick up the black bowl and place it on the plate",
-      "language_with_location": "pick up the black bowl behind the microwave and place it on the plate",
       "bddl_file": "behind_microwave_no_decoy.bddl",
       "init_states_file": "behind_microwave_no_decoy.pruned_init",
       "base": "vla3dsg_occluded/scene.bddl",

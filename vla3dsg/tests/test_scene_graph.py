@@ -26,7 +26,7 @@ from vla3dsg.envs.libero_vla3dsg import make_env  # noqa: E402
 from vla3dsg.prompting import prompt_condition  # noqa: E402
 from vla3dsg.scene_graph import textify  # noqa: E402
 from vla3dsg.scene_graph.builder import build_scene_graph  # noqa: E402
-from vla3dsg.scene_graph.relevant import build_relevant_scene_graph  # noqa: E402
+from vla3dsg.scene_graph.relevant import build_relevant_scene_graph, target_is_hidden  # noqa: E402
 
 
 def main() -> None:
@@ -70,14 +70,20 @@ def main() -> None:
         # 最小の実験の条件（P1〜P5）
         def compose(k: str) -> str:
             return prompt_condition.compose_prompt(
-                instruction, k, sg, np.random.default_rng(1), inner._other_task_description, inner._location_description, env
+                instruction, k, sg, np.random.default_rng(1), inner._other_task_description, env
             )
 
-        assert compose("P1") == inner._location_description.lower(), compose("P1")
+        assert compose("P1") == textify.to_instruction(build_relevant_scene_graph(env))
         assert compose("P2") == f"pick up the {sg.target} and place it on the plate"
         relevant = build_relevant_scene_graph(env)
         assert 1 <= len(relevant.relations) <= settings.SG_RELEVANT_MAX and all(r[0] == sg.target for r in relevant.relations)
         assert ("hidden" in compose("P3h")) == ("hidden" in textify.to_triples(build_relevant_scene_graph(env, hidden=True)))
+        assert compose("P1").startswith("pick up the black bowl ") and compose("P1").endswith(" and place it on the plate")
+        # h の条件は、対象が隠れているときだけ文が変わる
+        for k in ("P1", "P2", "P3", "P4"):
+            assert ("hidden" in compose(f"{k}h")) == target_is_hidden(env), (k, compose(f"{k}h"))
+            if not target_is_hidden(env):
+                assert compose(f"{k}h") == compose(k)
         n_bowls = sum(1 for n in sg.nodes if n.startswith("black bowl"))
         if n_bowls > 1:
             assert compose("P5") != compose("P3")
@@ -92,7 +98,7 @@ def main() -> None:
         )
         Image.fromarray(np.ascontiguousarray(obs["pixels"]["image"][0][::-1, ::-1])).save(out_dir / f"{args.suite}_{task_id}.png")
         print(f"task {task_id}: {instruction}")
-        for k in ("P1", "P2", "P3", "P3h", "P5"):
+        for k in ("P1", "P1h", "P2", "P2h", "P3", "P3h", "P4h", "P5", "P5h"):
             print(f"  {k}: {prompts[k]}")
         print(f"  P4 の関係の数: {len(sg.relations)}")
         vec_env.close()

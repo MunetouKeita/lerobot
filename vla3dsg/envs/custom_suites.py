@@ -42,15 +42,6 @@ def _make_benchmark_class(suite_name: str, suite_dir: Path) -> type[Benchmark]:
     return type(suite_name.upper(), (Benchmark,), {"__init__": __init__})
 
 
-def location_language(task: Task) -> str:
-    """場所を書いた指示文（プロンプト条件 P1）。自作タスクは tasks.json の language_with_location、LIBERO のタスクは元の指示文。"""
-    folder = Path(task.problem_folder)
-    if folder.is_absolute() and (folder / "tasks.json").exists():
-        entry = next(t for t in load_suite_spec(folder)["tasks"] if t["name"] == task.name)
-        return entry.get("language_with_location", task.language)
-    return task.language
-
-
 def custom_suite_max_steps() -> dict[str, int]:
     """自作スイート名 → 最大ステップ数。"""
     if not settings.CUSTOM_TASKS_DIR.exists():

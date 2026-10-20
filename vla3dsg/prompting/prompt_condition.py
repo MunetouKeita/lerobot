@@ -20,10 +20,9 @@ from lerobot.envs.libero import LiberoEnv
 from lerobot.policies.molmoact2.processor_molmoact2 import _normalize_question_text
 
 from vla3dsg.config import settings
-from vla3dsg.envs import custom_suites
 from vla3dsg.scene_graph import textify
 from vla3dsg.scene_graph.builder import SceneGraph, build_scene_graph
-from vla3dsg.scene_graph.relevant import build_relevant_scene_graph
+from vla3dsg.scene_graph.relevant import build_relevant_scene_graph, mark_hidden, target_is_hidden
 
 _installed = False
 # 実際に使ったプロンプトの記録（run_eval.py が prompts.jsonl に保存する）
@@ -59,30 +58,32 @@ def compose_prompt(
     sg: SceneGraph,
     rng: np.random.Generator,
     other_instruction: str = "",
-    location_instruction: str = "",
     env: Any = None,
 ) -> str:
     """条件に応じた指示文を返す。条件 A は元の指示文の正規化のみ（モデルへの入力はこれまでと同一）。
 
-    P1〜P5 では、location_instruction（場所を書いた指示文。LIBERO のタスクでは元の指示文）と、小さな SG を作るための
-    env（LIBERO の BDDL 環境）を使う。
+    P1〜P5 では、小さな SG を作るために env（LIBERO の BDDL 環境）を使う。末尾の h（P1h〜P5h）は、対象が隠れていれば
+    その事実を加える（場所の情報とは独立。P5h は「場所は誤り、隠れていることは正しい」）。
     """
     base = _normalize_question_text(instruction)
     if condition == "A":
         return base
-    if condition == "P1":
-        return _normalize_question_text(location_instruction or instruction)
-    if condition in ("P2", "P3", "P3h", "P4", "P5"):
-        named = f"pick up the {sg.target} and place it on the plate"  # 場所を書かず、対象を SG のノード名で指す
-        if condition == "P2":
-            return named
-        if condition == "P4":
-            extra = textify.to_triples(sg)
-        elif condition == "P5":
-            extra = textify.to_triples(_wrong_relevant(env, sg))
+    if condition in ("P1", "P1h", "P2", "P2h", "P3", "P3h", "P4", "P4h", "P5", "P5h"):
+        kind, hidden = condition[:2], condition.endswith("h") and target_is_hidden(env)
+        if kind == "P1":
+            # SG の小さな関係から、場所を書いた指示文（LIBERO の指示文と同じ形）を作る
+            return textify.to_instruction(build_relevant_scene_graph(env, hidden=hidden), hidden=hidden)
+        if kind == "P2":
+            # 場所を書かず、対象を SG のノード名で指す
+            return f"pick up the {sg.target}{' that is hidden' if hidden else ''} and place it on the plate"
+        if kind == "P3":
+            given = build_relevant_scene_graph(env)
+        elif kind == "P4":
+            given = sg
         else:
-            extra = textify.to_triples(build_relevant_scene_graph(env, hidden=condition == "P3h"))
-        return f"{named}. {settings.PROMPT_SG_LABEL}: {extra}"
+            given = _wrong_relevant(env, sg)
+        extra = textify.to_triples(mark_hidden(given) if hidden else given)
+        return f"pick up the {sg.target} and place it on the plate. {settings.PROMPT_SG_LABEL}: {extra}"
     if condition == "L0":
         stripped, n = re.subn(settings.PROMPT_LOCATION_PATTERN, r"\1 \2", base)
         if n != 1:
@@ -120,7 +121,6 @@ def install(condition: str) -> None:
         orig_init(self, task_suite, task_id, *args, **kwargs)
         n_tasks = task_suite.get_num_tasks()
         self._other_task_description = task_suite.get_task((task_id + settings.PROMPT_OTHER_TASK_OFFSET) % n_tasks).language
-        self._location_description = custom_suites.location_language(task_suite.get_task(task_id))
 
     def reset(self: LiberoEnv, *args: Any, **kwargs: Any) -> Any:
         out = orig_reset(self, *args, **kwargs)
@@ -132,7 +132,7 @@ def install(condition: str) -> None:
         seed = zlib.crc32(f"{self.task}:{self._prompt_episode}".encode())
         rng = np.random.default_rng(seed)
         prompt = compose_prompt(
-            self._orig_task_description, condition, sg, rng, self._other_task_description, self._location_description, self._env.env
+            self._orig_task_description, condition, sg, rng, self._other_task_description, self._env.env
         )
         self.task_description = prompt
         self._prompt_step = 0

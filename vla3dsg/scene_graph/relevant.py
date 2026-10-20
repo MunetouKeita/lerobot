@@ -72,6 +72,24 @@ def _holds(env: Any, obj_id: str, rel: tuple[str, str], names: dict[str, str], s
     return anchor is not None and anchor in positions and _direction(positions[obj_id], positions[anchor]) == rel[0]
 
 
+def target_is_hidden(env: Any) -> bool:
+    """掴む対象（BDDL の obj_of_interest の先頭の物体）が agentview から見えていないか。"""
+    target_id = next(i for i in env.obj_of_interest if i in env.objects_dict)
+    ratio, _ = _occlusion(env, target_id, list(_display_names(env)))
+    return ratio < settings.SG_HIDDEN_MAX_VISIBLE
+
+
+def mark_hidden(sg: SceneGraph) -> SceneGraph:
+    """掴む対象が主語の最初の関係に、4 つ目の要素 "hidden" を付けた SG。"""
+    relations = list(sg.relations)
+    k = next((i for i, r in enumerate(relations) if r[0] == sg.target), None)
+    if k is None:
+        relations.append((sg.target, "hidden"))
+    elif "hidden" not in relations[k]:
+        relations[k] = (*relations[k], "hidden")
+    return SceneGraph(nodes=list(sg.nodes), relations=relations, target=sg.target)
+
+
 def build_relevant_scene_graph(env: Any, subject: str | None = None, hidden: bool = False) -> SceneGraph:
     """掴む対象（subject を省略すると BDDL の obj_of_interest の先頭の物体）についての小さな SG。
 

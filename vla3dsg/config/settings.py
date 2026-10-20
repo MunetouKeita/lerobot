@@ -130,12 +130,16 @@ PROMPT_CONDITIONS = {
     "C": "指示文 + SG（JSON）と同じトークン数の無関係な文",
     "D": "指示文 + 物体名を入れ替えた SG（JSON）",
     # 最小の実験（2026-10-20）: 場所は指示文に書くか SG にだけ書くか、SG の長さ、SG の内容を使っているか
-    "P1": "場所を書いた指示文（LIBERO のタスクでは元の指示文、自作タスクでは tasks.json の language_with_location）",
+    "P1": "P3 の SG から作った、場所を書いた指示文（LIBERO の指示文と同じ形。例: pick up the black bowl behind the wooden cabinet and place it on the plate）",
+    "P1h": "P1 で、対象が隠れていればそれも書く（例: pick up the black bowl that is hidden behind the wooden cabinet and place it on the plate）",
     "P2": "対象だけの指示文（場所なし。例: pick up the black bowl 1 and place it on the plate）",
+    "P2h": "P2 で、対象が隠れていればそれも書く（例: pick up the black bowl 1 that is hidden and place it on the plate）",
     "P3": "P2 + 掴む対象を見分ける最小の関係だけの SG（三つ組、1〜2 本。scene_graph/relevant.py）",
     "P3h": "P3 で、対象が隠れていれば関係に hidden を付ける",
     "P4": "P2 + 全部の関係の SG（三つ組）",
+    "P4h": "P4 で、対象が隠れていれば対象の最初の関係に hidden を付ける",
     "P5": "P2 + 誤った SG（同じ種類の別の物体の P3 の関係を、対象の名前で書いたもの）",
+    "P5h": "P5 で、対象が隠れていれば最初の関係に hidden を付ける（場所は誤り、隠れていることは正しい）",
     # 原因の切り分け（Phase 4）: ポリシーが指示文の場所の指定を使っているか
     "L0": "場所の指定を除いた指示文（例: pick up the black bowl and place it on the plate）",
     "L1": "同じスイートの別タスクの指示文（タスク ID を PROMPT_OTHER_TASK_OFFSET ずらす）",
