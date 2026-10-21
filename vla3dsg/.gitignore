@@ -1,5 +1,6 @@
 tmp/
 results/**/videos/
+!results/seminar/*/videos/
 results/**/*.log
 __pycache__/
 data/
