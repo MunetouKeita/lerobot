@@ -1,0 +1,10 @@
+{"out": "results/seminar/2026-10-21/videos/1_scenes_scripted.mp4",
+ "title": "自作の 4 シーンと、スクリプト制御でボウルを皿に置く様子",
+ "crop": "left",
+ "groups": [
+  {"label": "見えている", "color": "#444444", "videos": [
+    {"caption": "標準", "result": "成功", "path": "results/demos/check_goal/videos/task0_episode_0.mp4"},
+    {"caption": "場所シャッフル", "result": "成功", "path": "results/demos/check_goal/videos/task1_episode_0.mp4"}]},
+  {"label": "隠れている（ワインラックの裏）", "color": "#c0392b", "videos": [
+    {"caption": "標準＋隠れ", "result": "成功", "path": "results/demos/check_goal/videos/task2_episode_0.mp4"},
+    {"caption": "＋おとりのボウル", "result": "成功", "path": "results/demos/check_goal/videos/task3_episode_0.mp4"}]}]}

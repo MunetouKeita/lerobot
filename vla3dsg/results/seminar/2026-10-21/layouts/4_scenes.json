@@ -1,0 +1,15 @@
+{"out": "results/seminar/2026-10-21/videos/4_scenes.mp4",
+ "title": "実験2　4 つのシーンで「put the bowl on the plate」（追加学習なし）",
+ "crop": "agentview",
+ "groups": [
+  {"label": "標準", "color": "#444444", "videos": [
+    {"caption": "公式の指示文のみ", "result": "成功", "path": "results/zeroshot/standard/base/videos/vla3dsg_goal_0/eval_episode_9.mp4"}]},
+  {"label": "場所シャッフル", "color": "#1f5fbf", "videos": [
+    {"caption": "公式の指示文のみ", "result": "失敗", "path": "results/zeroshot/shuffle/base/videos/vla3dsg_goal_1/eval_episode_9.mp4"},
+    {"caption": "＋短い SG", "result": "成功", "path": "results/zeroshot/shuffle/base_short/videos/vla3dsg_goal_1/eval_episode_9.mp4"}]},
+  {"label": "標準＋隠れ", "color": "#c0392b", "videos": [
+    {"caption": "公式の指示文のみ", "result": "失敗", "path": "results/zeroshot/hidden/base/videos/vla3dsg_goal_2/eval_episode_9.mp4"},
+    {"caption": "＋短い SG", "result": "失敗", "path": "results/zeroshot/hidden/base_short/videos/vla3dsg_goal_2/eval_episode_9.mp4"}]},
+  {"label": "標準＋隠れ（おとりあり）", "color": "#d35400", "videos": [
+    {"caption": "公式の指示文のみ", "result": "失敗", "path": "results/zeroshot/hidden_decoy/base/videos/vla3dsg_goal_3/eval_episode_9.mp4"},
+    {"caption": "＋短い SG", "result": "失敗", "path": "results/zeroshot/hidden_decoy/base_short/videos/vla3dsg_goal_3/eval_episode_9.mp4"}]}]}

@@ -1,0 +1,15 @@
+{"out": "results/seminar/2026-10-21/videos/3_formats.mp4",
+ "title": "実験1　場所シャッフル「put the bowl on the plate」に SG を加える（形式・長さ）",
+ "crop": "agentview",
+ "groups": [
+  {"label": "SG なし", "color": "#444444", "videos": [
+    {"caption": "公式の指示文のみ", "result": "失敗", "path": "results/zeroshot/shuffle/base/videos/vla3dsg_goal_1/eval_episode_9.mp4"}]},
+  {"label": "＋短い SG", "color": "#1f5fbf", "videos": [
+    {"caption": "三つ組", "result": "成功", "path": "results/zeroshot/shuffle/base_short/videos/vla3dsg_goal_1/eval_episode_9.mp4"},
+    {"caption": "JSON", "result": "成功", "path": "results/zeroshot/shuffle/base_short_json/videos/vla3dsg_goal_1/eval_episode_9.mp4"},
+    {"caption": "自然文", "result": "成功", "path": "results/zeroshot/shuffle/base_short_nl/videos/vla3dsg_goal_1/eval_episode_9.mp4"}]},
+  {"label": "長い文", "color": "#8e44ad", "videos": [
+    {"caption": "＋すべての SG", "result": "失敗", "path": "results/zeroshot/shuffle/base_full/videos/vla3dsg_goal_1/eval_episode_9.mp4"},
+    {"caption": "＋無関係な文", "result": "失敗", "path": "results/zeroshot/shuffle/base_irrelevant/videos/vla3dsg_goal_1/eval_episode_9.mp4"}]},
+  {"label": "対照", "color": "#c0392b", "videos": [
+    {"caption": "＋誤った SG", "result": "成功", "path": "results/zeroshot/shuffle/base_wrong/videos/vla3dsg_goal_1/eval_episode_9.mp4"}]}]}
