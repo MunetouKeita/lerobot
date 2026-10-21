@@ -88,7 +88,7 @@ DEMO_VIA_JITTER = 0.02  # m。経由点を水平方向にずらす幅
 DEMO_MOVE_NOISE = 0.02  # 移動の指令に加える揺らぎ（1 ステップあたりの標準偏差）
 DEMO_ROT_NOISE = 0.01  # 回転の指令に加える揺らぎ
 DEMO_OFFICIAL_DATASET = "lerobot/libero"  # 比べる公式デモ（generate_demos.py --report）
-DEMO_OFFICIAL_TASK = "libero_spatial/pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate"  # 自作のシーンのタスクと比べる公式デモ
+DEMO_OFFICIAL_TASK = "libero_goal/put_the_bowl_on_the_plate"  # 自作のシーンのタスクと比べる公式デモ
 DEMO_REPORT_N_EPISODES = 20  # 統計に使うエピソード数（各グループ）
 DEMO_REPORT_STALL_MOVE = 0.001  # m。1 ステップの手先の移動がこれ未満なら「止まっている」と数える
 DEMO_NOISE_THETA = 0.1  # 揺らぎが 0 に戻る速さ（オルンシュタイン＝ウーレンベック過程）
@@ -96,13 +96,13 @@ DEMO_NOISE_THETA = 0.1  # 揺らぎが 0 に戻る速さ（オルンシュタイ
 # 掴む前に手先を鉛直軸まわりに回す角度（度）。開いた指は初期の向きでは y 方向に並ぶため、x 方向の縁を掴むときは 90° 回して
 # 指が縁の壁を挟むようにする（回さないと片方の指が縁に乗って下りられず、押し続ける）
 DEMO_TASK_SPECS = {
-    # 遮る物体を 2 つ（木のキャビネット・電子レンジ）に増やし、場所は SG にだけ書くスイート
-    "vla3dsg_occluded": {
-        0: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [(-0.25, 0.0)], "grasp_yaw_deg": 90.0},  # キャビネットの裏
-        # 電子レンジの裏: 指を x 方向に並べると電子レンジ側の指が壁に近すぎて掴み損ねるため、-y 側の縁を回さずに掴む
-        1: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [(-0.28, 0.05)], "grasp_offset": (0.0, -0.04, 0.01)},
-        2: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [], "grasp_yaw_deg": 90.0},  # キャビネットの横
-        3: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [], "grasp_yaw_deg": 90.0},  # 電子レンジの横
+    # libero_goal の put the bowl on the plate を元にしたスイート
+    "vla3dsg_goal": {
+        0: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [], "grasp_yaw_deg": 90.0},  # 標準
+        1: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [], "grasp_yaw_deg": 90.0},  # 場所シャッフル
+        # ワインラックの裏: 手先を回すと前腕がラックに当たるため、+y 側の縁を回さずに掴む（回すと 3/8、回さないと 8/8）
+        2: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [(-0.47, 0.02)], "grasp_offset": (0.0, 0.04, 0.01)},
+        3: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [(-0.47, 0.02)], "grasp_offset": (0.0, 0.04, 0.01)},
     },
 }
 
@@ -113,22 +113,19 @@ SG_ON_MIN_DZ = 0.005  # m。接触していて、相手よりこれ以上高い�
 # 掴む対象についての小さな SG（scene_graph/relevant.py）
 SG_RELEVANT_MAX = 2  # 関係の最大数
 SG_HIDDEN_MAX_VISIBLE = 0.2  # agentview から見える点の割合がこれ未満なら「隠れている」
-SG_LANDMARK_OBJECTS = ("plate",)  # 固定物のほかに、位置の手がかりにする（大きくて動かない）物体の種類
+SG_LANDMARK_OBJECTS = ("plate",)  # 固定物のほかに、位置の手がかりにする（大きくて動かない）物体の種類（行き先の物体は除く）
 
 # プロンプト条件（run_eval.py --prompt-condition）
 PROMPT_CONDITIONS = {
-    "A": "元の指示文のみ",
-    "P1": "P3 の SG から作った、場所を書いた指示文（LIBERO の指示文と同じ形。例: pick up the black bowl behind the wooden cabinet and place it on the plate）",
-    "P1h": "P1 で、対象が隠れていればそれも書く（例: pick up the black bowl that is hidden behind the wooden cabinet and place it on the plate）",
-    "P2": "対象だけの指示文（場所なし。例: pick up the black bowl 1 and place it on the plate）",
-    "P2h": "P2 で、対象が隠れていればそれも書く（例: pick up the black bowl 1 that is hidden and place it on the plate）",
-    "P3": "P2 + 掴む対象を見分ける最小の関係だけの SG（三つ組、1〜2 本。scene_graph/relevant.py）",
-    "P3h": "P3 で、対象が隠れていれば関係に hidden を付ける",
-    "P4": "P2 + 全部の関係の SG（三つ組）",
-    "P4h": "P4 で、対象が隠れていれば対象の最初の関係に hidden を付ける",
-    "P5": "P2 + 誤った SG（同じ種類の別の物体の P3 の関係を、対象の名前で書いたもの）",
-    "P5h": "P5 で、対象が隠れていれば最初の関係に hidden を付ける（場所は誤り、隠れていることは正しい）",
+    "base": "公式の指示文のみ（例: put the bowl on the plate）",
+    "base_short": "公式の指示文 + 掴む対象を見分ける最小の関係だけの SG（三つ組、1〜2 本。scene_graph/relevant.py）",
+    "base_full": "公式の指示文 + 全部の関係の SG（三つ組）",
+    "base_wrong": "公式の指示文 + 対象には当てはまらない関係の SG（おとりがあればおとりの関係、なければ前後左右を逆にしたもの）",
+    "target": "対象の SG のノード名だけの指示文（場所なし。例: put the black bowl 1 on the plate）",
+    "sg_command": "base_short の SG から作った、場所を書いた指示文（例: put the black bowl behind the wine rack on the plate）",
 }
+# 自作スイートのタスク名の表示名（確認用の資料・表）
+SCENE_LABELS = {"standard": "標準", "shuffle": "場所シャッフル", "hidden": "標準＋隠れ", "hidden_decoy": "標準＋隠れ（おとりあり）"}
 PROMPT_SG_LABEL = "scene information"  # 指示文と追加テキストの区切り: "<指示文>. <ラベル>: <テキスト>"
 # SG を加えると指示文が長くなるため、系列長の上限を広げる（既定は指示文 32 トークン分の見込み）
 MOLMOACT2_MAX_SEQUENCE_LENGTH = 1024

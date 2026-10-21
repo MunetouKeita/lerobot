@@ -7,12 +7,15 @@
 4. 初期状態（.pruned_init）と tasks.json を保存し、スイートの全タスクを複数の視点で描画した確認用の画像
    （previews/overview.png、visualization/scene_overview.py）を作り直す
 
-    uv run python vla3dsg/scripts/make_custom_task.py --suite vla3dsg_occluded --name behind_wooden_cabinet \\
-        --base vla3dsg_occluded/scene.bddl --language "pick up the black bowl 1 and place it on the plate" \\
-        --region target_region=-0.21,-0.34,-0.19,-0.32 --target akita_black_bowl_1 --occluder wooden_cabinet_1
+    uv run python vla3dsg/scripts/make_custom_task.py --suite vla3dsg_goal --name hidden_decoy \\
+        --base libero_goal/put_the_bowl_on_the_plate --language "Put the bowl on the plate" \\
+        --region akita_black_bowl_region=-0.48,-0.27,-0.46,-0.25 --target akita_black_bowl_1 --occluder wine_rack_1 \\
+        --add-object akita_black_bowl_2:akita_black_bowl=-0.10,-0.01,-0.08,0.01
+
+--copy-init を付けると、配置を変えず元のタスクの公式の初期状態をそのまま使う（vla3dsg_goal の standard）。
 
 --preview を付けると、初期状態を 1 件だけ作って画像と見え方を tmp/ に保存する（custom_tasks/ には書かない）。
---overview だけを付けると、タスクは作らず確認用の画像だけを作り直す（例: --suite vla3dsg_occluded --overview）。
+--overview だけを付けると、タスクは作らず確認用の画像だけを作り直す（例: --suite vla3dsg_goal --overview）。
 """
 
 import argparse
@@ -27,11 +30,12 @@ settings.apply_runtime_env()
 
 import numpy as np  # noqa: E402
 import torch  # noqa: E402
-from libero.libero import get_libero_path  # noqa: E402
+from libero.libero import benchmark, get_libero_path  # noqa: E402
 from libero.libero.envs import OffScreenRenderEnv  # noqa: E402
 from PIL import Image  # noqa: E402
 
 from vla3dsg.envs.custom_task_builder import (  # noqa: E402
+    add_object,
     body_positions,
     remove_object,
     sample_init_state,
@@ -46,13 +50,17 @@ def main() -> None:
     parser.add_argument("--suite", required=True)
     parser.add_argument("--name", help="タスク名（ファイル名にも使う）")
     parser.add_argument(
-        "--base", help="元のタスク。LIBERO のタスク（<スイート>/<タスク名>）か、custom_tasks/ からの BDDL のパス（例: vla3dsg_occluded/scene.bddl）"
+        "--base", help="元のタスク。LIBERO のタスク（<スイート>/<タスク名>）か、custom_tasks/ からの BDDL のパス（例: vla3dsg_goal/standard.bddl）"
     )
     parser.add_argument("--language", help="ポリシーに渡す指示文")
     parser.add_argument("--region", action="append", default=[], help="<領域名>=x_min,y_min,x_max,y_max（複数可）")
     parser.add_argument("--remove-object", action="append", default=[], help="シーンから取り除く物体（例: akita_black_bowl_2。複数可）")
+    parser.add_argument(
+        "--add-object", action="append", default=[], help="シーンに足す物体 <物体>:<種類>=x_min,y_min,x_max,y_max（例: おとりのボウル。複数可）"
+    )
     parser.add_argument("--target", help="見え方を測る対象物体（例: akita_black_bowl_1）")
     parser.add_argument("--occluder", help="対象を遮っている固定物（見え方の比較用）")
+    parser.add_argument("--copy-init", action="store_true", help="LIBERO のタスクの公式の初期状態をそのまま使う（配置を変えない対照用）")
     parser.add_argument("--max-steps", type=int, default=settings.CUSTOM_TASK_MAX_STEPS)
     parser.add_argument("--n-init", type=int, default=settings.CUSTOM_TASK_N_INIT)
     parser.add_argument("--preview", action="store_true")
@@ -72,6 +80,10 @@ def main() -> None:
         bddl = (Path(get_libero_path("bddl_files")) / base_suite / f"{base_task}.bddl").read_text()
     for obj_id in args.remove_object:
         bddl = remove_object(bddl, obj_id)
+    for spec in args.add_object:
+        obj, values = spec.split("=")
+        obj_id, category = obj.split(":")
+        bddl = add_object(bddl, obj_id, category, f"{obj_id}_region", tuple(float(v) for v in values.split(",")))
     for spec in args.region:
         region, values = spec.split("=")
         bddl = set_region_range(bddl, region, tuple(float(v) for v in values.split(",")))
@@ -86,6 +98,15 @@ def main() -> None:
     n_target = 1 if args.preview else args.n_init
     states, vis_list, rejected = [], [], 0
     seed = 0
+    if args.copy_init:
+        base_suite, base_task = args.base.split("/")
+        suite = benchmark.get_benchmark_dict()[base_suite]()
+        official = suite.get_task_init_states([t.name for t in suite.tasks].index(base_task))
+        for state in official[:n_target]:
+            env.reset()
+            env.set_init_state(state)
+            states.append(state)
+            vis_list.append(visibility(env, args.target, args.occluder))
     while len(states) < n_target:
         if seed >= n_target * settings.CUSTOM_TASK_MAX_TRIALS_FACTOR:
             raise RuntimeError(f"有効な配置が集まらない（{len(states)}/{n_target}、除外 {rejected}）。配置範囲を見直すこと")
@@ -128,7 +149,9 @@ def main() -> None:
                 "init_states_file": f"{args.name}.pruned_init",
                 "base": args.base,
                 "regions": args.region,
+                "official_init": args.copy_init,
                 "removed_objects": args.remove_object,
+                "added_objects": args.add_object,
                 "visibility": stats,
             }
         ]

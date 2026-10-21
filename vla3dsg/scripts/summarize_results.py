@@ -4,7 +4,11 @@
 - outcomes.md: 各エピソードで何をどこに置いたか。開始時と終了時の SG を比べ、終了時に新しくできた on / in の関係
   （例: "black bowl 2 on plate"）を数える。終了時の SG がない結果では作らない
 
-    uv run python vla3dsg/scripts/summarize_results.py --root minimal/s1_spatial --names P1 P2 P3 P4 P5
+--scenes を付けると、<root>/<シーン>/<条件>/ の結果をシーンごとにまとめ、<root>/comparison.md にシーン × 条件の
+成功率の表を作る。
+
+    uv run python vla3dsg/scripts/summarize_results.py --root zeroshot --scenes standard shuffle hidden hidden_decoy \
+        --names base base_short base_full base_wrong target sg_command
 """
 
 import argparse
@@ -67,15 +71,21 @@ def outcomes(summaries: dict[str, dict], records: dict[str, list[dict]]) -> str:
     return "\n".join(lines)
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--root", required=True, help="results/ 以下の親ディレクトリ")
-    parser.add_argument("--names", nargs="+", required=True, help="比較する結果（root の下のディレクトリ名）")
-    args = parser.parse_args()
+def matrix(root: Path, scenes: list[str], names: list[str]) -> str:
+    """シーン × 条件の成功率の表。"""
+    lines = ["| 条件 | 内容 | " + " | ".join(settings.SCENE_LABELS.get(s, s) for s in scenes) + " |", "|---|---|" + "---|" * len(scenes)]
+    for n in names:
+        cells = []
+        for scene in scenes:
+            s = json.loads((root / scene / n / "summary.json").read_text())
+            cells.append(f"{s['pc_success']:.0f}%（{s['n_success']}/{s['n_episodes']}）")
+        lines.append(f"| {n} | {settings.PROMPT_CONDITIONS.get(n, '')} | " + " | ".join(cells) + " |")
+    return "\n".join(lines) + "\n"
 
-    root = settings.RESULTS_DIR / args.root
-    summaries = {n: json.loads((root / n / "summary.json").read_text()) for n in args.names}
-    records = {n: load_records(root / n / "prompts.jsonl") for n in args.names}
+
+def summarize(root: Path, names: list[str]) -> None:
+    summaries = {n: json.loads((root / n / "summary.json").read_text()) for n in names}
+    records = {n: load_records(root / n / "prompts.jsonl") for n in names}
 
     outputs = {"comparison.md": comparison(summaries, records)}
     if all(recs and all("final_scene_graph" in r for r in recs) for recs in records.values()):
@@ -86,6 +96,25 @@ def main() -> None:
         (root / filename).write_text(text)
         print(text)
         print(f"saved: {root / filename}")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--root", required=True, help="results/ 以下の親ディレクトリ")
+    parser.add_argument("--names", nargs="+", required=True, help="比較する結果（root の下のディレクトリ名）")
+    parser.add_argument("--scenes", nargs="+", help="シーンごとのディレクトリ（root/<シーン>/<条件>/）")
+    args = parser.parse_args()
+
+    root = settings.RESULTS_DIR / args.root
+    if not args.scenes:
+        summarize(root, args.names)
+        return
+    for scene in args.scenes:
+        summarize(root / scene, args.names)
+    text = matrix(root, args.scenes, args.names)
+    (root / "comparison.md").write_text(text)
+    print(text)
+    print(f"saved: {root / 'comparison.md'}")
 
 
 if __name__ == "__main__":

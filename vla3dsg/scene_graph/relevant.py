@@ -8,8 +8,9 @@
   2. 隠れ: agentview から見えていない（見える点の割合が SG_HIDDEN_MAX_VISIBLE 未満）とき、遮っている物体の "behind"
   3. 大きくて動かない物体（固定物と、置き場所になる物体 SG_LANDMARK_OBJECTS）との前後左右（近い順）
   4. ほかの物体との前後左右（近い順）
+同じ種類の別の物体（例: "black bowl 2"）は見分けたい相手そのもの、置き場所（obj_of_interest の 2 つ目以降。例: plate）は
+指示文の中で行き先として出てくるため、手がかりにしない。
 1 本目は候補の先頭とし、同じ種類の別の物体にも当てはまる限り、それを最も多く除ける候補を足す。
-hidden=True のとき、対象が隠れていれば、1 本目の関係に 4 つ目の要素 "hidden" を付ける。
 """
 
 from collections import Counter
@@ -48,8 +49,10 @@ def _candidates(env: Any, obj_id: str, names: dict[str, str], support: dict, pos
     ratio, occluder = _occlusion(env, obj_id, list(names))
     if ratio < settings.SG_HIDDEN_MAX_VISIBLE and occluder is not None:
         out.append(("behind", names[occluder]))
-    landmarks = [i for i in names if i != obj_id and (i in env.fixtures_dict or (i in env.objects_dict and _category(env, i) in settings.SG_LANDMARK_OBJECTS))]
-    others = [i for i in names if i != obj_id and i not in landmarks]
+    same = {i for i in env.objects_dict if i in names and _category(env, i) == _category(env, obj_id)}
+    same |= {i for i in env.obj_of_interest[1:] if i != obj_id}
+    landmarks = [i for i in names if i not in same and (i in env.fixtures_dict or (i in env.objects_dict and _category(env, i) in settings.SG_LANDMARK_OBJECTS))]
+    others = [i for i in names if i not in same and i not in landmarks]
     for group in (landmarks, others):
         for i in sorted(group, key=lambda i: np.linalg.norm(positions[obj_id][:2] - positions[i][:2]))[: settings.SG_NEAREST_K]:
             rel = (_direction(positions[obj_id], positions[i]), names[i])
@@ -72,25 +75,7 @@ def _holds(env: Any, obj_id: str, rel: tuple[str, str], names: dict[str, str], s
     return anchor is not None and anchor in positions and _direction(positions[obj_id], positions[anchor]) == rel[0]
 
 
-def target_is_hidden(env: Any) -> bool:
-    """掴む対象（BDDL の obj_of_interest の先頭の物体）が agentview から見えていないか。"""
-    target_id = next(i for i in env.obj_of_interest if i in env.objects_dict)
-    ratio, _ = _occlusion(env, target_id, list(_display_names(env)))
-    return ratio < settings.SG_HIDDEN_MAX_VISIBLE
-
-
-def mark_hidden(sg: SceneGraph) -> SceneGraph:
-    """掴む対象が主語の最初の関係に、4 つ目の要素 "hidden" を付けた SG。"""
-    relations = list(sg.relations)
-    k = next((i for i, r in enumerate(relations) if r[0] == sg.target), None)
-    if k is None:
-        relations.append((sg.target, "hidden"))
-    elif "hidden" not in relations[k]:
-        relations[k] = (*relations[k], "hidden")
-    return SceneGraph(nodes=list(sg.nodes), relations=relations, target=sg.target)
-
-
-def build_relevant_scene_graph(env: Any, subject: str | None = None, hidden: bool = False) -> SceneGraph:
+def build_relevant_scene_graph(env: Any, subject: str | None = None) -> SceneGraph:
     """掴む対象（subject を省略すると BDDL の obj_of_interest の先頭の物体）についての小さな SG。
 
     subject に別の物体の ID を渡すと、その物体の関係を作る（誤った SG の対照に使う）。名前は SG のノード名。
@@ -113,12 +98,33 @@ def build_relevant_scene_graph(env: Any, subject: str | None = None, hidden: boo
         chosen.append(best)
         remaining = [d for d in remaining if _holds(env, d, best, names, support, positions)]
 
-    ratio, _ = _occlusion(env, subject, list(names))
-    relations: list[Relation] = []
-    for k, (rel, other) in enumerate(chosen):
-        r: Relation = (names[subject], rel, other)
-        if hidden and k == 0 and ratio < settings.SG_HIDDEN_MAX_VISIBLE:
-            r = (*r, "hidden")
-        relations.append(r)
+    relations: list[Relation] = [(names[subject], rel, other) for rel, other in chosen]
     nodes = [names[subject]] + [o for _, o in chosen]
     return SceneGraph(nodes=nodes, relations=relations, target=names[target_id])
+
+
+_OPPOSITE = {"behind": "in front of", "in front of": "behind", "left of": "right of", "right of": "left of"}
+
+
+def build_wrong_scene_graph(env: Any) -> SceneGraph:
+    """掴む対象について成り立たない関係だけの小さな SG（誤った SG の条件）。
+
+    同じ種類の別の物体（おとり）があれば、おとりの小さな SG を対象の名前で書き、対象にも当てはまる関係は除く
+    （おとりへ誘導する誤り）。おとりがない、または残らなければ、対象の小さな SG の前後左右を逆にする。
+    """
+    names = _display_names(env)
+    support = _support_relations(env, names)
+    positions = {i: _position(env, i) for i in names}
+    target_id = next(i for i in env.obj_of_interest if i in env.objects_dict)
+    target = names[target_id]
+    decoys = sorted(i for i in env.objects_dict if i != target_id and i in names and _category(env, i) == _category(env, target_id))
+    relations: list[Relation] = []
+    if decoys:
+        decoy = build_relevant_scene_graph(env, subject=decoys[0])
+        relations = [
+            (target, *r[1:]) for r in decoy.relations if not _holds(env, target_id, (r[1], r[2]), names, support, positions)
+        ]
+    if not relations:
+        candidates = _candidates(env, target_id, names, support, positions)
+        relations = [(target, _OPPOSITE[r], o) for r, o in candidates if r in _OPPOSITE][:1]
+    return SceneGraph(nodes=[target] + [r[2] for r in relations], relations=relations, target=target)

@@ -4,7 +4,7 @@
 2. 環境タイプ `libero_vla3dsg` がプラグインとして読み込め、`num_steps_wait` が環境まで届く
 3. 自作スイート（custom_tasks/）が LeRobot から読み込め、最大ステップ数・指示文・初期状態が正しい。開始時の SG を表示する
 
-    uv run python vla3dsg/tests/test_envs.py [--suite libero_goal] [--task-id 0] [--custom-suite vla3dsg_occluded]
+    uv run python vla3dsg/tests/test_envs.py [--suite libero_goal] [--task-id 0] [--custom-suite vla3dsg_goal]
 
 画像は tmp/test_envs/ に保存する。
 """
@@ -128,7 +128,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--suite", default="libero_goal")
     parser.add_argument("--task-id", type=int, default=0)
-    parser.add_argument("--custom-suite", default="vla3dsg_occluded")
+    parser.add_argument("--custom-suite", default="vla3dsg_goal")
     args = parser.parse_args()
 
     load_plugin("vla3dsg.envs")

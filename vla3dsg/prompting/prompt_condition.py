@@ -19,7 +19,7 @@ from lerobot.policies.molmoact2.processor_molmoact2 import _normalize_question_t
 from vla3dsg.config import settings
 from vla3dsg.scene_graph import textify
 from vla3dsg.scene_graph.builder import SceneGraph, build_scene_graph
-from vla3dsg.scene_graph.relevant import build_relevant_scene_graph, mark_hidden, target_is_hidden
+from vla3dsg.scene_graph.relevant import build_relevant_scene_graph, build_wrong_scene_graph
 
 _installed = False
 # 実際に使ったプロンプトの記録（run_eval.py が prompts.jsonl に保存する）
@@ -36,44 +36,22 @@ def count_tokens(text: str) -> int:
     return len(_tokenizer()(text, add_special_tokens=False)["input_ids"])
 
 
-def _wrong_relevant(env: Any, sg: SceneGraph) -> SceneGraph:
-    """同じ種類の別の物体（おとり）の小さな SG を、掴む対象の名前で書いたもの（条件 P5）。"""
-    target_id = next(i for i in env.obj_of_interest if i in env.objects_dict)
-    category = next(c for c, ids in env.parsed_problem["objects"].items() if target_id in ids)
-    others = [i for i in env.parsed_problem["objects"][category] if i != target_id]
-    if not others:
-        raise ValueError("条件 P5 には、掴む対象と同じ種類の別の物体が必要")
-    wrong = build_relevant_scene_graph(env, subject=sorted(others)[0])
-    rename = {wrong.relations[0][0]: sg.target, sg.target: wrong.relations[0][0]}
-    relations = [tuple(rename.get(x, x) for x in r) for r in wrong.relations]
-    return SceneGraph(nodes=[rename.get(n, n) for n in wrong.nodes], relations=relations, target=sg.target)
-
-
 def compose_prompt(instruction: str, condition: str, sg: SceneGraph, env: Any) -> str:
-    """条件に応じた指示文を返す。条件 A は元の指示文の正規化のみ（モデルへの入力はこれまでと同一）。
+    """条件に応じた指示文を返す。base は元の指示文の正規化のみ（モデルへの入力は公式の評価と同一）。
 
-    P1〜P5 では、小さな SG を作るために env（LIBERO の BDDL 環境）を使う。末尾の h（P1h〜P5h）は、対象が隠れていれば
-    その事実を加える（場所の情報とは独立。P5h は「場所は誤り、隠れていることは正しい」）。
+    SG を加える条件では、小さな SG を作るために env（LIBERO の BDDL 環境）を使う。隠れていることは伝えない。
     """
-    if condition == "A":
-        return _normalize_question_text(instruction)
     if condition not in settings.PROMPT_CONDITIONS:
         raise ValueError(f"Unknown prompt condition {condition!r}. Expected one of {list(settings.PROMPT_CONDITIONS)}")
-    kind, hidden = condition[:2], condition.endswith("h") and target_is_hidden(env)
-    if kind == "P1":
-        # SG の小さな関係から、場所を書いた指示文（LIBERO の指示文と同じ形）を作る
-        return textify.to_instruction(build_relevant_scene_graph(env, hidden=hidden), hidden=hidden)
-    if kind == "P2":
-        # 場所を書かず、対象を SG のノード名で指す
-        return f"pick up the {sg.target}{' that is hidden' if hidden else ''} and place it on the plate"
-    if kind == "P3":
-        given = build_relevant_scene_graph(env)
-    elif kind == "P4":
-        given = sg
-    else:
-        given = _wrong_relevant(env, sg)
-    extra = textify.to_triples(mark_hidden(given) if hidden else given)
-    return f"pick up the {sg.target} and place it on the plate. {settings.PROMPT_SG_LABEL}: {extra}"
+    base = _normalize_question_text(instruction)
+    if condition == "base":
+        return base
+    if condition == "target":
+        return f"put the {sg.target} on the plate"
+    if condition == "sg_command":
+        return textify.to_instruction(build_relevant_scene_graph(env))
+    given = {"base_short": build_relevant_scene_graph, "base_full": lambda _: sg, "base_wrong": build_wrong_scene_graph}[condition](env)
+    return f"{base}. {settings.PROMPT_SG_LABEL}: {textify.to_triples(given)}"
 
 
 def install(condition: str) -> None:

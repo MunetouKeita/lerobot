@@ -1,0 +1,130 @@
+{
+  "max_steps": 300,
+  "tasks": [
+    {
+      "name": "standard",
+      "language": "Put the bowl on the plate",
+      "bddl_file": "standard.bddl",
+      "init_states_file": "standard.pruned_init",
+      "base": "libero_goal/put_the_bowl_on_the_plate",
+      "regions": [],
+      "official_init": true,
+      "removed_objects": [],
+      "added_objects": [],
+      "visibility": {
+        "target": "akita_black_bowl_1",
+        "occluder": null,
+        "n_init": 50,
+        "n_rejected": 0,
+        "target_position_last": [
+          -0.078,
+          -0.007,
+          0.97
+        ],
+        "visible_points_first": {
+          "agentview": 399,
+          "robot0_eye_in_hand": 398
+        }
+      }
+    },
+    {
+      "name": "shuffle",
+      "language": "Put the bowl on the plate",
+      "bddl_file": "shuffle.bddl",
+      "init_states_file": "shuffle.pruned_init",
+      "base": "libero_goal/put_the_bowl_on_the_plate",
+      "regions": [
+        "plate_region=-0.06,0.11,-0.04,0.13",
+        "akita_black_bowl_region=0.07,0.09,0.09,0.11",
+        "cream_cheese_region=0.05,-0.05,0.07,-0.03",
+        "wine_bottle_region=-0.11,-0.03,-0.09,-0.01"
+      ],
+      "official_init": false,
+      "removed_objects": [],
+      "added_objects": [],
+      "visibility": {
+        "target": "akita_black_bowl_1",
+        "occluder": null,
+        "n_init": 50,
+        "n_rejected": 1,
+        "target_position_last": [
+          0.081,
+          0.087,
+          0.898
+        ],
+        "visible_points_first": {
+          "agentview": 399,
+          "robot0_eye_in_hand": 215
+        }
+      }
+    },
+    {
+      "name": "hidden",
+      "language": "Put the bowl on the plate",
+      "bddl_file": "hidden.bddl",
+      "init_states_file": "hidden.pruned_init",
+      "base": "libero_goal/put_the_bowl_on_the_plate",
+      "regions": [
+        "akita_black_bowl_region=-0.48,-0.27,-0.46,-0.25"
+      ],
+      "official_init": false,
+      "removed_objects": [],
+      "added_objects": [],
+      "visibility": {
+        "target": "akita_black_bowl_1",
+        "occluder": "wine_rack_1",
+        "n_init": 50,
+        "n_rejected": 0,
+        "target_position_last": [
+          -0.479,
+          -0.27,
+          0.898
+        ],
+        "agentview_visible_ratio": {
+          "mean": 0.0,
+          "max": 0.0
+        },
+        "wrist_visible_ratio_first": null,
+        "visible_points_first": {
+          "agentview": 0,
+          "robot0_eye_in_hand": 0
+        }
+      }
+    },
+    {
+      "name": "hidden_decoy",
+      "language": "Put the bowl on the plate",
+      "bddl_file": "hidden_decoy.bddl",
+      "init_states_file": "hidden_decoy.pruned_init",
+      "base": "libero_goal/put_the_bowl_on_the_plate",
+      "regions": [
+        "akita_black_bowl_region=-0.48,-0.27,-0.46,-0.25"
+      ],
+      "official_init": false,
+      "removed_objects": [],
+      "added_objects": [
+        "akita_black_bowl_2:akita_black_bowl=-0.10,-0.01,-0.08,0.01"
+      ],
+      "visibility": {
+        "target": "akita_black_bowl_1",
+        "occluder": "wine_rack_1",
+        "n_init": 50,
+        "n_rejected": 0,
+        "target_position_last": [
+          -0.484,
+          -0.247,
+          0.898
+        ],
+        "agentview_visible_ratio": {
+          "mean": 0.0,
+          "max": 0.0
+        },
+        "wrist_visible_ratio_first": null,
+        "visible_points_first": {
+          "agentview": 0,
+          "robot0_eye_in_hand": 0
+        }
+      }
+    }
+  ]
+}

@@ -42,6 +42,22 @@ def remove_object(bddl: str, obj_id: str) -> str:
     return re.sub(rf"\n\s*\((On|In) {re.escape(obj_id)} [^)]*\)", "", bddl)
 
 
+def add_object(bddl: str, obj_id: str, category: str, region: str, rng: tuple[float, float, float, float]) -> str:
+    """BDDL に物体を足す（例: おとりのボウル）。テーブル上の領域 region（範囲 rng）を作り、そこに置く。"""
+    if re.search(rf"\b{re.escape(obj_id)}\b", bddl):
+        raise ValueError(f"BDDL に {obj_id!r} がすでにある")
+    table = re.search(r"\(:fixtures\s*\n\s*(\w+) - ", bddl).group(1)
+    ranges = " ".join(f"{v}" for v in rng)
+    entry = f"\n      ({region}\n          (:target {table})\n          (:ranges (\n              ({ranges})\n            )\n          )\n      )"
+    bddl = re.sub(r"\(:regions", lambda m: m.group(0) + entry, bddl, count=1)
+    same = re.search(rf"(\(:objects.*?\n\s*)([\w ]+?)( - {re.escape(category)}\n)", bddl, re.S)
+    if same:  # 同じ種類の物体がすでにあれば同じ行に足す（LIBERO の BDDL の読み込みは種類ごとに 1 行）
+        bddl = bddl[: same.end(2)] + f" {obj_id}" + bddl[same.end(2) :]
+    else:
+        bddl = re.sub(r"(\(:objects.*?)(\n  \))", lambda m: m.group(1) + f"\n    {obj_id} - {category}" + m.group(2), bddl, count=1, flags=re.S)
+    return re.sub(r"\(:init", lambda m: m.group(0) + f"\n    (On {obj_id} {table}_{region})", bddl, count=1)
+
+
 def _target_points(model: mujoco.MjModel, data: mujoco.MjData, target: str) -> tuple[np.ndarray, set[int]]:
     """対象物体の見た目用メッシュの頂点（世界座標）と、対象物体の geom の ID。"""
     geoms = {g for g in range(model.ngeom) if model.body(model.geom_bodyid[g]).name.startswith(f"{target}_")}
