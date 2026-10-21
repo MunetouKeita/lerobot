@@ -53,7 +53,7 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 | `vla3dsg/scripts/measure_inference.py` | 推論時間と GPU メモリの計測 |
 | `vla3dsg/scripts/summarize_results.py` | 複数の評価結果（条件）を表にまとめる。成功率（`<root>/comparison.md`）と、開始時と終了時の SG を比べた「何をどこに置いたか」（`<root>/outcomes.md`） |
 | `vla3dsg/tests/test_<対象>.py` | モジュール単位のテスト（`test_envs.py`: 描画・環境タイプ・自作スイート、`test_scene_graph.py`: SG とプロンプト条件、`test_rollout_video.py`: 可視化） |
-| `vla3dsg/results/<名前>/` | 1 実験分の結果。`README.md`・`summary.json`・`conditions.json`・`eval_info.json` は git 管理、`videos/` と `eval.log` は管理外 |
+| `vla3dsg/results/<名前>/` | 1 実験分の結果。`README.md`・`summary.json`・`conditions.json`・`eval_info.json` は git 管理、`videos/` と `eval.log` は管理外（ゼミ報告 `results/seminar/<日付>/videos/` の比較動画だけは git 管理） |
 | `vla3dsg/data/<名前>/` | 生成したデータセット（git 管理外）。生成の記録（条件・エピソードごとのシードと開始時の SG）は `vla3dsg/results/demos/<名前>/` |
 | `vla3dsg/tmp/` | テスト・計測の使い捨て出力（git 管理外。いつ消してもよい） |
 | `vla3dsg/docs/` | 調査メモ（`libero_task_definition.md`: LIBERO のタスク定義とシーン生成、`lerobot_libero_loading.md`: LeRobot の読み込みの流れとカスタムスイートの登録方法） |
