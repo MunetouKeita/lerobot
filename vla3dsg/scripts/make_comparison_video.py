@@ -13,7 +13,8 @@
                  "videos": [{"caption": "SG から作った指示文", "result": "成功", "path": "results/zeroshot/shuffle/sg_command/videos/.../eval_episode_4.mp4"}]}]}
 
 crop が "agentview" のとき、run_eval.py の動画（左が agentview、右が手首カメラ）の左半分だけを使い、上端に焼き込まれた
-カメラ名を切り落とす。
+カメラ名を切り落とす。"left" のときは、左半分だけを使う（カメラ名のない動画。例: generate_demos.py --check の動画）。
+crop は動画ごとにも指定できる（videos の要素の "crop"）。
 """
 
 import argparse
@@ -43,6 +44,8 @@ def load(path: str, crop: str) -> list[Image.Image]:
     frames = iio.imread(settings.VLA3DSG_DIR / path, plugin="pyav")
     if crop == "agentview":
         frames = frames[:, LABEL_CROP:, : frames.shape[2] // 2]
+    elif crop == "left":
+        frames = frames[:, :, : frames.shape[2] // 2]
     return [Image.fromarray(f).resize((TILE, TILE)) for f in frames]
 
 
@@ -56,7 +59,7 @@ def main() -> None:
     args = parser.parse_args()
     layout = json.loads((settings.VLA3DSG_DIR / args.layout).read_text())
 
-    groups = [[(v, load(v["path"], layout.get("crop", "none"))) for v in g["videos"]] for g in layout["groups"]]
+    groups = [[(v, load(v["path"], v.get("crop", layout.get("crop", "none")))) for v in g["videos"]] for g in layout["groups"]]
     n = max(len(frames) for g in groups for _, frames in g)
 
     # 各まとまりの枠の位置
