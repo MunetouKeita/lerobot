@@ -24,12 +24,6 @@
 |---|---|---|---|
 | 2 | put the bowl on the plate. scene information: (black bowl, in front of, wine rack) | 0/20 | 11 × 変化なし<br>9 × cream cheese on plate |
 
-## target
-
-| task | プロンプト（先頭） | 成功 | 結果（回数） |
-|---|---|---|---|
-| 2 | put the black bowl on the plate | 0/20 | 20 × 変化なし |
-
 ## sg_command
 
 | task | プロンプト（先頭） | 成功 | 結果（回数） |
