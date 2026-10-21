@@ -1,0 +1,42 @@
+{
+  "pc_success": 10.0,
+  "n_success": 2,
+  "n_episodes": 20,
+  "pc_success_ci95": [
+    2.7866481213768224,
+    30.103364522848725
+  ],
+  "per_suite": {
+    "vla3dsg_goal": 10.0
+  },
+  "per_task": [
+    {
+      "suite": "vla3dsg_goal",
+      "task_id": 1,
+      "instruction": "Put the bowl on the plate",
+      "successes": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false
+      ],
+      "pc_success": 10.0
+    }
+  ]
+}

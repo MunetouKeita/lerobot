@@ -1,0 +1,50 @@
+{
+  "suite": "vla3dsg_goal",
+  "task_ids": [
+    1
+  ],
+  "n_episodes_per_task": 20,
+  "prompt_condition": "base_short",
+  "prompt_condition_desc": "公式の指示文 + 掴む対象を見分ける最小の関係だけの SG（三つ組、1〜2 本。scene_graph/relevant.py）",
+  "annotated_video": true,
+  "video_save": {
+    "first_n": 10,
+    "failures": true
+  },
+  "checkpoint": "allenai/MolmoAct2-LIBERO",
+  "norm_tag": "libero",
+  "dtype": "float32",
+  "num_steps_wait": 50,
+  "seed": 1000,
+  "eval_seed": 1000,
+  "git": {
+    "commit": "c0b9b780b09a8c7cdf08824d296dc394f65087a4",
+    "upstream_base": "",
+    "dirty": true
+  },
+  "started_at": "2026-10-21 13:11:51",
+  "lerobot_eval_args": [
+    "--env.discover_packages_path=vla3dsg.envs",
+    "--env.type=libero_vla3dsg",
+    "--env.task=vla3dsg_goal",
+    "--env.task_ids=[1]",
+    "--env.num_steps_wait=50",
+    "--env.camera_name_mapping={\"agentview_image\":\"image\",\"robot0_eye_in_hand_image\":\"wrist_image\"}",
+    "--policy.type=molmoact2",
+    "--policy.checkpoint_path=allenai/MolmoAct2-LIBERO",
+    "--policy.norm_tag=libero",
+    "--policy.inference_action_mode=continuous",
+    "--policy.dtype=float32",
+    "--policy.max_sequence_length=1024",
+    "--policy.normalize_language=false",
+    "--policy.enable_inference_cuda_graph=true",
+    "--policy.device=cuda",
+    "--policy.per_episode_seed=true",
+    "--policy.eval_seed=1000",
+    "--eval.batch_size=1",
+    "--eval.n_episodes=20",
+    "--seed=1000",
+    "--output_dir=/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/base_short"
+  ],
+  "wall_s": 461.9
+}

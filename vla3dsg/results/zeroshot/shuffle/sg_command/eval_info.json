@@ -1,0 +1,163 @@
+{
+  "per_task": [
+    {
+      "task_group": "vla3dsg_goal",
+      "task_id": 1,
+      "metrics": {
+        "sum_rewards": [
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "max_rewards": [
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "successes": [
+          true,
+          true,
+          false,
+          true,
+          false,
+          true,
+          true,
+          false,
+          true,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          true,
+          true,
+          true,
+          false,
+          true
+        ],
+        "video_paths": [
+          "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_0.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_1.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_2.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_3.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_4.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_5.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_6.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_7.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_8.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_9.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_10.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_11.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_13.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_14.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_18.mp4"
+        ],
+        "predicted_video_paths": []
+      },
+      "n_episodes": 20,
+      "n_success": 11,
+      "pc_success": 55.0,
+      "pc_success_ci95": [
+        34.20853424503424,
+        74.18021417443758
+      ]
+    }
+  ],
+  "per_group": {
+    "vla3dsg_goal": {
+      "avg_sum_reward": 0.55,
+      "avg_max_reward": 0.55,
+      "pc_success": 55.00000000000001,
+      "n_episodes": 20,
+      "n_success": 11,
+      "pc_success_ci95": [
+        34.20853424503424,
+        74.18021417443758
+      ],
+      "video_paths": [
+        "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_0.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_1.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_2.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_3.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_4.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_5.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_6.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_7.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_8.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_9.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_10.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_11.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_13.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_14.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_18.mp4"
+      ],
+      "predicted_video_paths": []
+    }
+  },
+  "overall": {
+    "avg_sum_reward": 0.55,
+    "avg_max_reward": 0.55,
+    "pc_success": 55.00000000000001,
+    "n_episodes": 20,
+    "n_success": 11,
+    "pc_success_ci95": [
+      34.20853424503424,
+      74.18021417443758
+    ],
+    "eval_s": 373.716429233551,
+    "eval_ep_s": 18.685821461677552,
+    "video_paths": [
+      "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_0.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_1.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_2.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_3.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_4.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_5.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_6.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_7.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_8.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_9.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_10.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_11.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_13.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_14.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/zeroshot/shuffle/sg_command/videos/vla3dsg_goal_1/eval_episode_18.mp4"
+    ],
+    "predicted_video_paths": []
+  }
+}
