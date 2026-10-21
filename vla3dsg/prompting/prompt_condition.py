@@ -36,22 +36,31 @@ def count_tokens(text: str) -> int:
     return len(_tokenizer()(text, add_special_tokens=False)["input_ids"])
 
 
+def _irrelevant(n_tokens: int) -> str:
+    """シーンと無関係な文を、トークン数 n_tokens に合わせて切り出す。"""
+    ids = _tokenizer()(settings.IRRELEVANT_TEXT, add_special_tokens=False)["input_ids"]
+    ids = (ids * (n_tokens // len(ids) + 1))[:n_tokens]
+    return _tokenizer().decode(ids).strip()
+
+
 def compose_prompt(instruction: str, condition: str, sg: SceneGraph, env: Any) -> str:
     """条件に応じた指示文を返す。base は元の指示文の正規化のみ（モデルへの入力は公式の評価と同一）。
 
     SG を加える条件では、小さな SG を作るために env（LIBERO の BDDL 環境）を使う。隠れていることは伝えない。
+    末尾の _json・_nl で SG の形式を変える（付けないと三つ組）。
     """
     if condition not in settings.PROMPT_CONDITIONS:
         raise ValueError(f"Unknown prompt condition {condition!r}. Expected one of {list(settings.PROMPT_CONDITIONS)}")
     base = _normalize_question_text(instruction)
     if condition == "base":
         return base
-    if condition == "target":
-        return f"put the {sg.target} on the plate"
     if condition == "sg_command":
         return textify.to_instruction(build_relevant_scene_graph(env))
-    given = {"base_short": build_relevant_scene_graph, "base_full": lambda _: sg, "base_wrong": build_wrong_scene_graph}[condition](env)
-    return f"{base}. {settings.PROMPT_SG_LABEL}: {textify.to_triples(given)}"
+    if condition == "base_irrelevant":
+        return f"{base}. {settings.PROMPT_SG_LABEL}: {_irrelevant(count_tokens(textify.to_triples(sg)))}"
+    kind, _, fmt = condition.partition("_")[2].partition("_")
+    given = {"short": build_relevant_scene_graph, "full": lambda _: sg, "wrong": build_wrong_scene_graph}[kind](env)
+    return f"{base}. {settings.PROMPT_SG_LABEL}: {textify.FORMATS[fmt or 'triples'](given)}"
 
 
 def install(condition: str) -> None:

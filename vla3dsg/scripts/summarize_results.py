@@ -4,11 +4,14 @@
 - outcomes.md: 各エピソードで何をどこに置いたか。開始時と終了時の SG を比べ、終了時に新しくできた on / in の関係
   （例: "black bowl 2 on plate"）を数える。終了時の SG がない結果では作らない
 
---scenes を付けると、<root>/<シーン>/<条件>/ の結果をシーンごとにまとめ、<root>/comparison.md にシーン × 条件の
-成功率の表を作る。
+--scenes を付けると、<root>/<シーン>/<条件>/ の結果をシーンごとにまとめ、<root>/<--table>（既定 comparison.md）に
+シーン × 条件の成功率の表を作る。シーンにない条件は、そのシーンの表では除き、全体の表では「-」にする。
 
     uv run python vla3dsg/scripts/summarize_results.py --root zeroshot --scenes standard shuffle hidden hidden_decoy \
-        --names base base_short base_full base_wrong target sg_command
+        --names base base_short base_full base_wrong sg_command
+    uv run python vla3dsg/scripts/summarize_results.py --root zeroshot --scenes standard shuffle --table formats.md \\
+        --names base base_short base_short_json base_short_nl base_full base_full_json base_full_nl base_irrelevant \\
+        base_wrong base_wrong_json base_wrong_nl
 """
 
 import argparse
@@ -77,7 +80,11 @@ def matrix(root: Path, scenes: list[str], names: list[str]) -> str:
     for n in names:
         cells = []
         for scene in scenes:
-            s = json.loads((root / scene / n / "summary.json").read_text())
+            path = root / scene / n / "summary.json"
+            if not path.exists():
+                cells.append("-")
+                continue
+            s = json.loads(path.read_text())
             cells.append(f"{s['pc_success']:.0f}%（{s['n_success']}/{s['n_episodes']}）")
         lines.append(f"| {n} | {settings.PROMPT_CONDITIONS.get(n, '')} | " + " | ".join(cells) + " |")
     return "\n".join(lines) + "\n"
@@ -103,6 +110,7 @@ def main() -> None:
     parser.add_argument("--root", required=True, help="results/ 以下の親ディレクトリ")
     parser.add_argument("--names", nargs="+", required=True, help="比較する結果（root の下のディレクトリ名）")
     parser.add_argument("--scenes", nargs="+", help="シーンごとのディレクトリ（root/<シーン>/<条件>/）")
+    parser.add_argument("--table", default="comparison.md", help="--scenes のときの全体の表のファイル名")
     args = parser.parse_args()
 
     root = settings.RESULTS_DIR / args.root
@@ -110,11 +118,11 @@ def main() -> None:
         summarize(root, args.names)
         return
     for scene in args.scenes:
-        summarize(root / scene, args.names)
+        summarize(root / scene, [n for n in args.names if (root / scene / n / "summary.json").exists()])
     text = matrix(root, args.scenes, args.names)
-    (root / "comparison.md").write_text(text)
+    (root / args.table).write_text(text)
     print(text)
-    print(f"saved: {root / 'comparison.md'}")
+    print(f"saved: {root / args.table}")
 
 
 if __name__ == "__main__":

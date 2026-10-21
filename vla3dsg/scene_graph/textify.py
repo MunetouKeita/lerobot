@@ -1,10 +1,25 @@
-"""SG のテキスト化（三つ組の列と、場所を書いた指示文）。"""
+"""SG のテキスト化（三つ組・JSON・自然文の列と、場所を書いた指示文）。"""
+
+import json
 
 from vla3dsg.scene_graph.builder import SceneGraph
 
 
 def to_triples(sg: SceneGraph) -> str:
     return "; ".join("(" + ", ".join(r) + ")" for r in sg.relations)
+
+
+def to_json(sg: SceneGraph) -> str:
+    """関係の列を JSON にする（三つ組と同じ情報。例: [{"subject": "black bowl", "relation": "behind", "object": "wine rack"}]）。"""
+    return json.dumps([{"subject": s, "relation": r, "object": o} for s, r, o in sg.relations])
+
+
+def to_sentences(sg: SceneGraph) -> str:
+    """関係の列を自然文にする（三つ組と同じ情報。例: "the black bowl is behind the wine rack."）。"""
+    return " ".join(f"the {s} is {_PLACE_PHRASES[r].format(o=o)}." for s, r, o in sg.relations)
+
+
+FORMATS = {"triples": to_triples, "json": to_json, "nl": to_sentences}
 
 
 # 関係を、指示文の中の場所の言い方にする（"the black bowl behind the wooden cabinet" の "behind the wooden cabinet"）

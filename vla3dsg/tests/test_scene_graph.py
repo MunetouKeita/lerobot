@@ -62,7 +62,6 @@ def main() -> None:
         assert prompts["base"] == instruction.lower()  # LIBERO の指示文は正規化（小文字化など）以外そのまま
         assert prompts["sg_command"] == textify.to_instruction(relevant)
         assert prompts["sg_command"].startswith("put the ") and prompts["sg_command"].endswith(" on the plate")
-        assert prompts["target"] == f"put the {sg.target} on the plate"
         # 手がかりに同じ種類の物体と行き先を使わない
         same = [n for n in sg.nodes if n.split()[:2] == sg.target.split()[:2]]
         assert all(r[2] not in same and r[2] != "plate" for r in relevant.relations), relevant.relations
@@ -74,7 +73,7 @@ def main() -> None:
         )
         Image.fromarray(np.ascontiguousarray(obs["pixels"]["image"][0][::-1, ::-1])).save(out_dir / f"{args.suite}_{task_id}.png")
         print(f"task {task_id}: {instruction}")
-        for k in ("base_short", "base_wrong", "target", "sg_command"):
+        for k in ("base_short", "base_wrong", "sg_command"):
             print(f"  {k}: {prompts[k]}")
         print(f"  base_full の関係の数: {len(sg.relations)}")
         vec_env.close()
