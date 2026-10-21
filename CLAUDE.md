@@ -38,7 +38,7 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 | `vla3dsg/config/settings.py` | 設定値（パス、シード、チェックポイント、評価引数 `molmoact2_eval_args` など）の一元管理 |
 | `vla3dsg/config/instructions_ja.py` | LIBERO の指示文の日本語訳（デモ動画のテロップ用） |
 | `vla3dsg/config/object_names.py` | SG のノード名に使う物体の読みやすい名前 |
-| `vla3dsg/scene_graph/` | シミュレータの状態から正解の SG を作る（`builder.py`: 全物体どうしの関係、`relevant.py`: 掴む対象を同じ種類の別の物体と見分ける最小の関係だけの小さな SG）、テキスト化（`textify.py`: 三つ組と、場所を書いた指示文） |
+| `vla3dsg/scene_graph/` | シミュレータの状態から正解の SG を作る（`builder.py`: 全物体どうしの関係、`relevant.py`: 掴む対象を同じ種類の別の物体と見分ける最小の関係だけの小さな SG と、対象に当てはまらない関係だけの誤った SG）、テキスト化（`textify.py`: 三つ組と、場所を書いた指示文） |
 | `vla3dsg/prompting/` | プロンプト条件に従ってエピソードごとに指示文を差し替える（`prompt_condition.py`） |
 | `vla3dsg/envs/` | `lerobot-eval` にプラグインとして読み込ませる環境設定（環境タイプ `libero_vla3dsg`）、自作スイートの登録（`custom_suites.py`）、自作タスクを作る処理（`custom_task_builder.py`: 配置範囲の書き換え・配置のサンプリング・見え方の計測） |
 | `vla3dsg/custom_tasks/<スイート>/` | 自作タスク（BDDL・初期状態 `.pruned_init`・`tasks.json`・確認用の画像 `previews/overview.png`）。`tasks.json` のあるフォルダは `--suite <スイート>` で評価できる |
@@ -47,6 +47,7 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 | `vla3dsg/scripts/run_eval.py` | 評価の実行と結果の保存（条件・git 情報つき）。`--annotated-video` で可視化動画を保存 |
 | `vla3dsg/scripts/make_demo_video.py` | デモ動画の作成。各タスク 1 エピソードを等倍で連結し、「指示：<日本語訳>」「成功率：k/n」（全エピソードの結果）のテロップを付ける。`--keep-failures-only` でデモ動画と失敗動画だけを残す |
 | `vla3dsg/scripts/make_comparison_video.py` | 複数の評価動画を、短いキャプションと結果（失敗は赤）を付け、まとまりごとに枠で囲んで並べた比較動画を作る（ゼミ・報告用）。並べ方は JSON（例: `results/seminar/<日付>/layouts/`） |
+| `vla3dsg/scripts/show_conditions.py` | 自作スイートの各シーン（掴む対象に赤丸）と、全プロンプト条件の指示文をセットにした確認用の資料（評価の前の確認用） |
 | `vla3dsg/scripts/make_custom_task.py` | 既存タスクの物体配置を変えた自作タスクを作る（初期状態の生成、対象物体が隠れているかの計測、確認用の画像）。`--overview` で画像だけを作り直す |
 | `vla3dsg/scripts/generate_demos.py` | 自作タスクのデモをスクリプト制御で自動生成し、LeRobot 形式のデータセット（`lerobot/libero` と同じ観測・動作の形式）に保存する。`--check` で評価の初期状態でスクリプト制御が成功するか（タスクが物理的にできるか）を確かめ、`--report` で生成したデモを公式デモと比べる（動作の統計・グラフ・比較動画） |
 | `vla3dsg/scripts/measure_inference.py` | 推論時間と GPU メモリの計測 |
@@ -133,10 +134,11 @@ git lfs install && git lfs pull                     # LeRobot のテスト用ア
 uv run python vla3dsg/tests/test_<対象>.py          # 本研究のモジュールテスト
 uv run python vla3dsg/scripts/run_eval.py --name baseline/xxx --suite libero_goal --n-episodes 5   # 評価（結果は results/<name>/）
 uv run python vla3dsg/scripts/run_eval.py --name baseline/xxx --suite libero_spatial,libero_goal --task-ids 0 5 --n-episodes 20 --annotated-video
-uv run python vla3dsg/scripts/run_eval.py --name minimal/xxx/P3 --suite vla3dsg_occluded --task-ids 0 1 --n-episodes 10 --prompt-condition P3 --annotated-video   # プロンプト条件（元の指示文 A、場所の渡し方 P1〜P5 と隠れていることを加える P1h〜P5h。settings.PROMPT_CONDITIONS）
-uv run python vla3dsg/scripts/make_custom_task.py --suite vla3dsg_occluded --name <タスク名> --base vla3dsg_occluded/scene.bddl --language "<指示文>" --region <領域名>=x0,y0,x1,y1 --target <物体> --occluder <遮る物体>   # 自作タスク（--preview で 1 件だけ tmp/ に試作。--remove-object で物体を除く）
-uv run python vla3dsg/scripts/generate_demos.py --name <名前> --suite vla3dsg_occluded --task-ids 0 1 2 3 --n-episodes 50   # デモの自動生成（タスクごとの設定は settings.DEMO_TASK_SPECS）
-uv run python vla3dsg/scripts/summarize_results.py --root minimal/xxx --names P1 P2 P3 P4 P5   # 条件の比較表（<root>/comparison.md・outcomes.md）
+uv run python vla3dsg/scripts/run_eval.py --name zeroshot/hidden/base_short --suite vla3dsg_goal --task-ids 2 --n-episodes 20 --prompt-condition base_short --annotated-video   # プロンプト条件（公式の指示文 base、＋短い SG base_short、＋すべての SG base_full、＋誤った SG base_wrong、対象だけ target、SG から作った指示文 sg_command。settings.PROMPT_CONDITIONS）
+uv run python vla3dsg/scripts/make_custom_task.py --suite vla3dsg_goal --name <タスク名> --base libero_goal/put_the_bowl_on_the_plate --language "<指示文>" --region <領域名>=x0,y0,x1,y1 --target <物体> --occluder <遮る物体>   # 自作タスク（--preview で 1 件だけ tmp/ に試作。--remove-object・--add-object で物体を除く・足す。--copy-init で公式の初期状態をそのまま使う）
+uv run python vla3dsg/scripts/generate_demos.py --name <名前> --suite vla3dsg_goal --task-ids 0 1 2 3 --n-episodes 50   # デモの自動生成（タスクごとの設定は settings.DEMO_TASK_SPECS。--check で評価の初期状態でできるかを確かめる）
+uv run python vla3dsg/scripts/summarize_results.py --root zeroshot --scenes standard shuffle hidden hidden_decoy --names base base_short base_full base_wrong target sg_command   # シーン × 条件の比較表（<root>/comparison.md、シーンごとの comparison.md・outcomes.md）
+uv run python vla3dsg/scripts/show_conditions.py --suite vla3dsg_goal --out zeroshot/conditions   # 評価前の確認資料（各シーンの画像と全条件の指示文）
 uv run python vla3dsg/scripts/make_demo_video.py --name baseline/xxx --keep-failures-only   # デモ動画（results/<name>/videos/demo_with_captions.mp4）と失敗動画だけを残す
 uv run pytest tests -svv --maxfail=10               # LeRobot 本体のテスト（本体を変更した場合）
 pre-commit run --all-files                          # Lint・フォーマット（ruff、typos、bandit など）
