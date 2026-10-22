@@ -1,0 +1,278 @@
+{
+  "suite": "vla3dsg_goal_layout",
+  "per_task": [
+    {
+      "task_id": 0,
+      "instruction": "Put the bowl on the plate",
+      "n_success": 5,
+      "n_episodes": 5,
+      "steps_max": 128,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.123,
+          "steps": 125
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.121,
+          "steps": 126
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.122,
+          "steps": 127
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.125,
+          "steps": 126
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.119,
+          "steps": 128
+        }
+      ]
+    },
+    {
+      "task_id": 1,
+      "instruction": "Put the bowl on the plate",
+      "n_success": 5,
+      "n_episodes": 5,
+      "steps_max": 137,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.127,
+          "steps": 133
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.121,
+          "steps": 137
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.12,
+          "steps": 136
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.127,
+          "steps": 137
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.126,
+          "steps": 132
+        }
+      ]
+    },
+    {
+      "task_id": 2,
+      "instruction": "Put the bowl on the plate",
+      "n_success": 4,
+      "n_episodes": 5,
+      "steps_max": 322,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.127,
+          "steps": 209
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.129,
+          "steps": 172
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.128,
+          "steps": 235
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.123,
+          "steps": 315
+        },
+        {
+          "init_state": 4,
+          "success": false,
+          "lifted_m": 0.123,
+          "steps": 322
+        }
+      ]
+    },
+    {
+      "task_id": 3,
+      "instruction": "Put the bowl on the plate",
+      "n_success": 5,
+      "n_episodes": 5,
+      "steps_max": 137,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.124,
+          "steps": 137
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.124,
+          "steps": 136
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.124,
+          "steps": 134
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.124,
+          "steps": 135
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.124,
+          "steps": 134
+        }
+      ]
+    },
+    {
+      "task_id": 4,
+      "instruction": "Put the bowl on the plate",
+      "n_success": 5,
+      "n_episodes": 5,
+      "steps_max": 144,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.124,
+          "steps": 142
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.124,
+          "steps": 144
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.124,
+          "steps": 144
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.124,
+          "steps": 143
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.124,
+          "steps": 142
+        }
+      ]
+    },
+    {
+      "task_id": 5,
+      "instruction": "Put the bowl on the plate",
+      "n_success": 3,
+      "n_episodes": 5,
+      "steps_max": 316,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.118,
+          "steps": 208
+        },
+        {
+          "init_state": 1,
+          "success": false,
+          "lifted_m": 0.125,
+          "steps": 300
+        },
+        {
+          "init_state": 2,
+          "success": false,
+          "lifted_m": 0.117,
+          "steps": 316
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.122,
+          "steps": 227
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.117,
+          "steps": 213
+        }
+      ]
+    },
+    {
+      "task_id": 6,
+      "instruction": "Put the bowl on the plate",
+      "n_success": 5,
+      "n_episodes": 5,
+      "steps_max": 129,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.124,
+          "steps": 129
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.124,
+          "steps": 129
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.124,
+          "steps": 128
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.124,
+          "steps": 128
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.124,
+          "steps": 129
+        }
+      ]
+    }
+  ]
+}
