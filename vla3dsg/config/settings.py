@@ -104,6 +104,13 @@ DEMO_TASK_SPECS = {
         2: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [(-0.47, 0.02)], "grasp_offset": (0.0, 0.04, 0.01)},
         3: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [(-0.47, 0.02)], "grasp_offset": (0.0, 0.04, 0.01)},
     },
+    # 実験1 の追加検証: 標準から、ボウルか皿の一方だけを動かしたシーン
+    "vla3dsg_goal_layout": {
+        **{k: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [], "grasp_yaw_deg": 90.0} for k in (0, 1, 3, 4, 6)},
+        # ボウルが遠い（手前）: ロボット側の縁を回して掴むと、皿へ戻す途中で手先が止まり皿の縁に置いてしまう（0/5）。
+        # 手先を回さずに -y 側の縁を掴む
+        **{k: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [], "grasp_offset": (0.0, -0.04, 0.01)} for k in (2, 5)},
+    },
 }
 
 # Scene Graph の生成（scene_graph/builder.py）
@@ -129,7 +136,19 @@ for _k in ("base_short", "base_full", "base_wrong"):
     PROMPT_CONDITIONS[f"{_k}_json"] = PROMPT_CONDITIONS[_k].replace("三つ組", "JSON") if "三つ組" in PROMPT_CONDITIONS[_k] else PROMPT_CONDITIONS[_k] + "（JSON）"
     PROMPT_CONDITIONS[f"{_k}_nl"] = PROMPT_CONDITIONS[_k].replace("三つ組", "自然文") if "三つ組" in PROMPT_CONDITIONS[_k] else PROMPT_CONDITIONS[_k] + "（自然文）"
 # 自作スイートのタスク名の表示名（確認用の資料・表）
-SCENE_LABELS = {"standard": "標準", "shuffle": "場所シャッフル", "hidden": "標準＋隠れ", "hidden_decoy": "標準＋隠れ（おとりあり）"}
+SCENE_LABELS = {
+    "standard": "標準",
+    "shuffle": "場所シャッフル",
+    "hidden": "標準＋隠れ",
+    "hidden_decoy": "標準＋隠れ（おとりあり）",
+    "bowl_near": "ボウルを近くへ",
+    "bowl_shuffle": "ボウルを場所シャッフルの位置へ",
+    "bowl_far": "ボウルを遠くへ",
+    "plate_left": "皿を左へ",
+    "plate_far": "皿を遠くへ",
+    "bowl_far_apart": "ボウルを遠く、皿から離して",
+    "plate_next_to_bowl": "皿をボウルの隣へ",
+}
 # base_irrelevant の無関係な文（base_full と同じトークン数になるよう、先頭から切り出し、足りなければ繰り返す）
 IRRELEVANT_TEXT = (
     "the weather was sunny in the morning and it started to rain in the afternoon. "
