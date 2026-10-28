@@ -5,11 +5,11 @@ from pathlib import Path
 
 import numpy as np
 import torch
-from libero.libero.envs import OffScreenRenderEnv
 from PIL import Image, ImageDraw, ImageFont
 
 from vla3dsg.config import settings
 from vla3dsg.demos.scripted import settle
+from vla3dsg.envs.custom_task_builder import make_env
 
 CAMERAS = {
     "agentview": "agentview (policy input)",
@@ -29,9 +29,7 @@ def render_overview(suite: str, init_state: int = 0) -> Path:
     font = ImageFont.truetype(settings.DEMO_FONT_PATH, 18)
     rows = []
     for task_id, task in enumerate(spec["tasks"]):
-        env = OffScreenRenderEnv(
-            bddl_file_name=str(suite_dir / task["bddl_file"]), camera_names=list(CAMERAS), camera_heights=SIZE, camera_widths=SIZE
-        )
+        env = make_env(str(suite_dir / task["bddl_file"]), camera_names=list(CAMERAS), camera_heights=SIZE, camera_widths=SIZE)
         init_states = torch.load(suite_dir / task["init_states_file"], weights_only=False)
         env.reset()
         env.set_init_state(init_states[init_state])

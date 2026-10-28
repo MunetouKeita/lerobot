@@ -8,9 +8,11 @@ import re
 import mujoco
 import numpy as np
 from libero.libero.envs import OffScreenRenderEnv
+from robosuite.utils.errors import RandomizationError
 
 from vla3dsg.config import settings
 from vla3dsg.demos.scripted import NOOP
+from vla3dsg.scene_graph.builder import _display_names, _support_relations
 
 CAMERAS = ["agentview", "robot0_eye_in_hand"]
 
@@ -129,6 +131,18 @@ def visibility(env: OffScreenRenderEnv, target: str, occluder: str | None) -> di
     return result
 
 
+def make_env(bddl_file: str, **kwargs) -> OffScreenRenderEnv:
+    """環境を作る。作るときの配置のサンプリング（乱数は固定されない）が、配置範囲の広いタスクでまれに失敗するため作り直す
+    （配置は後で初期状態やシードで上書きする）。"""
+    for attempt in range(settings.ENV_CREATE_RETRIES):
+        try:
+            return OffScreenRenderEnv(bddl_file_name=bddl_file, **kwargs)
+        except RandomizationError:
+            if attempt == settings.ENV_CREATE_RETRIES - 1:
+                raise
+    raise AssertionError
+
+
 def body_positions(env: OffScreenRenderEnv) -> dict[str, np.ndarray]:
     e = env.env
     return {name: np.array(e.sim.data.body_xpos[e.obj_body_id[name]]) for name in e.objects_dict}
@@ -154,3 +168,40 @@ def sample_init_state(env: OffScreenRenderEnv, seed: int) -> np.ndarray | None:
     if moved > settings.CUSTOM_TASK_MAX_SETTLE_MOVE or drift > settings.CUSTOM_TASK_MAX_DRIFT:
         return None
     return env.get_sim_state()
+
+
+def too_close(env: OffScreenRenderEnv, state: np.ndarray, min_distance: float) -> bool:
+    """評価と同じく初期状態から落ち着かせた後、動かせる物体どうしが min_distance より近いか、
+    物体がテーブル以外の物（ほかの物体・固定物）に乗っている・触れているか、待つあいだに大きく動いたか。
+
+    保存した状態では問題がなくても、読み込んで待つとコンロに乗る・隣の物体にもたれる・皿と重なった物体が弾かれてテーブルの外へ
+    落ちることがある（MuJoCo の状態の読み込みが、保存したときの動きを完全には再現しない）ため、評価と同じ手順で確かめる。
+    """
+    env.reset()
+    env.set_init_state(state)
+    e = env.env
+    if _support_relations(e, _display_names(e)):
+        return True
+    start = body_positions(env)
+    for _ in range(settings.LIBERO_NUM_STEPS_WAIT):
+        env.step(NOOP)
+    pos = body_positions(env)
+    ids = list(pos)
+    if any(np.linalg.norm(pos[k] - start[k]) > settings.CUSTOM_TASK_MAX_SETTLE_MOVE for k in ids):
+        return True
+    if any(np.linalg.norm(pos[a][:2] - pos[b][:2]) < min_distance for i, a in enumerate(ids) for b in ids[i + 1 :]):
+        return True
+    if _support_relations(e, _display_names(e)):
+        return True
+    owners = sorted([*e.objects_dict, *e.fixtures_dict], key=len, reverse=True)
+    model, data = e.sim.model._model, e.sim.data._data
+
+    def owner(geom: int) -> str | None:
+        body = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_BODY, model.geom_bodyid[geom]) or ""
+        return next((o for o in owners if body.startswith(o)), None)
+
+    for c in data.contact[: data.ncon]:
+        a, b = owner(c.geom1), owner(c.geom2)
+        if a and b and a != b and (a in e.objects_dict or b in e.objects_dict) and "table" not in a + b:
+            return True
+    return False

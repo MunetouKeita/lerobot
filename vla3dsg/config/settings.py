@@ -52,12 +52,13 @@ LIBERO_CAMERA_NAME_MAPPING = {
 }
 
 # 自作タスクの生成（scripts/make_custom_task.py）
-CUSTOM_TASK_MAX_STEPS = 300  # libero_spatial・object は 280、goal は 300
+CUSTOM_TASK_MAX_STEPS = 300  # libero_spatial・object は 280、goal は 300。vla3dsg_goal は 400（隠れたシーンはスクリプト制御でも 300 を超えることが多いため。2026-10-26）
 CUSTOM_TASK_N_INIT = 50  # 初期状態の数（元の LIBERO と同じ）
 CUSTOM_TASK_STABILITY_STEPS = 50  # 落ち着いた後、さらに何もしないで進めて動きを確かめるステップ数
 CUSTOM_TASK_MAX_SETTLE_MOVE = 0.02  # m。配置の直後から落ち着くまでに水平方向にこれ以上動いた配置は除く（押し出し・転倒）
 CUSTOM_TASK_MAX_DRIFT = 0.005  # m。落ち着いた後にこれ以上動く配置は除く
 CUSTOM_TASK_MAX_TRIALS_FACTOR = 4  # 有効な配置が n_init の何倍の試行で集まらなければ中止するか
+ENV_CREATE_RETRIES = 5  # 環境を作るときの配置のサンプリングが失敗したときに作り直す回数（配置範囲の広いタスクでまれに失敗する）
 CUSTOM_TASK_VIS_MAX_POINTS = 400  # 見え方を測るときに使う対象物体の表面の点の数（メッシュの頂点を間引く）
 
 # スクリプト制御による pick-and-place（demos/scripted.py）。正解の位置へ手先を動かす
@@ -81,12 +82,20 @@ SCRIPTED_ACTION_MAX = 0.9375  # 移動量の指令の上限（LIBERO の公式�
 # スクリプト制御によるデモの生成（scripts/generate_demos.py）
 DEMO_DIR = VLA3DSG_DIR / "data"  # 生成したデータセット（LeRobot 形式、git 管理外）
 DEMO_SEED_START = 100_000  # 配置のサンプリングのシード。評価の初期状態（make_custom_task.py はシード 0 から）と重ならないようにする
+DEMO_MAX_TRIALS_FACTOR = 10  # 成功したデモが n_episodes の何倍の試行で集まらなければ中止するか（広い範囲の配置は約 8 割が除かれる）
 DEMO_IMAGE_SIZE = 256  # lerobot/libero と同じ
 DEMO_FPS = 10  # lerobot/libero の表記に合わせる（実際の制御は 20Hz で、1 フレーム = 1 制御ステップ）
 DEMO_GRASP_JITTER = 0.0  # m。掴む点を水平方向にずらす幅（縁を掴む動作はずれに敏感で、0.005 でも半分ほど掴み損ねるため 0）
 DEMO_VIA_JITTER = 0.02  # m。経由点を水平方向にずらす幅
 DEMO_MOVE_NOISE = 0.02  # 移動の指令に加える揺らぎ（1 ステップあたりの標準偏差）
 DEMO_ROT_NOISE = 0.01  # 回転の指令に加える揺らぎ
+# 経路のばらつき（rng を渡したとき、デモごとに決める）
+DEMO_HEIGHT_JITTER = 0.03  # m。近づく高さ・持ち上げる（運ぶ）高さ・経由点の高さを、それぞれ ± この範囲で変える
+DEMO_EXTRA_VIA_PROB = 0.5  # 掴んだ所から置き場所までの途中に、経由点を 1 つ足す確率（タスクに経由点がない場合）
+DEMO_EXTRA_VIA_SIDE = 0.08  # m。足す経由点を、まっすぐな経路の中点から横へずらす幅（±）
+DEMO_SPEED_RANGE = (0.7, 1.0)  # 速さの上限（SCRIPTED_SPEED・SCRIPTED_SLOW_SPEED）に掛ける倍率の範囲
+SCRIPTED_RIM_RADIUS = 0.04  # m。ボウルの中心から縁を掴む点までの水平距離（grasp_angles で掴む点を決めるとき）
+SCRIPTED_RIM_DZ = 0.01  # m。縁を掴む点の、ボウルの中心からの高さ
 DEMO_OFFICIAL_DATASET = "lerobot/libero"  # 比べる公式デモ（generate_demos.py --report）
 DEMO_OFFICIAL_TASK = "libero_goal/put_the_bowl_on_the_plate"  # 自作のシーンのタスクと比べる公式デモ
 DEMO_REPORT_N_EPISODES = 20  # 統計に使うエピソード数（各グループ）
@@ -95,14 +104,27 @@ DEMO_NOISE_THETA = 0.1  # 揺らぎが 0 に戻る速さ（オルンシュタイ
 # タスクごとのスクリプト制御の設定: 掴む物体、置き場所、経由点（世界座標の x, y）、掴む点（省略時は SCRIPTED_GRASP_OFFSET）、
 # 掴む前に手先を鉛直軸まわりに回す角度（度）。開いた指は初期の向きでは y 方向に並ぶため、x 方向の縁を掴むときは 90° 回して
 # 指が縁の壁を挟むようにする（回さないと片方の指が縁に乗って下りられず、押し続ける）
+# grasp_angles: 縁を掴む向きの範囲（度。ボウルの中心から見て 0 = 手前（+x）、90 = 左（+y）、180 = ロボット側）。指定すると、
+# 掴む点と手先の向きを grasp_offset・grasp_yaw_deg の代わりにこの角度から決める（rng を渡すと範囲内でランダム、渡さないと中央）
 DEMO_TASK_SPECS = {
     # libero_goal の put the bowl on the plate を元にしたスイート
     "vla3dsg_goal": {
-        0: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [], "grasp_yaw_deg": 90.0},  # 標準
-        1: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [], "grasp_yaw_deg": 90.0},  # 場所シャッフル
-        # ワインラックの裏: 手先を回すと前腕がラックに当たるため、+y 側の縁を回さずに掴む（回すと 3/8、回さないと 8/8）
-        2: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [(-0.47, 0.02)], "grasp_offset": (0.0, 0.04, 0.01)},
-        3: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [(-0.47, 0.02)], "grasp_offset": (0.0, 0.04, 0.01)},
+        # 縁を掴む向きの範囲は、角度ごとに 4 回ずつ試して全部成功した範囲（経路のランダム化あり。tmp の調査、2026-10-26）
+        0: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [], "grasp_angles": (-60.0, 150.0)},  # 標準
+        1: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [], "grasp_angles": (120.0, 270.0)},  # 場所シャッフル
+        # ワインラックの裏: 手先を大きく回すと前腕がラックに当たる（ロボット側の縁は 3/8）。左の縁の付近（75〜120°）なら成功する
+        2: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [(-0.47, 0.02)], "grasp_angles": (75.0, 120.0)},
+        3: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [(-0.47, 0.02)], "grasp_angles": (75.0, 120.0)},
+    },
+    # 学習用: 見えるボウルを広い範囲に置く（wide、decoy_visible）、隠れ、おとりあり（隠れた方・見える方が正解）
+    # 見えるボウルは位置で掴める向きが違う（tmp の調査、2026-10-26）。ロボット寄り（x < 0）は 0〜150° が 8/8 か所で成功、
+    # 遠い左手前（x > 0）は 180°（ロボット側の縁）だけが 8/8 か所で成功し、150°・210° は 5/8
+    "vla3dsg_goal_train": {
+        **{
+            k: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [], "grasp_angles_by_x": ((0.0, (0.0, 150.0)), (None, (170.0, 190.0)))}
+            for k in (0, 3)
+        },
+        **{k: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [(-0.47, 0.02)], "grasp_angles": (75.0, 120.0)} for k in (1, 2)},
     },
     # 実験1 の追加検証: 標準から、ボウルか皿の一方だけを動かしたシーン
     "vla3dsg_goal_layout": {
@@ -148,6 +170,8 @@ SCENE_LABELS = {
     "plate_far": "皿を遠くへ",
     "bowl_far_apart": "ボウルを遠く、皿から離して",
     "plate_next_to_bowl": "皿をボウルの隣へ",
+    "wide": "見えるボウルを広い範囲に",
+    "decoy_visible": "隠れたおとり（見える方が正解）",
 }
 # base_irrelevant の無関係な文（base_full と同じトークン数になるよう、先頭から切り出し、足りなければ繰り返す）
 IRRELEVANT_TEXT = (

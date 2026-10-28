@@ -12,6 +12,9 @@
         --region akita_black_bowl_region=-0.48,-0.27,-0.46,-0.25 --target akita_black_bowl_1 --occluder wine_rack_1 \\
         --add-object akita_black_bowl_2:akita_black_bowl=-0.10,-0.01,-0.08,0.01
 
+--min-distance を付けると、評価と同じく初期状態から落ち着かせた後に、動かせる物体どうしの水平距離がそれより近い配置と、
+物体がほかの物体・固定物（皿・コンロなど）に乗った・触れた配置を除く（ボウルを広い範囲に置く学習用のシーン。範囲が他の物体と重なるため）。
+
 --copy-init を付けると、配置を変えず元のタスクの公式の初期状態をそのまま使う（vla3dsg_goal の standard）。
 
 --preview を付けると、初期状態を 1 件だけ作って画像と見え方を tmp/ に保存する（custom_tasks/ には書かない）。
@@ -40,6 +43,7 @@ from vla3dsg.envs.custom_task_builder import (  # noqa: E402
     remove_object,
     sample_init_state,
     set_region_range,
+    too_close,
     visibility,
 )
 from vla3dsg.visualization.scene_overview import render_overview  # noqa: E402
@@ -61,7 +65,11 @@ def main() -> None:
     parser.add_argument("--target", help="見え方を測る対象物体（例: akita_black_bowl_1）")
     parser.add_argument("--occluder", help="対象を遮っている固定物（見え方の比較用）")
     parser.add_argument("--copy-init", action="store_true", help="LIBERO のタスクの公式の初期状態をそのまま使う（配置を変えない対照用）")
-    parser.add_argument("--max-steps", type=int, default=settings.CUSTOM_TASK_MAX_STEPS)
+    parser.add_argument("--min-distance", type=float, help="動かせる物体どうしの水平距離の下限（m）。乗った配置も除く")
+    parser.add_argument(
+        "--max-trials-factor", type=int, default=settings.CUSTOM_TASK_MAX_TRIALS_FACTOR, help="有効な配置が n_init の何倍の試行で集まらなければ中止するか"
+    )
+    parser.add_argument("--max-steps", type=int, help="評価の最大ステップ数（省略時は既存の tasks.json の値、なければ settings の既定値）")
     parser.add_argument("--n-init", type=int, default=settings.CUSTOM_TASK_N_INIT)
     parser.add_argument("--preview", action="store_true")
     parser.add_argument("--overview", action="store_true", help="確認用の画像だけを作り直す")
@@ -108,11 +116,11 @@ def main() -> None:
             states.append(state)
             vis_list.append(visibility(env, args.target, args.occluder))
     while len(states) < n_target:
-        if seed >= n_target * settings.CUSTOM_TASK_MAX_TRIALS_FACTOR:
+        if seed >= n_target * args.max_trials_factor:
             raise RuntimeError(f"有効な配置が集まらない（{len(states)}/{n_target}、除外 {rejected}）。配置範囲を見直すこと")
         state = sample_init_state(env, seed)
         seed += 1
-        if state is None:
+        if state is None or (args.min_distance is not None and too_close(env, state, args.min_distance)):
             rejected += 1
             continue
         states.append(state)
@@ -139,22 +147,28 @@ def main() -> None:
     if not args.preview:
         torch.save(np.stack(states), out_dir / f"{args.name}.pruned_init")
         spec_path = out_dir / "tasks.json"
-        spec = json.loads(spec_path.read_text()) if spec_path.exists() else {"max_steps": args.max_steps, "tasks": []}
-        spec["max_steps"] = args.max_steps
-        spec["tasks"] = [t for t in spec["tasks"] if t["name"] != args.name] + [
-            {
-                "name": args.name,
-                "language": args.language,
-                "bddl_file": f"{args.name}.bddl",
-                "init_states_file": f"{args.name}.pruned_init",
-                "base": args.base,
-                "regions": args.region,
-                "official_init": args.copy_init,
-                "removed_objects": args.remove_object,
-                "added_objects": args.add_object,
-                "visibility": stats,
-            }
-        ]
+        spec = json.loads(spec_path.read_text()) if spec_path.exists() else {"max_steps": settings.CUSTOM_TASK_MAX_STEPS, "tasks": []}
+        if args.max_steps is not None:
+            spec["max_steps"] = args.max_steps
+        entry = {
+            "name": args.name,
+            "language": args.language,
+            "bddl_file": f"{args.name}.bddl",
+            "init_states_file": f"{args.name}.pruned_init",
+            "base": args.base,
+            "regions": args.region,
+            "official_init": args.copy_init,
+            "removed_objects": args.remove_object,
+            "added_objects": args.add_object,
+            "min_distance": args.min_distance,
+            "visibility": stats,
+        }
+        # 作り直すときは同じ位置に置く（タスク ID は settings.DEMO_TASK_SPECS などで番号で参照されるため）
+        names = [t["name"] for t in spec["tasks"]]
+        if args.name in names:
+            spec["tasks"][names.index(args.name)] = entry
+        else:
+            spec["tasks"].append(entry)
         spec_path.write_text(json.dumps(spec, indent=2, ensure_ascii=False))
         print(f"saved: {render_overview(args.suite)}")
     print(json.dumps(stats, indent=2, ensure_ascii=False))

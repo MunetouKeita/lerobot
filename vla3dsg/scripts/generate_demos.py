@@ -1,6 +1,7 @@
 """自作タスクのデモを、スクリプト制御（vla3dsg/demos/scripted.py）で自動生成し、LeRobot 形式のデータセットに保存する。
 
 1. 評価の初期状態とは別のシード（settings.DEMO_SEED_START から）で配置をサンプリングし、問題のない配置だけ使う
+   （tasks.json に min_distance があるタスクは、評価の初期状態と同じく近すぎる・乗った・動く配置も除く）
 2. 評価と同じく、初期状態を設定して num_steps_wait だけ待ってから、スクリプト制御で掴んで置く
 3. 成功し、かつ評価の最大ステップ数に収まったエピソードだけを保存する
 
@@ -13,7 +14,7 @@ SG を加えた指示文のデータセットは後から作る。
 データセットは data/<name>/（git 管理外）、生成の記録（summary.json・conditions.json・episodes.jsonl）は results/demos/<name>/。
 
 --check を付けると、データセットは作らず、評価の初期状態（.pruned_init）でスクリプト制御が成功するか（タスクが
-物理的にできるか）を確かめる。結果は results/<name>/（summary.json、videos/ に各タスクの先頭 --n-video 本の動画）。
+物理的にできるか）を確かめる。--randomize を付けると、デモの生成と同じく掴む向き・経路・揺らぎをランダムにして確かめる。結果は results/<name>/（summary.json、videos/ に各タスクの先頭 --n-video 本の動画）。
 
     uv run python vla3dsg/scripts/generate_demos.py --check --name demos/check_goal --suite vla3dsg_goal --task-ids 0 1 2 3
 
@@ -44,8 +45,8 @@ from libero.libero.envs import OffScreenRenderEnv  # noqa: E402
 from lerobot.datasets.lerobot_dataset import LeRobotDataset  # noqa: E402
 from lerobot.processor.env_processor import LiberoProcessorStep  # noqa: E402
 
-from vla3dsg.envs.custom_task_builder import sample_init_state  # noqa: E402
-from vla3dsg.demos.scripted import pick_and_place, settle  # noqa: E402
+from vla3dsg.envs.custom_task_builder import make_env as create_env, sample_init_state, too_close  # noqa: E402
+from vla3dsg.demos.scripted import body_pos, pick_and_place, rim_grasp, settle  # noqa: E402
 from vla3dsg.scene_graph.builder import build_scene_graph  # noqa: E402
 from vla3dsg.scripts.run_eval import git_info  # noqa: E402
 
@@ -73,16 +74,29 @@ def to_frame(obs: dict, action: np.ndarray, task: str) -> dict:
 
 def make_env(suite_dir: Path, task: dict) -> OffScreenRenderEnv:
     size = settings.DEMO_IMAGE_SIZE
-    return OffScreenRenderEnv(bddl_file_name=str(suite_dir / task["bddl_file"]), camera_heights=size, camera_widths=size)
+    return create_env(str(suite_dir / task["bddl_file"]), camera_heights=size, camera_widths=size)
 
 
 def run_scripted(env: OffScreenRenderEnv, obs: dict, demo: dict, rng: np.random.Generator | None, on_step) -> dict[str, Any]:
-    """settings.DEMO_TASK_SPECS のタスクの設定で、スクリプト制御を 1 エピソード実行する。"""
-    return pick_and_place(
-        env, obs, demo["target"], demo["dest"], demo["via"],
-        grasp_offset=demo.get("grasp_offset", settings.SCRIPTED_GRASP_OFFSET), grasp_yaw_deg=demo.get("grasp_yaw_deg", 0.0),
-        rng=rng, on_step=on_step,
+    """settings.DEMO_TASK_SPECS のタスクの設定で、スクリプト制御を 1 エピソード実行する。
+
+    grasp_angles があれば、縁を掴む向きをその範囲から選ぶ（rng を渡すとランダム、渡さないと中央）。
+    grasp_angles_by_x があれば、対象の x の位置で範囲を切り替える（((x の上限, (lo, hi)), ...)。上限 None は残り全部）。
+    """
+    offset, yaw = demo.get("grasp_offset", settings.SCRIPTED_GRASP_OFFSET), demo.get("grasp_yaw_deg", 0.0)
+    angle = None
+    ranges = demo.get("grasp_angles")
+    if "grasp_angles_by_x" in demo:
+        x = body_pos(env, demo["target"])[0]
+        ranges = next(r for x_max, r in demo["grasp_angles_by_x"] if x_max is None or x < x_max)
+    if ranges is not None:
+        lo, hi = ranges
+        angle = float(rng.uniform(lo, hi)) if rng is not None else (lo + hi) / 2
+        offset, yaw = rim_grasp(angle)
+    result = pick_and_place(
+        env, obs, demo["target"], demo["dest"], demo["via"], grasp_offset=offset, grasp_yaw_deg=yaw, rng=rng, on_step=on_step
     )
+    return {**result, "grasp_angle": None if angle is None else round(angle, 1)}
 
 
 def conditions(args: argparse.Namespace) -> dict:
@@ -119,7 +133,8 @@ def check(args: argparse.Namespace, suite_dir: Path, spec: dict) -> None:
                 if i < args.n_video:
                     frames.append(np.concatenate([o[f"{c}_image"][::-1, ::-1] for c in ("agentview", "robot0_eye_in_hand")], axis=1))
 
-            result = run_scripted(env, obs, settings.DEMO_TASK_SPECS[args.suite][task_id], None, on_step)
+            rng = np.random.default_rng(settings.DEMO_SEED_START + i) if args.randomize else None
+            result = run_scripted(env, obs, settings.DEMO_TASK_SPECS[args.suite][task_id], rng, on_step)
             episodes.append({"init_state": i, **result})
             if frames:
                 imageio.mimsave(res_dir / "videos" / f"task{task_id}_episode_{i}.mp4", frames, fps=settings.LIBERO_CONTROL_FPS)
@@ -164,11 +179,13 @@ def generate(args: argparse.Namespace, suite_dir: Path, spec: dict) -> None:
         seed = settings.DEMO_SEED_START
         n_saved = 0
         while n_saved < args.n_episodes:
-            if seed - settings.DEMO_SEED_START >= args.n_episodes * settings.CUSTOM_TASK_MAX_TRIALS_FACTOR:
+            if seed - settings.DEMO_SEED_START >= args.n_episodes * settings.DEMO_MAX_TRIALS_FACTOR:
                 raise RuntimeError(f"task {task_id}: 成功したデモが集まらない（{n_saved}/{args.n_episodes}、{counts}）")
             state = sample_init_state(env, seed)
             seed += 1
-            if state is None:
+            # 評価の初期状態と同じ基準で配置を除く（make_custom_task.py --min-distance）
+            min_distance = task.get("min_distance")
+            if state is None or (min_distance is not None and too_close(env, state, min_distance)):
                 counts["rejected_placement"] += 1
                 continue
             env.reset()
@@ -332,6 +349,9 @@ def main() -> None:
     parser.add_argument("--n-episodes", type=int, help="タスクごとのエピソード数（--check では省略すると初期状態すべて）")
     parser.add_argument("--check", action="store_true", help="評価の初期状態でスクリプト制御が成功するかだけを確かめる")
     parser.add_argument("--n-video", type=int, default=3, help="--check で動画を保存するエピソード数（タスクごと）")
+    parser.add_argument(
+        "--randomize", action="store_true", help="--check で、デモの生成と同じく掴む向き・経路・揺らぎをランダムにする"
+    )
     parser.add_argument("--report", action="store_true", help="生成済みのデータセットを公式デモと比べる")
     args = parser.parse_args()
 
