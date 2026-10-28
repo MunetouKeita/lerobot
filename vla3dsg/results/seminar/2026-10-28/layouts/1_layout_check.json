@@ -1,0 +1,11 @@
+{"out": "results/seminar/2026-10-28/videos/1_layout_check.mp4",
+ "title": "ボウルか皿の一方だけを動かす（追加学習なし、公式の指示文のみ）",
+ "crop": "agentview",
+ "groups": [
+  {"label": "ボウルがロボットに近い", "color": "#444444", "videos": [
+    {"caption": "標準", "result": "成功", "path": "results/zeroshot/standard/base/videos/vla3dsg_goal_0/eval_episode_1.mp4"},
+    {"caption": "ボウルを近くへ", "result": "成功", "path": "results/zeroshot/layout_check/bowl_near/base/videos/vla3dsg_goal_layout_0/eval_episode_1.mp4"},
+    {"caption": "皿をボウルの隣へ", "result": "成功", "path": "results/zeroshot/layout_check/plate_next_to_bowl/base/videos/vla3dsg_goal_layout_6/eval_episode_1.mp4"}]},
+  {"label": "ボウルがロボットから遠い", "color": "#c0392b", "videos": [
+    {"caption": "皿の隣", "result": "失敗", "path": "results/zeroshot/layout_check/bowl_shuffle/base/videos/vla3dsg_goal_layout_1/eval_episode_1.mp4"},
+    {"caption": "皿から離して", "result": "失敗", "path": "results/zeroshot/layout_check/bowl_far_apart/base/videos/vla3dsg_goal_layout_5/eval_episode_1.mp4"}]}]}

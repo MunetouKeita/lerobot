@@ -1,0 +1,10 @@
+{"out": "results/seminar/2026-10-28/videos/2_train_scenes.mp4",
+ "title": "学習用の 4 シーンと、スクリプト制御のデモ（指示文はすべて同じ）",
+ "crop": "left",
+ "groups": [
+  {"label": "ボウル 1 つ", "color": "#444444", "videos": [
+    {"caption": "見える（広い範囲）", "result": "成功", "path": "results/demos/check_goal_train/videos/task0_episode_0.mp4"},
+    {"caption": "隠れている", "result": "成功", "path": "results/demos/check_goal_train/videos/task1_episode_0.mp4"}]},
+  {"label": "ボウル 2 つ（SG がないと正解が分からない）", "color": "#c0392b", "videos": [
+    {"caption": "隠れた方が正解", "result": "成功", "path": "results/demos/check_goal_train/videos/task2_episode_0.mp4"},
+    {"caption": "見える方が正解", "result": "成功", "path": "results/demos/check_goal_train/videos/task3_episode_0.mp4"}]}]}
