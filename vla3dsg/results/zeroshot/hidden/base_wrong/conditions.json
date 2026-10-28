@@ -18,11 +18,11 @@
   "seed": 1000,
   "eval_seed": 1000,
   "git": {
-    "commit": "c0b9b780b09a8c7cdf08824d296dc394f65087a4",
-    "upstream_base": "",
+    "commit": "3eb47bc6de46beb4069a20c35b66384aab14c20b",
+    "upstream_base": "200ee53596d464bd28f6595cdb31be69a2b5e379",
     "dirty": true
   },
-  "started_at": "2026-10-21 13:27:50",
+  "started_at": "2026-10-26 14:38:26",
   "lerobot_eval_args": [
     "--env.discover_packages_path=vla3dsg.envs",
     "--env.type=libero_vla3dsg",
@@ -44,7 +44,7 @@
     "--eval.batch_size=1",
     "--eval.n_episodes=20",
     "--seed=1000",
-    "--output_dir=/home/munetou/lerobot/vla3dsg/results/zeroshot/hidden/base_wrong"
+    "--output_dir=/home/common/github/lerobot/vla3dsg/results/zeroshot/hidden/base_wrong"
   ],
-  "wall_s": 549.8
+  "wall_s": 473.7
 }

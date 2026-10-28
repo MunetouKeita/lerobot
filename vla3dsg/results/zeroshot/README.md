@@ -3,7 +3,7 @@
 SG の形式の比較（標準・場所シャッフル）と、4 シーン × 5 条件の比較の 2 つ。同じスイート・同じシードで評価したため、三つ組の条件は両方で共通の結果を使う。
 
 - 日時: 2026-10-21。学習サーバ（RTX 6000 Ada）の GPU 0〜3 でジョブ（シーン × 条件）を並列に実行（4 シーン × 5 条件は約 50 分、形式の比較は約 20 分）
-- スイート: `custom_tasks/vla3dsg_goal/`（task 0 標準、1 場所シャッフル、2 標準＋隠れ、3 標準＋隠れ（おとりあり））。各 20 エピソード、最大 300 ステップ
+- スイート: `custom_tasks/vla3dsg_goal/`（task 0 標準、1 場所シャッフル、2 標準＋隠れ、3 標準＋隠れ（おとりあり））。各 20 エピソード、最大ステップ数は標準・場所シャッフル 300、隠れた 2 シーン 400（2026-10-26 にこのPCで評価し直した。300 のときも成功率は同じ 0%）
 - 実行: `run_eval.py --name zeroshot/<シーン>/<条件> --suite vla3dsg_goal --task-ids <task> --n-episodes 20 --prompt-condition <条件> --annotated-video`
 - 集計:
   - 4 シーン × 5 条件: `summarize_results.py --root zeroshot --scenes standard shuffle hidden hidden_decoy --names base base_short base_full base_wrong sg_command`（`comparison.md`）
@@ -73,7 +73,7 @@ SG の形式の比較（標準・場所シャッフル）と、4 シーン × 5 
 - 場所シャッフルで base と比べた Fisher の正確検定: sg_command p = 0.006、base_short p = 0.03、base_wrong p = 0.06、base_full p = 0.49。base_short と base_wrong の差は p = 1.0
 - 何をどこに置いたか（`<シーン>/outcomes.md`）:
   - 場所シャッフル: 失敗の多くは、ボウルを掴んで皿の上まで運ぶが、離さずに時間切れ（終了時の SG では "black bowl on plate" だが成功判定にならない）か、掴む前に止まる。base は 20 回中 12 回が何も置かずに終わった
-  - 標準＋隠れ: クリームチーズを皿に置く（base 9 回、base_full 15 回）か、何も置かずに終わる
+  - 標準＋隠れ: クリームチーズを皿に置く（base 9 回、base_full 16 回）か、何も置かずに終わる
   - 標準＋隠れ（おとりあり）: 全条件で、ほぼ毎回見えているボウル 2 を皿に置いた（100 回中 98 回）
 
 読み取れること:

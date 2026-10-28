@@ -10,13 +10,13 @@
 
 | task | プロンプト（先頭） | 成功 | 結果（回数） |
 |---|---|---|---|
-| 2 | put the bowl on the plate. scene information: (black bowl, behind, wine rack) | 0/20 | 13 × 変化なし<br>7 × cream cheese on plate |
+| 2 | put the bowl on the plate. scene information: (black bowl, behind, wine rack) | 0/20 | 12 × 変化なし<br>8 × cream cheese on plate |
 
 ## base_full
 
 | task | プロンプト（先頭） | 成功 | 結果（回数） |
 |---|---|---|---|
-| 2 | put the bowl on the plate. scene information: (black bowl, behind, wine rack); (black bowl | 0/20 | 15 × cream cheese on plate<br>5 × 変化なし |
+| 2 | put the bowl on the plate. scene information: (black bowl, behind, wine rack); (black bowl | 0/20 | 16 × cream cheese on plate<br>4 × 変化なし |
 
 ## base_wrong
 
