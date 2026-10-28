@@ -1,0 +1,56 @@
+{
+  "dataset": "vla3dsg/data/goal_train",
+  "n_episodes": 200,
+  "n_frames": 47562,
+  "elapsed_s": 3129,
+  "per_task": [
+    {
+      "task_id": 0,
+      "task": "Put the bowl on the plate",
+      "n_episodes": 50,
+      "n_trials": 207,
+      "rejected_placement": 157,
+      "failed": 0,
+      "too_long": 0,
+      "steps_min": 128,
+      "steps_max": 233,
+      "n_frames": 8141
+    },
+    {
+      "task_id": 1,
+      "task": "Put the bowl on the plate",
+      "n_episodes": 50,
+      "n_trials": 51,
+      "rejected_placement": 0,
+      "failed": 1,
+      "too_long": 0,
+      "steps_min": 262,
+      "steps_max": 387,
+      "n_frames": 15675
+    },
+    {
+      "task_id": 2,
+      "task": "Put the bowl on the plate",
+      "n_episodes": 50,
+      "n_trials": 300,
+      "rejected_placement": 247,
+      "failed": 2,
+      "too_long": 1,
+      "steps_min": 260,
+      "steps_max": 399,
+      "n_frames": 15665
+    },
+    {
+      "task_id": 3,
+      "task": "Put the bowl on the plate",
+      "n_episodes": 50,
+      "n_trials": 306,
+      "rejected_placement": 255,
+      "failed": 1,
+      "too_long": 0,
+      "steps_min": 126,
+      "steps_max": 211,
+      "n_frames": 8081
+    }
+  ]
+}

@@ -1,0 +1,321 @@
+{
+  "suite": "vla3dsg_goal",
+  "per_task": [
+    {
+      "task_id": 0,
+      "instruction": "Put the bowl on the plate",
+      "n_success": 9,
+      "n_episodes": 10,
+      "steps_max": 417,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.141,
+          "steps": 177,
+          "grasp_angle": -33.6
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.094,
+          "steps": 139,
+          "grasp_angle": 118.9
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.129,
+          "steps": 135,
+          "grasp_angle": 138.3
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.138,
+          "steps": 145,
+          "grasp_angle": -55.2
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.103,
+          "steps": 140,
+          "grasp_angle": -55.8
+        },
+        {
+          "init_state": 5,
+          "success": true,
+          "lifted_m": 0.092,
+          "steps": 150,
+          "grasp_angle": 45.6
+        },
+        {
+          "init_state": 6,
+          "success": false,
+          "lifted_m": 0.119,
+          "steps": 417,
+          "grasp_angle": 72.6
+        },
+        {
+          "init_state": 7,
+          "success": true,
+          "lifted_m": 0.104,
+          "steps": 159,
+          "grasp_angle": -10.4
+        },
+        {
+          "init_state": 8,
+          "success": true,
+          "lifted_m": 0.112,
+          "steps": 140,
+          "grasp_angle": 144.8
+        },
+        {
+          "init_state": 9,
+          "success": true,
+          "lifted_m": 0.101,
+          "steps": 150,
+          "grasp_angle": 41.3
+        }
+      ]
+    },
+    {
+      "task_id": 1,
+      "instruction": "Put the bowl on the plate",
+      "n_success": 10,
+      "n_episodes": 10,
+      "steps_max": 211,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.148,
+          "steps": 187,
+          "grasp_angle": 138.9
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.099,
+          "steps": 167,
+          "grasp_angle": 247.8
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.126,
+          "steps": 211,
+          "grasp_angle": 261.6
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.12,
+          "steps": 154,
+          "grasp_angle": 123.4
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.094,
+          "steps": 160,
+          "grasp_angle": 123.0
+        },
+        {
+          "init_state": 5,
+          "success": true,
+          "lifted_m": 0.089,
+          "steps": 161,
+          "grasp_angle": 195.4
+        },
+        {
+          "init_state": 6,
+          "success": true,
+          "lifted_m": 0.096,
+          "steps": 152,
+          "grasp_angle": 214.7
+        },
+        {
+          "init_state": 7,
+          "success": true,
+          "lifted_m": 0.098,
+          "steps": 170,
+          "grasp_angle": 155.4
+        },
+        {
+          "init_state": 8,
+          "success": true,
+          "lifted_m": 0.111,
+          "steps": 161,
+          "grasp_angle": 266.3
+        },
+        {
+          "init_state": 9,
+          "success": true,
+          "lifted_m": 0.1,
+          "steps": 157,
+          "grasp_angle": 192.4
+        }
+      ]
+    },
+    {
+      "task_id": 2,
+      "instruction": "Put the bowl on the plate",
+      "n_success": 10,
+      "n_episodes": 10,
+      "steps_max": 365,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.15,
+          "steps": 309,
+          "grasp_angle": 80.7
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.092,
+          "steps": 365,
+          "grasp_angle": 113.3
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.145,
+          "steps": 285,
+          "grasp_angle": 117.5
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.137,
+          "steps": 296,
+          "grasp_angle": 76.0
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.099,
+          "steps": 307,
+          "grasp_angle": 75.9
+        },
+        {
+          "init_state": 5,
+          "success": true,
+          "lifted_m": 0.084,
+          "steps": 292,
+          "grasp_angle": 97.6
+        },
+        {
+          "init_state": 6,
+          "success": true,
+          "lifted_m": 0.107,
+          "steps": 307,
+          "grasp_angle": 103.4
+        },
+        {
+          "init_state": 7,
+          "success": true,
+          "lifted_m": 0.1,
+          "steps": 288,
+          "grasp_angle": 85.6
+        },
+        {
+          "init_state": 8,
+          "success": true,
+          "lifted_m": 0.126,
+          "steps": 288,
+          "grasp_angle": 118.9
+        },
+        {
+          "init_state": 9,
+          "success": true,
+          "lifted_m": 0.116,
+          "steps": 340,
+          "grasp_angle": 96.7
+        }
+      ]
+    },
+    {
+      "task_id": 3,
+      "instruction": "Put the bowl on the plate",
+      "n_success": 10,
+      "n_episodes": 10,
+      "steps_max": 362,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.152,
+          "steps": 321,
+          "grasp_angle": 80.7
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.102,
+          "steps": 362,
+          "grasp_angle": 113.3
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.13,
+          "steps": 321,
+          "grasp_angle": 117.5
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.13,
+          "steps": 273,
+          "grasp_angle": 76.0
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.101,
+          "steps": 305,
+          "grasp_angle": 75.9
+        },
+        {
+          "init_state": 5,
+          "success": true,
+          "lifted_m": 0.104,
+          "steps": 294,
+          "grasp_angle": 97.6
+        },
+        {
+          "init_state": 6,
+          "success": true,
+          "lifted_m": 0.114,
+          "steps": 339,
+          "grasp_angle": 103.4
+        },
+        {
+          "init_state": 7,
+          "success": true,
+          "lifted_m": 0.098,
+          "steps": 296,
+          "grasp_angle": 85.6
+        },
+        {
+          "init_state": 8,
+          "success": true,
+          "lifted_m": 0.126,
+          "steps": 297,
+          "grasp_angle": 118.9
+        },
+        {
+          "init_state": 9,
+          "success": true,
+          "lifted_m": 0.108,
+          "steps": 310,
+          "grasp_angle": 96.7
+        }
+      ]
+    }
+  ]
+}

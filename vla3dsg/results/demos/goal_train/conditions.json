@@ -1,0 +1,243 @@
+{
+  "args": {
+    "name": "goal_train",
+    "suite": "vla3dsg_goal_train",
+    "task_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "n_episodes": 50,
+    "check": false,
+    "n_video": 3,
+    "randomize": false,
+    "report": false
+  },
+  "settings": {
+    "DEMO_EPISODES_PER_TASK": 1,
+    "DEMO_EXTRA_VIA_PROB": 0.5,
+    "DEMO_EXTRA_VIA_SIDE": 0.08,
+    "DEMO_FONT_PATH": "/usr/share/fonts/opentype/noto/NotoSansCJK-Medium.ttc",
+    "DEMO_FPS": 10,
+    "DEMO_GRASP_JITTER": 0.0,
+    "DEMO_HEIGHT_JITTER": 0.03,
+    "DEMO_HOLD_LAST_S": 1.0,
+    "DEMO_IMAGE_SIZE": 256,
+    "DEMO_MAX_TRIALS_FACTOR": 10,
+    "DEMO_MOVE_NOISE": 0.02,
+    "DEMO_NOISE_THETA": 0.1,
+    "DEMO_OFFICIAL_DATASET": "lerobot/libero",
+    "DEMO_OFFICIAL_TASK": "libero_goal/put_the_bowl_on_the_plate",
+    "DEMO_REPORT_N_EPISODES": 20,
+    "DEMO_REPORT_STALL_MOVE": 0.001,
+    "DEMO_ROT_NOISE": 0.01,
+    "DEMO_SEED_START": 100000,
+    "DEMO_SPEED_RANGE": [
+      0.7,
+      1.0
+    ],
+    "DEMO_TASK_SPECS": {
+      "vla3dsg_goal": {
+        "0": {
+          "target": "akita_black_bowl_1",
+          "dest": "plate_1",
+          "via": [],
+          "grasp_angles": [
+            -60.0,
+            150.0
+          ]
+        },
+        "1": {
+          "target": "akita_black_bowl_1",
+          "dest": "plate_1",
+          "via": [],
+          "grasp_angles": [
+            120.0,
+            270.0
+          ]
+        },
+        "2": {
+          "target": "akita_black_bowl_1",
+          "dest": "plate_1",
+          "via": [
+            [
+              -0.47,
+              0.02
+            ]
+          ],
+          "grasp_angles": [
+            75.0,
+            120.0
+          ]
+        },
+        "3": {
+          "target": "akita_black_bowl_1",
+          "dest": "plate_1",
+          "via": [
+            [
+              -0.47,
+              0.02
+            ]
+          ],
+          "grasp_angles": [
+            75.0,
+            120.0
+          ]
+        }
+      },
+      "vla3dsg_goal_train": {
+        "0": {
+          "target": "akita_black_bowl_1",
+          "dest": "plate_1",
+          "via": [],
+          "grasp_angles_by_x": [
+            [
+              0.0,
+              [
+                0.0,
+                150.0
+              ]
+            ],
+            [
+              null,
+              [
+                170.0,
+                190.0
+              ]
+            ]
+          ]
+        },
+        "3": {
+          "target": "akita_black_bowl_1",
+          "dest": "plate_1",
+          "via": [],
+          "grasp_angles_by_x": [
+            [
+              0.0,
+              [
+                0.0,
+                150.0
+              ]
+            ],
+            [
+              null,
+              [
+                170.0,
+                190.0
+              ]
+            ]
+          ]
+        },
+        "1": {
+          "target": "akita_black_bowl_1",
+          "dest": "plate_1",
+          "via": [
+            [
+              -0.47,
+              0.02
+            ]
+          ],
+          "grasp_angles": [
+            75.0,
+            120.0
+          ]
+        },
+        "2": {
+          "target": "akita_black_bowl_1",
+          "dest": "plate_1",
+          "via": [
+            [
+              -0.47,
+              0.02
+            ]
+          ],
+          "grasp_angles": [
+            75.0,
+            120.0
+          ]
+        }
+      },
+      "vla3dsg_goal_layout": {
+        "0": {
+          "target": "akita_black_bowl_1",
+          "dest": "plate_1",
+          "via": [],
+          "grasp_yaw_deg": 90.0
+        },
+        "1": {
+          "target": "akita_black_bowl_1",
+          "dest": "plate_1",
+          "via": [],
+          "grasp_yaw_deg": 90.0
+        },
+        "3": {
+          "target": "akita_black_bowl_1",
+          "dest": "plate_1",
+          "via": [],
+          "grasp_yaw_deg": 90.0
+        },
+        "4": {
+          "target": "akita_black_bowl_1",
+          "dest": "plate_1",
+          "via": [],
+          "grasp_yaw_deg": 90.0
+        },
+        "6": {
+          "target": "akita_black_bowl_1",
+          "dest": "plate_1",
+          "via": [],
+          "grasp_yaw_deg": 90.0
+        },
+        "2": {
+          "target": "akita_black_bowl_1",
+          "dest": "plate_1",
+          "via": [],
+          "grasp_offset": [
+            0.0,
+            -0.04,
+            0.01
+          ]
+        },
+        "5": {
+          "target": "akita_black_bowl_1",
+          "dest": "plate_1",
+          "via": [],
+          "grasp_offset": [
+            0.0,
+            -0.04,
+            0.01
+          ]
+        }
+      }
+    },
+    "DEMO_VIA_JITTER": 0.02,
+    "SCRIPTED_ACCEL": 0.1,
+    "SCRIPTED_ACTION_MAX": 0.9375,
+    "SCRIPTED_APPROACH_DZ": 0.12,
+    "SCRIPTED_GAIN": 25.0,
+    "SCRIPTED_GRASP_OFFSET": [
+      -0.04,
+      0.0,
+      0.01
+    ],
+    "SCRIPTED_LIFT_DZ": 0.15,
+    "SCRIPTED_MAX_STEPS": 600,
+    "SCRIPTED_RELEASE_DZ": 0.04,
+    "SCRIPTED_RIM_DZ": 0.01,
+    "SCRIPTED_RIM_RADIUS": 0.04,
+    "SCRIPTED_ROT_GAIN": 1.0,
+    "SCRIPTED_SLOW_DZ": 0.03,
+    "SCRIPTED_SLOW_SPEED": 0.3,
+    "SCRIPTED_SPEED": 0.8,
+    "SCRIPTED_STALL_MOVE": 0.002,
+    "SCRIPTED_STALL_STEPS": 10,
+    "SCRIPTED_TOL": 0.01,
+    "SCRIPTED_VIA_DZ": 0.25
+  },
+  "git": {
+    "commit": "3eb47bc6de46beb4069a20c35b66384aab14c20b",
+    "upstream_base": "200ee53596d464bd28f6595cdb31be69a2b5e379",
+    "dirty": true
+  }
+}

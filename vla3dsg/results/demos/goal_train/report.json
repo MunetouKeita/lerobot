@@ -1,0 +1,100 @@
+{
+  "n_episodes_each": 20,
+  "stats": {
+    "official (libero_goal/put_the_bowl_on_the_plate)": {
+      "steps": 95.45,
+      "move_abs_mean": [
+        0.394,
+        0.09,
+        0.471
+      ],
+      "move_saturated_frac": [
+        0.12,
+        0.0,
+        0.138
+      ],
+      "rot_abs_mean": [
+        0.019,
+        0.043,
+        0.019
+      ],
+      "stalled_frac": 0.064
+    },
+    "generated (task 0)": {
+      "steps": 161.7,
+      "move_abs_mean": [
+        0.21,
+        0.113,
+        0.28
+      ],
+      "move_saturated_frac": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rot_abs_mean": [
+        0.015,
+        0.023,
+        0.07
+      ],
+      "stalled_frac": 0.089
+    },
+    "generated (task 1)": {
+      "steps": 311.85,
+      "move_abs_mean": [
+        0.292,
+        0.194,
+        0.221
+      ],
+      "move_saturated_frac": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rot_abs_mean": [
+        0.022,
+        0.033,
+        0.02
+      ],
+      "stalled_frac": 0.128
+    },
+    "generated (task 2)": {
+      "steps": 315.95,
+      "move_abs_mean": [
+        0.302,
+        0.198,
+        0.231
+      ],
+      "move_saturated_frac": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rot_abs_mean": [
+        0.023,
+        0.036,
+        0.018
+      ],
+      "stalled_frac": 0.123
+    },
+    "generated (task 3)": {
+      "steps": 164.25,
+      "move_abs_mean": [
+        0.22,
+        0.122,
+        0.281
+      ],
+      "move_saturated_frac": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rot_abs_mean": [
+        0.015,
+        0.025,
+        0.086
+      ],
+      "stalled_frac": 0.08
+    }
+  }
+}
