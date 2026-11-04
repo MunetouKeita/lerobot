@@ -43,7 +43,7 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 | `vla3dsg/custom_tasks/<スイート>/` | 自作タスク（BDDL・初期状態 `.pruned_init`・`tasks.json`・確認用の画像 `previews/overview.png`）。`--suite <スイート>` で評価できる |
 | `vla3dsg/demos/` | スクリプト制御（`scripted.py`: シミュレータの正解の位置を使った pick-and-place） |
 | `vla3dsg/visualization/` | ロールアウトの動画（`rollout_video.py`: agentview と手首カメラ、各タスク先頭 10 本＋失敗）、自作スイートの 6 視点の画像（`scene_overview.py`） |
-| `vla3dsg/scripts/` | `run_eval.py`: 評価と結果の保存、`make_custom_task.py`: 自作タスクの作成、`generate_demos.py`: デモの自動生成（`--check` でできるかの確認、`--report` で公式デモと比較）、`summarize_results.py`: 条件の比較表、`show_conditions.py`: 評価前の確認資料、`make_demo_video.py`: テロップ付きデモ動画、`make_comparison_video.py`: ゼミ用の比較動画（並べ方は JSON）、`measure_inference.py`: 推論時間と GPU メモリ |
+| `vla3dsg/scripts/` | `run_eval.py`: 評価と結果の保存、`make_custom_task.py`: 自作タスクの作成、`generate_demos.py`: デモの自動生成（`--check` でできるかの確認、`--report` で公式デモと比較）、`make_sg_dataset.py`: デモのデータセットの指示文に SG を加えたデータセットを作る、`extract_official_demos.py`: 公式デモから 1 タスクを取り出したデータセットを作る（自作のデモと結合して使う）、`summarize_results.py`: 条件の比較表、`show_conditions.py`: 評価前の確認資料、`make_demo_video.py`: テロップ付きデモ動画、`make_comparison_video.py`: ゼミ用の比較動画（並べ方は JSON）、`measure_inference.py`: 推論時間と GPU メモリ |
 | `vla3dsg/tests/test_<対象>.py` | モジュール単位のテスト（`test_envs.py`・`test_scene_graph.py`・`test_rollout_video.py`） |
 | `vla3dsg/results/<名前>/` | 1 実験分の結果。`README.md`・`summary.json`・`conditions.json`・`eval_info.json` は git 管理、`videos/` と `eval.log` は管理外（ゼミ報告 `results/seminar/<日付>/videos/` の比較動画だけは git 管理） |
 | `vla3dsg/data/<名前>/` | 生成したデータセット（git 管理外）。生成の記録は `vla3dsg/results/demos/<名前>/` |

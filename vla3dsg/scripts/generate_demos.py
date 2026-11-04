@@ -1,6 +1,7 @@
 """自作タスクのデモを、スクリプト制御（vla3dsg/demos/scripted.py）で自動生成し、LeRobot 形式のデータセットに保存する。
 
-1. 評価の初期状態とは別のシード（settings.DEMO_SEED_START から）で配置をサンプリングし、問題のない配置だけ使う
+1. 評価の初期状態とは別のシード（settings.DEMO_SEED_START から。既存のデモに足すときは --seed-start で重ならない値）で
+   配置をサンプリングし、問題のない配置だけ使う
    （tasks.json に min_distance があるタスクは、評価の初期状態と同じく近すぎる・乗った・動く配置も除く）
 2. 評価と同じく、初期状態を設定して num_steps_wait だけ待ってから、スクリプト制御で掴んで置く
 3. 成功し、かつ評価の最大ステップ数に収まったエピソードだけを保存する
@@ -176,10 +177,10 @@ def generate(args: argparse.Namespace, suite_dir: Path, spec: dict) -> None:
         demo = settings.DEMO_TASK_SPECS[args.suite][task_id]
         env = make_env(suite_dir, task)
         counts = {"rejected_placement": 0, "failed": 0, "too_long": 0}
-        seed = settings.DEMO_SEED_START
+        seed = args.seed_start
         n_saved = 0
         while n_saved < args.n_episodes:
-            if seed - settings.DEMO_SEED_START >= args.n_episodes * settings.DEMO_MAX_TRIALS_FACTOR:
+            if seed - args.seed_start >= args.n_episodes * settings.DEMO_MAX_TRIALS_FACTOR:
                 raise RuntimeError(f"task {task_id}: 成功したデモが集まらない（{n_saved}/{args.n_episodes}、{counts}）")
             state = sample_init_state(env, seed)
             seed += 1
@@ -221,7 +222,7 @@ def generate(args: argparse.Namespace, suite_dir: Path, spec: dict) -> None:
         env.close()
         steps = [e["steps"] for e in episodes if e["task_id"] == task_id]
         per_task.append(
-            {"task_id": task_id, "task": task["language"], "n_episodes": n_saved, "n_trials": seed - settings.DEMO_SEED_START,
+            {"task_id": task_id, "task": task["language"], "n_episodes": n_saved, "n_trials": seed - args.seed_start,
              **counts, "steps_min": min(steps), "steps_max": max(steps), "n_frames": sum(steps)}
         )
     dataset.finalize()
@@ -347,6 +348,10 @@ def main() -> None:
     parser.add_argument("--suite", required=True, help="自作スイート（custom_tasks/<suite>/）")
     parser.add_argument("--task-ids", type=int, nargs="+", required=True)
     parser.add_argument("--n-episodes", type=int, help="タスクごとのエピソード数（--check では省略すると初期状態すべて）")
+    parser.add_argument(
+        "--seed-start", type=int, default=settings.DEMO_SEED_START,
+        help="配置のサンプリングの最初のシード（既存のデータセットにデモを足すときは、前の生成と重ならない値にする）",
+    )
     parser.add_argument("--check", action="store_true", help="評価の初期状態でスクリプト制御が成功するかだけを確かめる")
     parser.add_argument("--n-video", type=int, default=3, help="--check で動画を保存するエピソード数（タスクごと）")
     parser.add_argument(

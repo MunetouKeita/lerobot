@@ -73,6 +73,9 @@ def main() -> None:
         choices=list(settings.PROMPT_CONDITIONS),
         help="指示文の条件（settings.PROMPT_CONDITIONS）",
     )
+    parser.add_argument(
+        "--policy-path", help="追加学習したチェックポイント（<出力先>/checkpoints/<ステップ>/pretrained_model）。省略時は元の MolmoAct2"
+    )
     args = parser.parse_args()
 
     suites = args.suite.split(",")
@@ -87,6 +90,12 @@ def main() -> None:
         sys.exit(f"{res_dir} は既に存在する。別の --name を指定すること")
 
     eval_args = settings.molmoact2_eval_args(args.suite, task_ids, args.n_episodes, res_dir)
+    if args.policy_path:
+        # 学習時の設定（config.json）を読み、評価の設定（dtype・正規化など）だけを上書きする
+        eval_args = [a for a in eval_args if not a.startswith(("--policy.type=", "--policy.checkpoint_path="))]
+        eval_args.insert(0, f"--policy.path={args.policy_path}")
+        # 学習データ（lerobot/libero と同じ形式）は手首カメラを image2 と呼ぶ
+        eval_args.append('--rename_map={"observation.images.wrist_image": "observation.images.image2"}')
     conditions = {
         "suite": args.suite,
         "task_ids": task_ids,
@@ -95,7 +104,7 @@ def main() -> None:
         "prompt_condition_desc": settings.PROMPT_CONDITIONS[args.prompt_condition],
         "annotated_video": args.annotated_video,
         "video_save": {"first_n": settings.VIDEO_SAVE_FIRST_N, "failures": settings.VIDEO_SAVE_FAILURES},
-        "checkpoint": settings.MOLMOACT2_CHECKPOINT,
+        "checkpoint": args.policy_path or settings.MOLMOACT2_CHECKPOINT,
         "norm_tag": settings.MOLMOACT2_NORM_TAG,
         "dtype": settings.MOLMOACT2_DTYPE,
         "num_steps_wait": settings.LIBERO_NUM_STEPS_WAIT,

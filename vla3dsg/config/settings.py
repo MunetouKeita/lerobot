@@ -99,6 +99,7 @@ SCRIPTED_RIM_DZ = 0.01  # m。縁を掴む点の、ボウルの中心からの�
 DEMO_OFFICIAL_DATASET = "lerobot/libero"  # 比べる公式デモ（generate_demos.py --report）
 DEMO_OFFICIAL_TASK = "libero_goal/put_the_bowl_on_the_plate"  # 自作のシーンのタスクと比べる公式デモ
 DEMO_REPORT_N_EPISODES = 20  # 統計に使うエピソード数（各グループ）
+DEMO_SG_CONDITION = "base_short"  # SG 付きのデータセット（make_sg_dataset.py）の指示文のプロンプト条件（評価と同じ関数で作る）
 DEMO_REPORT_STALL_MOVE = 0.001  # m。1 ステップの手先の移動がこれ未満なら「止まっている」と数える
 DEMO_NOISE_THETA = 0.1  # 揺らぎが 0 に戻る速さ（オルンシュタイン＝ウーレンベック過程）
 # タスクごとのスクリプト制御の設定: 掴む物体、置き場所、経由点（世界座標の x, y）、掴む点（省略時は SCRIPTED_GRASP_OFFSET）、
@@ -164,7 +165,7 @@ SCENE_LABELS = {
     "hidden": "標準＋隠れ",
     "hidden_decoy": "標準＋隠れ（おとりあり）",
     "bowl_near": "ボウルを近くへ",
-    "bowl_shuffle": "ボウルを場所シャッフルの位置へ",
+    "bowl_shuffle": "ボウルを手前左へ（固定）",
     "bowl_far": "ボウルを遠くへ",
     "plate_left": "皿を左へ",
     "plate_far": "皿を遠くへ",
