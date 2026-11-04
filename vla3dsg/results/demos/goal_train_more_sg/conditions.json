@@ -1,0 +1,13 @@
+{
+  "src": "goal_train_more",
+  "condition": "base_short",
+  "n_episodes": 100,
+  "n_tasks": 4,
+  "sg_matches_generation": "89/100",
+  "max_tokens": 22,
+  "git": {
+    "commit": "f92b20ed87cf570b6848f7b8cfae03db7d5c15ae",
+    "upstream_base": "200ee53596d464bd28f6595cdb31be69a2b5e379",
+    "dirty": true
+  }
+}

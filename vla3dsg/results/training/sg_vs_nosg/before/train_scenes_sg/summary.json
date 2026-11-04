@@ -1,0 +1,126 @@
+{
+  "pc_success": 23.75,
+  "n_success": 19,
+  "n_episodes": 80,
+  "pc_success_ci95": [
+    15.764672866774626,
+    34.14077893384055
+  ],
+  "per_suite": {
+    "vla3dsg_goal_train": 23.75
+  },
+  "per_task": [
+    {
+      "suite": "vla3dsg_goal_train",
+      "task_id": 0,
+      "instruction": "Put the bowl on the plate",
+      "successes": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        false,
+        true,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false
+      ],
+      "pc_success": 30.0
+    },
+    {
+      "suite": "vla3dsg_goal_train",
+      "task_id": 1,
+      "instruction": "Put the bowl on the plate",
+      "successes": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "pc_success": 0.0
+    },
+    {
+      "suite": "vla3dsg_goal_train",
+      "task_id": 2,
+      "instruction": "Put the bowl on the plate",
+      "successes": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "pc_success": 0.0
+    },
+    {
+      "suite": "vla3dsg_goal_train",
+      "task_id": 3,
+      "instruction": "Put the bowl on the plate",
+      "successes": [
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        false,
+        false,
+        true,
+        false,
+        true,
+        true,
+        false,
+        true,
+        false
+      ],
+      "pc_success": 65.0
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "pc_success": 40.0,
+  "n_success": 32,
+  "n_episodes": 80,
+  "pc_success_ci95": [
+    29.961827595870943,
+    50.954534994839605
+  ],
+  "per_suite": {
+    "vla3dsg_goal": 40.0
+  },
+  "per_task": [
+    {
+      "suite": "vla3dsg_goal",
+      "task_id": 0,
+      "instruction": "Put the bowl on the plate",
+      "successes": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "pc_success": 90.0
+    },
+    {
+      "suite": "vla3dsg_goal",
+      "task_id": 1,
+      "instruction": "Put the bowl on the plate",
+      "successes": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "pc_success": 15.0
+    },
+    {
+      "suite": "vla3dsg_goal",
+      "task_id": 2,
+      "instruction": "Put the bowl on the plate",
+      "successes": [
+        true,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        false,
+        true,
+        false,
+        true,
+        true,
+        true,
+        false
+      ],
+      "pc_success": 55.0
+    },
+    {
+      "suite": "vla3dsg_goal",
+      "task_id": 3,
+      "instruction": "Put the bowl on the plate",
+      "successes": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "pc_success": 0.0
+    }
+  ]
+}

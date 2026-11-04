@@ -1,0 +1,98 @@
+{
+  "pc_success": 5.0,
+  "n_success": 3,
+  "n_episodes": 60,
+  "pc_success_ci95": [
+    1.7149502164395667,
+    13.700516476348515
+  ],
+  "per_suite": {
+    "vla3dsg_goal_layout": 5.0
+  },
+  "per_task": [
+    {
+      "suite": "vla3dsg_goal_layout",
+      "task_id": 1,
+      "instruction": "Put the bowl on the plate",
+      "successes": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "pc_success": 10.0
+    },
+    {
+      "suite": "vla3dsg_goal_layout",
+      "task_id": 2,
+      "instruction": "Put the bowl on the plate",
+      "successes": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "pc_success": 0.0
+    },
+    {
+      "suite": "vla3dsg_goal_layout",
+      "task_id": 5,
+      "instruction": "Put the bowl on the plate",
+      "successes": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "pc_success": 5.0
+    }
+  ]
+}
