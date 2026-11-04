@@ -1,0 +1,10 @@
+{"out": "results/seminar/2026-11-04/videos/2_visible_nosg.mp4",
+ "title": "SG なしの追加学習　遠い位置のボウルを皿に置く（公式の指示文のみ）",
+ "crop": "agentview",
+ "groups": [
+  {"label": "ボウルを手前左へ（固定）", "color": "#444444", "videos": [
+    {"caption": "学習前", "result": "失敗", "path": "results/zeroshot/layout_check/bowl_shuffle/base/videos/vla3dsg_goal_layout_1/eval_episode_0.mp4"},
+    {"caption": "追加学習後", "result": "成功", "path": "results/training/visible_nosg/step012000/layout_far/videos/vla3dsg_goal_layout_1/eval_episode_0.mp4"}]},
+  {"label": "ボウルを遠く、皿から離して", "color": "#444444", "videos": [
+    {"caption": "学習前", "result": "失敗", "path": "results/zeroshot/layout_check/bowl_far_apart/base/videos/vla3dsg_goal_layout_5/eval_episode_1.mp4"},
+    {"caption": "追加学習後", "result": "成功", "path": "results/training/visible_nosg/step012000/layout_far/videos/vla3dsg_goal_layout_5/eval_episode_1.mp4"}]}]}

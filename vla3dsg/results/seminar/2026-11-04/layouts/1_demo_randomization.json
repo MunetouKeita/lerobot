@@ -1,0 +1,12 @@
+{"out": "results/seminar/2026-11-04/videos/1_demo_randomization.mp4",
+ "title": "教師データ（スクリプト制御のデモ）　配置と動きをデモごとに変える",
+ "crop": "none",
+ "groups": [
+  {"label": "見えるボウル（配置も変わる）", "color": "#444444", "videos": [
+    {"caption": "標準の位置の付近", "result": "成功", "path": "results/seminar/2026-11-04/videos/clips/goal_train_ep0.mp4"},
+    {"caption": "キャビネットの手前", "result": "成功", "path": "results/seminar/2026-11-04/videos/clips/goal_train_ep3.mp4"},
+    {"caption": "遠い左手前", "result": "成功", "path": "results/seminar/2026-11-04/videos/clips/goal_train_ep19.mp4"}]},
+  {"label": "隠れたボウル（同じ場所、動きだけ変わる）", "color": "#c0392b", "videos": [
+    {"caption": "デモ 1", "result": "成功", "path": "results/seminar/2026-11-04/videos/clips/goal_train_ep50.mp4"},
+    {"caption": "デモ 2", "result": "成功", "path": "results/seminar/2026-11-04/videos/clips/goal_train_ep51.mp4"},
+    {"caption": "デモ 3", "result": "成功", "path": "results/seminar/2026-11-04/videos/clips/goal_train_ep52.mp4"}]}]}

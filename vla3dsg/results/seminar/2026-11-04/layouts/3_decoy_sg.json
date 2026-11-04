@@ -1,0 +1,12 @@
+{"out": "results/seminar/2026-11-04/videos/3_decoy_sg.mp4",
+ "title": "ボウル 2 つのシーン（画像と元の指示文では正解が分からない）　追加学習後",
+ "crop": "agentview",
+ "groups": [
+  {"label": "隠れた方が正解", "color": "#c0392b", "videos": [
+    {"caption": "SG なし", "result": "失敗", "path": "results/training/sg_vs_nosg/nosg/step012000/train_scenes/videos/vla3dsg_goal_train_2/eval_episode_1.mp4"},
+    {"caption": "SG あり", "result": "成功", "path": "results/training/sg_vs_nosg/sg/step012000/train_scenes/videos/vla3dsg_goal_train_2/eval_episode_1.mp4"},
+    {"caption": "誤った SG", "result": "失敗", "path": "results/training/sg_vs_nosg/sg/step012000/train_scenes_base_wrong/videos/vla3dsg_goal_train_2/eval_episode_1.mp4"}]},
+  {"label": "見える方が正解", "color": "#2c6fbb", "videos": [
+    {"caption": "SG なし", "result": "失敗", "path": "results/training/sg_vs_nosg/nosg/step012000/train_scenes/videos/vla3dsg_goal_train_3/eval_episode_6.mp4"},
+    {"caption": "SG あり", "result": "成功", "path": "results/training/sg_vs_nosg/sg/step012000/train_scenes/videos/vla3dsg_goal_train_3/eval_episode_6.mp4"},
+    {"caption": "誤った SG", "result": "失敗", "path": "results/training/sg_vs_nosg/sg/step012000/train_scenes_base_wrong/videos/vla3dsg_goal_train_3/eval_episode_6.mp4"}]}]}
