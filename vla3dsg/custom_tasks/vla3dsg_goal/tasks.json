@@ -125,6 +125,37 @@
           "robot0_eye_in_hand": 0
         }
       }
+    },
+    {
+      "name": "visible_decoy",
+      "language": "Put the bowl on the plate",
+      "bddl_file": "visible_decoy.bddl",
+      "init_states_file": "visible_decoy.pruned_init",
+      "base": "libero_goal/put_the_bowl_on_the_plate",
+      "regions": [
+        "akita_black_bowl_region=-0.10,-0.01,-0.08,0.01"
+      ],
+      "official_init": false,
+      "removed_objects": [],
+      "added_objects": [
+        "akita_black_bowl_2:akita_black_bowl=-0.48,-0.27,-0.46,-0.25"
+      ],
+      "min_distance": null,
+      "visibility": {
+        "target": "akita_black_bowl_1",
+        "occluder": null,
+        "n_init": 50,
+        "n_rejected": 0,
+        "target_position_last": [
+          -0.104,
+          0.013,
+          0.898
+        ],
+        "visible_points_first": {
+          "agentview": 400,
+          "robot0_eye_in_hand": 398
+        }
+      }
     }
   ]
 }

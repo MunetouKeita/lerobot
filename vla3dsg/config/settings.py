@@ -164,6 +164,7 @@ SCENE_LABELS = {
     "shuffle": "場所シャッフル",
     "hidden": "標準＋隠れ",
     "hidden_decoy": "標準＋隠れ（おとりあり）",
+    "visible_decoy": "標準＋見える方が正解（おとりは裏）",
     "bowl_near": "ボウルを近くへ",
     "bowl_shuffle": "ボウルを手前左へ（固定）",
     "bowl_far": "ボウルを遠くへ",
