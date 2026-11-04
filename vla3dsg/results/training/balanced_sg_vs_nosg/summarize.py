@@ -1,5 +1,5 @@
-"""run.sh の評価結果を、学習前（公式の指示文・SG あり）、4-2（sg_vs_nosg）の 3,000 回、SG なし・SG ありの更新 1,000 回・3,000 回、
-SG ありの 3,000 回の誤った SG の表にまとめて results.md に保存する。"""
+"""run.sh の評価結果を、学習前（公式の指示文・SG あり）、4-2（sg_vs_nosg）の 3,000 回、SG なし・SG ありの更新 1,000 回・3,000 回の表にまとめて
+results.md に保存する。"""
 
 import json
 from pathlib import Path
@@ -19,10 +19,10 @@ ROWS = [
       for i, key, name in [(1, "bowl_shuffle", "ボウルを手前左へ（固定）"), (2, "bowl_far", "ボウルを遠くへ"), (5, "bowl_far_apart", "ボウルを遠く、皿から離して")]],
 ]
 COLUMNS = ["学習前", "学習前 SG あり", "4-2 SG なし 3,000 回", "4-2 SG あり 3,000 回", "SG なし 1,000 回", "SG なし 3,000 回",
-           "SG あり 1,000 回", "SG あり 3,000 回", "SG あり 3,000 回 誤った SG"]
+           "SG あり 1,000 回", "SG あり 3,000 回"]
 # (結果の場所, 結果の名前の後ろに付ける文字)
 TRAINED = [(PREV / "nosg/step012000", ""), (PREV / "sg/step012000", ""),
-           *[(REC / f"{m}/step{s}", "") for m in ("nosg", "sg") for s in ("004000", "012000")], (REC / "sg/step012000", "_base_wrong")]
+           *[(REC / f"{m}/step{s}", "") for m in ("nosg", "sg") for s in ("004000", "012000")]]
 
 
 def rate(res_dir: Path | None, task_id: int) -> tuple[int, int] | None:

@@ -1,7 +1,7 @@
 #!/bin/bash
 # 4-2（sg_vs_nosg）で、ワインラックの裏へ行く癖がついた対策。見えるボウルのデモを増やし（wide・decoy_visible を各 50 本追加）、
 # 標準のシーンの公式デモ 49 本を混ぜたデータで、SG なし・SG ありの 2 モデルを 4-2 と同じ設定で学習し、同じ評価をする。
-# SG ありの 3,000 回は、誤った SG（base_wrong）でも評価する。学習前の評価は 4-2 のものを使う。
+# 学習前の評価は 4-2 のものを使う。
 # セッションが切れても最後まで進み、各工程の開始・終了を status.log に残す。
 #   setsid nohup vla3dsg/results/training/balanced_sg_vs_nosg/run.sh > /dev/null 2>&1 &
 cd /home/common/github/lerobot
@@ -81,11 +81,6 @@ merge goal_balanced goal_train goal_train_more official_bowl
 merge goal_balanced_sg goal_train_sg goal_train_more_sg official_bowl_sg
 # SG あり: 指示文は make_sg_dataset.py で正規化済みのため、学習でも正規化を切る（評価と同じ）
 train sg goal_balanced_sg --policy.normalize_language=false
-CK=outputs/train/${EXP}_sg/checkpoints/012000/pretrained_model
-[ -d $CK ] && eval_one training/$EXP/sg/step012000/train_scenes_base_wrong base_wrong $CK \
-  vla3dsg_goal_train 0 1 2 3
-[ -d $CK ] && eval_one training/$EXP/sg/step012000/goal_base_wrong base_wrong $CK \
-  vla3dsg_goal 0 1 2 3
 train nosg goal_balanced
 run "summary" uv run python $REC/summarize.py
 log "END"
