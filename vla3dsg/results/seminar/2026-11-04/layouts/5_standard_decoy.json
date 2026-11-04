@@ -1,0 +1,39 @@
+{
+ "out": "results/seminar/2026-11-04/videos/5_standard_decoy.mp4",
+ "title": "標準の配置のボウル 2 つ（正解だけを入れ替えた 2 シーン、SG あり）",
+ "crop": "agentview",
+ "groups": [
+  {
+   "label": "正解は裏（おとりは標準の位置）",
+   "color": "#c0392b",
+   "videos": [
+    {
+     "caption": "学習データ A",
+     "result": "成功",
+     "path": "results/training/sg_vs_nosg/sg/step012000/goal/videos/vla3dsg_goal_3/eval_episode_3.mp4"
+    },
+    {
+     "caption": "学習データ B",
+     "result": "失敗",
+     "path": "results/training/balanced_sg_vs_nosg/sg/step012000/goal/videos/vla3dsg_goal_3/eval_episode_3.mp4"
+    }
+   ]
+  },
+  {
+   "label": "正解は標準の位置（おとりは裏）",
+   "color": "#2c6fbb",
+   "videos": [
+    {
+     "caption": "学習データ A",
+     "result": "成功",
+     "path": "results/training/sg_vs_nosg/sg/step012000/goal_visible_decoy/videos/vla3dsg_goal_4/eval_episode_3.mp4"
+    },
+    {
+     "caption": "学習データ B",
+     "result": "成功",
+     "path": "results/training/balanced_sg_vs_nosg/sg/step012000/goal_visible_decoy/videos/vla3dsg_goal_4/eval_episode_3.mp4"
+    }
+   ]
+  }
+ ]
+}

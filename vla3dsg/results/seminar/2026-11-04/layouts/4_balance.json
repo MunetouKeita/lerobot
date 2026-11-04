@@ -1,12 +1,33 @@
-{"out": "results/seminar/2026-11-04/videos/4_balance.mp4",
- "title": "ワインラックの裏へ行く癖と、学習データの偏りを減らした対策",
+{
+ "out": "results/seminar/2026-11-04/videos/4_balance.mp4",
+ "title": "ワインラックの裏へ行く癖と、学習データ B での対策（標準の配置）",
  "crop": "agentview",
  "groups": [
-  {"label": "標準（ボウル 1 つ）", "color": "#444444", "videos": [
-    {"caption": "対策前・SG なし", "result": "失敗", "path": "results/training/sg_vs_nosg/nosg/step012000/goal/videos/vla3dsg_goal_0/eval_episode_9.mp4"},
-    {"caption": "対策前・SG あり", "result": "失敗", "path": "results/training/sg_vs_nosg/sg/step012000/goal/videos/vla3dsg_goal_0/eval_episode_9.mp4"},
-    {"caption": "対策後・SG なし", "result": "成功", "path": "results/training/balanced_sg_vs_nosg/nosg/step012000/goal/videos/vla3dsg_goal_0/eval_episode_9.mp4"},
-    {"caption": "対策後・SG あり", "result": "成功", "path": "results/training/balanced_sg_vs_nosg/sg/step012000/goal/videos/vla3dsg_goal_0/eval_episode_9.mp4"}]},
-  {"label": "標準の位置におとり（隠れた方が正解）", "color": "#c0392b", "videos": [
-    {"caption": "対策前・SG あり", "result": "成功", "path": "results/training/sg_vs_nosg/sg/step012000/goal/videos/vla3dsg_goal_3/eval_episode_3.mp4"},
-    {"caption": "対策後・SG あり", "result": "失敗", "path": "results/training/balanced_sg_vs_nosg/sg/step012000/goal/videos/vla3dsg_goal_3/eval_episode_3.mp4"}]}]}
+  {
+   "label": "標準（ボウル 1 つ）",
+   "color": "#444444",
+   "videos": [
+    {
+     "caption": "対策前・SG なし",
+     "result": "失敗",
+     "path": "results/training/sg_vs_nosg/nosg/step012000/goal/videos/vla3dsg_goal_0/eval_episode_9.mp4"
+    },
+    {
+     "caption": "対策前・SG あり",
+     "result": "失敗",
+     "path": "results/training/sg_vs_nosg/sg/step012000/goal/videos/vla3dsg_goal_0/eval_episode_9.mp4"
+    },
+    {
+     "caption": "対策後・SG なし",
+     "result": "成功",
+     "path": "results/training/balanced_sg_vs_nosg/nosg/step012000/goal/videos/vla3dsg_goal_0/eval_episode_9.mp4"
+    },
+    {
+     "caption": "対策後・SG あり",
+     "result": "成功",
+     "path": "results/training/balanced_sg_vs_nosg/sg/step012000/goal/videos/vla3dsg_goal_0/eval_episode_9.mp4"
+    }
+   ]
+  }
+ ]
+}
