@@ -15,6 +15,8 @@ ROWS = [
       for i, name in enumerate(["ボウルだけシャッフル", "隠れ", "隠れた方が正解（おとりは見える）", "見える方が正解（おとりは隠れ）"])],
     *[("2-2 の 4 シーン", name, "goal", i, ZEROSHOT / key / "base", ZEROSHOT / key / "base_short")
       for i, (key, name) in enumerate([("standard", "標準"), ("shuffle", "場所シャッフル"), ("hidden", "標準＋隠れ"), ("hidden_decoy", "標準＋隠れ（おとりあり）")])],
+    # 標準＋隠れ（おとりあり）と対になるシーン（2026-11-04 追加、vla3dsg_goal の task 4）
+    ("標準の位置のボウル＋裏のおとり", "標準＋見える方が正解（おとりは裏）", "goal_visible_decoy", 4, ZEROSHOT / "visible_decoy" / "base", None),
     *[("2-3 の遠いボウル", name, "layout_far", i, ZEROSHOT / "layout_check" / key / "base", None)
       for i, key, name in [(1, "bowl_shuffle", "ボウルを手前左へ（固定）"), (2, "bowl_far", "ボウルを遠くへ"), (5, "bowl_far_apart", "ボウルを遠く、皿から離して")]],
 ]
