@@ -6,12 +6,12 @@ from pathlib import Path
 REC = Path(__file__).resolve().parent
 ZEROSHOT = REC.parents[1] / "zeroshot"
 ROWS = [  # (シーン, 結果の場所, task_id, 学習前の値の場所)
-    ("ボウルだけシャッフル", "train_scenes", 0, None),
-    ("ボウルだけシャッフル（隠れたおとりあり）", "train_scenes", 3, None),
-    ("ボウルを手前左へ（固定）", "layout_far", 1, ZEROSHOT / "layout_check/bowl_shuffle/base"),
-    ("ボウルを遠くへ", "layout_far", 2, ZEROSHOT / "layout_check/bowl_far/base"),
-    ("ボウルを遠く、皿から離して", "layout_far", 5, ZEROSHOT / "layout_check/bowl_far_apart/base"),
-    ("標準", "standard", 0, ZEROSHOT / "standard/base"),
+    ("ボウル1個,ボウルランダム", "train_scenes", 0, None),
+    ("ボウル2個,見えるボウル=ランダム,見える方が正解", "train_scenes", 3, None),
+    ("ボウル1個,手前左（固定）", "layout_far", 1, ZEROSHOT / "layout_check/bowl_shuffle/base"),
+    ("ボウル1個,遠く", "layout_far", 2, ZEROSHOT / "layout_check/bowl_far/base"),
+    ("ボウル1個,遠く・皿から離す", "layout_far", 5, ZEROSHOT / "layout_check/bowl_far_apart/base"),
+    ("ボウル1個,標準位置", "standard", 0, ZEROSHOT / "standard/base"),
 ]
 COLUMNS = [("学習前", "before"), ("更新 1,000 回", "step004000"), ("更新 3,000 回", "step012000")]
 

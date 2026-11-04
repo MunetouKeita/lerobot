@@ -10,13 +10,13 @@ BEFORE_41 = RESULTS / "training/visible_nosg/before/train_scenes"  # 4-1 の学�
 # (まとまり, シーン, 結果の場所, task_id, 学習前の公式の指示文, 学習前の SG あり)
 ROWS = [
     *[("学習用シーン", name, "train_scenes", i, BEFORE_41 if i in (0, 3) else REC / "before/train_scenes_base", REC / "before/train_scenes_sg")
-      for i, name in enumerate(["ボウルだけシャッフル", "隠れ", "隠れた方が正解（おとりは見える）", "見える方が正解（おとりは隠れ）"])],
+      for i, name in enumerate(["ボウル1個,ボウルランダム", "ボウル1個,隠れ（学習用）", "ボウル2個,見えるボウル=ランダム,隠れた方が正解", "ボウル2個,見えるボウル=ランダム,見える方が正解"])],
     *[("2-2 の 4 シーン", name, "goal", i, ZEROSHOT / key / "base", ZEROSHOT / key / "base_short")
-      for i, (key, name) in enumerate([("standard", "標準"), ("shuffle", "場所シャッフル"), ("hidden", "標準＋隠れ"), ("hidden_decoy", "標準＋隠れ（おとりあり）")])],
-    # 標準＋隠れ（おとりあり）と対になるシーン（2026-11-04 追加、vla3dsg_goal の task 4）
-    ("標準の位置のボウル＋裏のおとり", "標準＋見える方が正解（おとりは裏）", "goal_visible_decoy", 4, ZEROSHOT / "visible_decoy" / "base", None),
+      for i, (key, name) in enumerate([("standard", "ボウル1個,標準位置"), ("shuffle", "ボウル1個,4物体シャッフル"), ("hidden", "ボウル1個,隠れ（評価用）"), ("hidden_decoy", "ボウル2個,見えるボウル=標準位置,隠れた方が正解")])],
+    # ボウル2個,見えるボウル=標準位置,隠れた方が正解と対になるシーン（vla3dsg_goal の task 4）
+    ("標準の位置のボウル＋裏のおとり", "ボウル2個,見えるボウル=標準位置,見える方が正解", "goal_visible_decoy", 4, ZEROSHOT / "visible_decoy" / "base", None),
     *[("2-3 の遠いボウル", name, "layout_far", i, ZEROSHOT / "layout_check" / key / "base", None)
-      for i, key, name in [(1, "bowl_shuffle", "ボウルを手前左へ（固定）"), (2, "bowl_far", "ボウルを遠くへ"), (5, "bowl_far_apart", "ボウルを遠く、皿から離して")]],
+      for i, key, name in [(1, "bowl_shuffle", "ボウル1個,手前左（固定）"), (2, "bowl_far", "ボウル1個,遠く"), (5, "bowl_far_apart", "ボウル1個,遠く・皿から離す")]],
 ]
 COLUMNS = ["学習前", "学習前 SG あり", "SG なし 1,000 回", "SG なし 3,000 回", "SG あり 1,000 回", "SG あり 3,000 回"]
 TRAINED = [f"{m}/step{s}" for m in ("nosg", "sg") for s in ("004000", "012000")]

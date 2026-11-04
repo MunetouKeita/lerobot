@@ -4,7 +4,7 @@
  "crop": "agentview",
  "groups": [
   {
-   "label": "標準（ボウル 1 つ）",
+   "label": "ボウル1個,標準位置",
    "color": "#444444",
    "videos": [
     {
