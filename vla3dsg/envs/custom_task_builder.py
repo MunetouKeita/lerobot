@@ -44,6 +44,21 @@ def remove_object(bddl: str, obj_id: str) -> str:
     return re.sub(rf"\n\s*\((On|In) {re.escape(obj_id)} [^)]*\)", "", bddl)
 
 
+def set_goal_object(bddl: str, obj_id: str) -> str:
+    """掴む対象（:obj_of_interest の先頭と :goal の中の同じ物体）を obj_id に替える（例: 同じ配置で、もう一方のボウルを正解にする）。"""
+    interest = re.search(r"\(:obj_of_interest\s*\n\s*(\w+)", bddl)
+    if interest is None:
+        raise ValueError("BDDL に :obj_of_interest がない")
+    old = interest.group(1)
+    if not re.search(rf"\b{re.escape(obj_id)}\b", bddl[: interest.start()]):
+        raise ValueError(f"BDDL の :objects に {obj_id!r} がない")
+    bddl = bddl[: interest.start(1)] + obj_id + bddl[interest.end(1) :]
+    goal = re.search(r"\(:goal.*", bddl, re.S)
+    if not re.search(rf"\b{re.escape(old)}\b", goal.group(0)):
+        raise ValueError(f":goal に元の対象 {old!r} がない")
+    return bddl[: goal.start()] + re.sub(rf"\b{re.escape(old)}\b", obj_id, goal.group(0))
+
+
 def add_object(bddl: str, obj_id: str, category: str, region: str, rng: tuple[float, float, float, float]) -> str:
     """BDDL に物体を足す（例: おとりのボウル）。テーブル上の領域 region（範囲 rng）を作り、そこに置く。"""
     if re.search(rf"\b{re.escape(obj_id)}\b", bddl):

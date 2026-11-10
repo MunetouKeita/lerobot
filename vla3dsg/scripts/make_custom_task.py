@@ -16,6 +16,8 @@
 物体がほかの物体・固定物（皿・コンロなど）に乗った・触れた配置を除く（ボウルを広い範囲に置く学習用のシーン。範囲が他の物体と重なるため）。
 
 --copy-init を付けると、配置を変えず元のタスクの公式の初期状態をそのまま使う（vla3dsg_goal の standard）。
+--goal-object を付けると、掴む対象（BDDL の :obj_of_interest と :goal）をその物体に替える（vla3dsg_spatial の、同じ配置で
+もう一方のボウルを正解にしたタスク。--copy-init と合わせると画像は元のタスクとまったく同じになる）。
 
 --preview を付けると、初期状態を 1 件だけ作って画像と見え方を tmp/ に保存する（custom_tasks/ には書かない）。
 --overview だけを付けると、タスクは作らず確認用の画像だけを作り直す（例: --suite vla3dsg_goal --overview）。
@@ -42,6 +44,7 @@ from vla3dsg.envs.custom_task_builder import (  # noqa: E402
     body_positions,
     remove_object,
     sample_init_state,
+    set_goal_object,
     set_region_range,
     too_close,
     visibility,
@@ -64,6 +67,7 @@ def main() -> None:
     )
     parser.add_argument("--target", help="見え方を測る対象物体（例: akita_black_bowl_1）")
     parser.add_argument("--occluder", help="対象を遮っている固定物（見え方の比較用）")
+    parser.add_argument("--goal-object", help="掴む対象をこの物体に替える（例: akita_black_bowl_2）")
     parser.add_argument("--copy-init", action="store_true", help="LIBERO のタスクの公式の初期状態をそのまま使う（配置を変えない対照用）")
     parser.add_argument("--min-distance", type=float, help="動かせる物体どうしの水平距離の下限（m）。乗った配置も除く")
     parser.add_argument(
@@ -95,6 +99,8 @@ def main() -> None:
     for spec in args.region:
         region, values = spec.split("=")
         bddl = set_region_range(bddl, region, tuple(float(v) for v in values.split(",")))
+    if args.goal_object:
+        bddl = set_goal_object(bddl, args.goal_object)
 
     out_dir = settings.TMP_DIR / "make_custom_task" / args.name if args.preview else settings.CUSTOM_TASKS_DIR / args.suite
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -158,6 +164,7 @@ def main() -> None:
             "base": args.base,
             "regions": args.region,
             "official_init": args.copy_init,
+            "goal_object": args.goal_object,
             "removed_objects": args.remove_object,
             "added_objects": args.add_object,
             "min_distance": args.min_distance,

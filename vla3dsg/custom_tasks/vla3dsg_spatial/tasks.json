@@ -1,0 +1,285 @@
+{
+  "max_steps": 280,
+  "tasks": [
+    {
+      "name": "center_b1",
+      "language": "pick up the black bowl from table center and place it on the plate",
+      "bddl_file": "center_b1.bddl",
+      "init_states_file": "center_b1.pruned_init",
+      "base": "libero_spatial/pick_up_the_black_bowl_from_table_center_and_place_it_on_the_plate",
+      "regions": [],
+      "official_init": true,
+      "goal_object": null,
+      "removed_objects": [],
+      "added_objects": [],
+      "min_distance": null,
+      "visibility": {
+        "target": "akita_black_bowl_1",
+        "occluder": null,
+        "n_init": 50,
+        "n_rejected": 0,
+        "target_position_last": [
+          -0.075,
+          -0.009,
+          0.97
+        ],
+        "visible_points_first": {
+          "agentview": 400,
+          "robot0_eye_in_hand": 398
+        }
+      }
+    },
+    {
+      "name": "center_b2",
+      "language": "pick up the black bowl next to the plate and place it on the plate",
+      "bddl_file": "center_b2.bddl",
+      "init_states_file": "center_b2.pruned_init",
+      "base": "libero_spatial/pick_up_the_black_bowl_from_table_center_and_place_it_on_the_plate",
+      "regions": [],
+      "official_init": true,
+      "goal_object": "akita_black_bowl_2",
+      "removed_objects": [],
+      "added_objects": [],
+      "min_distance": null,
+      "visibility": {
+        "target": "akita_black_bowl_2",
+        "occluder": null,
+        "n_init": 50,
+        "n_rejected": 0,
+        "target_position_last": [
+          0.023,
+          0.313,
+          0.97
+        ],
+        "visible_points_first": {
+          "agentview": 400,
+          "robot0_eye_in_hand": 0
+        }
+      }
+    },
+    {
+      "name": "drawer_b1",
+      "language": "pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate",
+      "bddl_file": "drawer_b1.bddl",
+      "init_states_file": "drawer_b1.pruned_init",
+      "base": "libero_spatial/pick_up_the_black_bowl_in_the_top_drawer_of_the_wooden_cabinet_and_place_it_on_the_plate",
+      "regions": [],
+      "official_init": true,
+      "goal_object": null,
+      "removed_objects": [],
+      "added_objects": [],
+      "min_distance": null,
+      "visibility": {
+        "target": "akita_black_bowl_1",
+        "occluder": null,
+        "n_init": 50,
+        "n_rejected": 0,
+        "target_position_last": [
+          0.092,
+          -0.139,
+          1.151
+        ],
+        "visible_points_first": {
+          "agentview": 401,
+          "robot0_eye_in_hand": 0
+        }
+      }
+    },
+    {
+      "name": "drawer_b2",
+      "language": "pick up the black bowl on the wooden cabinet and place it on the plate",
+      "bddl_file": "drawer_b2.bddl",
+      "init_states_file": "drawer_b2.pruned_init",
+      "base": "libero_spatial/pick_up_the_black_bowl_in_the_top_drawer_of_the_wooden_cabinet_and_place_it_on_the_plate",
+      "regions": [],
+      "official_init": true,
+      "goal_object": "akita_black_bowl_2",
+      "removed_objects": [],
+      "added_objects": [],
+      "min_distance": null,
+      "visibility": {
+        "target": "akita_black_bowl_2",
+        "occluder": null,
+        "n_init": 50,
+        "n_rejected": 0,
+        "target_position_last": [
+          0.054,
+          -0.263,
+          1.232
+        ],
+        "visible_points_first": {
+          "agentview": 280,
+          "robot0_eye_in_hand": 0
+        }
+      }
+    },
+    {
+      "name": "near_box_b1",
+      "language": "pick up the black bowl next to the cookie box and place it on the plate",
+      "bddl_file": "near_box_b1.bddl",
+      "init_states_file": "near_box_b1.pruned_init",
+      "base": "libero_spatial/pick_up_the_black_bowl_next_to_the_cookie_box_and_place_it_on_the_plate",
+      "regions": [],
+      "official_init": true,
+      "goal_object": null,
+      "removed_objects": [],
+      "added_objects": [],
+      "min_distance": null,
+      "visibility": {
+        "target": "akita_black_bowl_1",
+        "occluder": null,
+        "n_init": 50,
+        "n_rejected": 0,
+        "target_position_last": [
+          0.118,
+          -0.073,
+          0.97
+        ],
+        "visible_points_first": {
+          "agentview": 400,
+          "robot0_eye_in_hand": 0
+        }
+      }
+    },
+    {
+      "name": "near_box_b2",
+      "language": "pick up the black bowl on the stove and place it on the plate",
+      "bddl_file": "near_box_b2.bddl",
+      "init_states_file": "near_box_b2.pruned_init",
+      "base": "libero_spatial/pick_up_the_black_bowl_next_to_the_cookie_box_and_place_it_on_the_plate",
+      "regions": [],
+      "official_init": true,
+      "goal_object": "akita_black_bowl_2",
+      "removed_objects": [],
+      "added_objects": [],
+      "min_distance": null,
+      "visibility": {
+        "target": "akita_black_bowl_2",
+        "occluder": null,
+        "n_init": 50,
+        "n_rejected": 0,
+        "target_position_last": [
+          -0.281,
+          -0.126,
+          1.01
+        ],
+        "visible_points_first": {
+          "agentview": 400,
+          "robot0_eye_in_hand": 258
+        }
+      }
+    },
+    {
+      "name": "on_box_b1",
+      "language": "pick up the black bowl on the cookie box and place it on the plate",
+      "bddl_file": "on_box_b1.bddl",
+      "init_states_file": "on_box_b1.pruned_init",
+      "base": "libero_spatial/pick_up_the_black_bowl_on_the_cookie_box_and_place_it_on_the_plate",
+      "regions": [],
+      "official_init": true,
+      "goal_object": null,
+      "removed_objects": [],
+      "added_objects": [],
+      "min_distance": null,
+      "visibility": {
+        "target": "akita_black_bowl_1",
+        "occluder": null,
+        "n_init": 50,
+        "n_rejected": 0,
+        "target_position_last": [
+          0.065,
+          0.021,
+          1.08
+        ],
+        "visible_points_first": {
+          "agentview": 400,
+          "robot0_eye_in_hand": 0
+        }
+      }
+    },
+    {
+      "name": "on_box_b2",
+      "language": "pick up the black bowl on the wooden cabinet and place it on the plate",
+      "bddl_file": "on_box_b2.bddl",
+      "init_states_file": "on_box_b2.pruned_init",
+      "base": "libero_spatial/pick_up_the_black_bowl_on_the_cookie_box_and_place_it_on_the_plate",
+      "regions": [],
+      "official_init": true,
+      "goal_object": "akita_black_bowl_2",
+      "removed_objects": [],
+      "added_objects": [],
+      "min_distance": null,
+      "visibility": {
+        "target": "akita_black_bowl_2",
+        "occluder": null,
+        "n_init": 50,
+        "n_rejected": 0,
+        "target_position_last": [
+          0.038,
+          -0.277,
+          1.232
+        ],
+        "visible_points_first": {
+          "agentview": 254,
+          "robot0_eye_in_hand": 0
+        }
+      }
+    },
+    {
+      "name": "on_ramekin_b1",
+      "language": "pick up the black bowl on the ramekin and place it on the plate",
+      "bddl_file": "on_ramekin_b1.bddl",
+      "init_states_file": "on_ramekin_b1.pruned_init",
+      "base": "libero_spatial/pick_up_the_black_bowl_on_the_ramekin_and_place_it_on_the_plate",
+      "regions": [],
+      "official_init": true,
+      "goal_object": null,
+      "removed_objects": [],
+      "added_objects": [],
+      "min_distance": null,
+      "visibility": {
+        "target": "akita_black_bowl_1",
+        "occluder": null,
+        "n_init": 50,
+        "n_rejected": 0,
+        "target_position_last": [
+          -0.212,
+          0.213,
+          1.08
+        ],
+        "visible_points_first": {
+          "agentview": 399,
+          "robot0_eye_in_hand": 0
+        }
+      }
+    },
+    {
+      "name": "on_ramekin_b2",
+      "language": "pick up the black bowl on the cookie box and place it on the plate",
+      "bddl_file": "on_ramekin_b2.bddl",
+      "init_states_file": "on_ramekin_b2.pruned_init",
+      "base": "libero_spatial/pick_up_the_black_bowl_on_the_ramekin_and_place_it_on_the_plate",
+      "regions": [],
+      "official_init": true,
+      "goal_object": "akita_black_bowl_2",
+      "removed_objects": [],
+      "added_objects": [],
+      "min_distance": null,
+      "visibility": {
+        "target": "akita_black_bowl_2",
+        "occluder": null,
+        "n_init": 50,
+        "n_rejected": 0,
+        "target_position_last": [
+          0.057,
+          0.028,
+          1.08
+        ],
+        "visible_points_first": {
+          "agentview": 400,
+          "robot0_eye_in_hand": 0
+        }
+      }
+    }
+  ]
+}

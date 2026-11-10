@@ -162,6 +162,13 @@ PROMPT_CONDITIONS = {
     "base_wrong": "公式の指示文 + 対象には当てはまらない関係の SG（おとりがあればおとりの関係、なければ前後左右を逆にしたもの）",
     "sg_command": "base_short の SG から作った、場所を書いた指示文（例: put the black bowl behind the wine rack on the plate）",
 }
+# 指示文から対象の位置関係を外した条件（vla3dsg_spatial。人が場所を言わない場合）。外し方は NOREL_PATTERNS
+PROMPT_CONDITIONS["norel"] = "公式の指示文から対象の位置関係を外したもの（例: pick up the black bowl and place it on the plate）"
+PROMPT_CONDITIONS["norel_short"] = "norel + 掴む対象を見分ける最小の関係だけの SG（三つ組）"
+# 位置関係を外す書き換え（正規化した指示文に順に当て、最初に一致したものを使う。一致しなければエラー）
+NOREL_PATTERNS = [
+    (r"^pick up the black bowl .+ and place it on the plate$", "pick up the black bowl and place it on the plate"),
+]
 PROMPT_CONDITIONS["base_irrelevant"] = "公式の指示文 + base_full と同じ長さ（トークン数）の、シーンと無関係な文（長さの影響を見る対照）"
 # SG の形式を変えた条件（末尾 _json・_nl。付けないと三つ組）。textify.FORMATS
 for _k in ("base_short", "base_full", "base_wrong"):
@@ -185,6 +192,17 @@ SCENE_LABELS = {
     "decoy_visible": "隠れたおとり（見える方が正解）",
     "hidden_rack": "ワインラックの裏に隠れ",
     "hidden_cabinet": "キャビネットの裏に隠れ",
+    # vla3dsg_spatial: libero_spatial の配置そのままで、<配置>_b1 は公式と同じ正解、<配置>_b2 はもう一方のボウルが正解
+    "center_b1": "中央のボウル（もう一方は皿の隣）",
+    "center_b2": "皿の隣のボウル（もう一方は中央）",
+    "drawer_b1": "引き出しの中のボウル（もう一方は棚の上）",
+    "drawer_b2": "棚の上のボウル（もう一方は引き出しの中）",
+    "near_box_b1": "クッキーの箱の隣のボウル（もう一方はコンロの上）",
+    "near_box_b2": "コンロの上のボウル（もう一方は箱の隣）",
+    "on_box_b1": "クッキーの箱の上のボウル（もう一方は棚の上）",
+    "on_box_b2": "棚の上のボウル（もう一方は箱の上）",
+    "on_ramekin_b1": "ラメキンの上のボウル（もう一方は箱の上）",
+    "on_ramekin_b2": "クッキーの箱の上のボウル（もう一方はラメキンの上）",
 }
 # base_irrelevant の無関係な文（base_full と同じトークン数になるよう、先頭から切り出し、足りなければ繰り返す）
 IRRELEVANT_TEXT = (

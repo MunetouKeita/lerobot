@@ -8,6 +8,7 @@ MolmoAct2 の前処理の正規化は SG のテキスト（三つ組の括弧な
 `--policy.normalize_language=false` とし、元の指示文だけをここで同じ関数で正規化する。
 """
 
+import re
 from functools import cache
 from typing import Any
 
@@ -43,6 +44,14 @@ def _irrelevant(n_tokens: int) -> str:
     return _tokenizer().decode(ids).strip()
 
 
+def _remove_relation(text: str) -> str:
+    """指示文から対象の位置関係を外す（settings.NOREL_PATTERNS）。"""
+    for pattern, repl in settings.NOREL_PATTERNS:
+        if re.match(pattern, text):
+            return re.sub(pattern, repl, text)
+    raise ValueError(f"位置関係を外す書き換えがない指示文: {text!r}（settings.NOREL_PATTERNS）")
+
+
 def compose_prompt(instruction: str, condition: str, sg: SceneGraph, env: Any) -> str:
     """条件に応じた指示文を返す。base は元の指示文の正規化のみ（モデルへの入力は公式の評価と同一）。
 
@@ -54,6 +63,11 @@ def compose_prompt(instruction: str, condition: str, sg: SceneGraph, env: Any) -
     base = _normalize_question_text(instruction)
     if condition == "base":
         return base
+    if condition.startswith("norel"):
+        base = _remove_relation(base)
+        if condition == "norel":
+            return base
+        condition = "base" + condition.removeprefix("norel")
     if condition == "sg_command":
         return textify.to_instruction(build_relevant_scene_graph(env))
     if condition == "base_irrelevant":
