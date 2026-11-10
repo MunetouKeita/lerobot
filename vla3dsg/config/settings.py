@@ -136,6 +136,10 @@ DEMO_TASK_SPECS = {
         # 見えるボウル（広い範囲）: 330〜30° は 12 か所中 11〜12 か所で成功、90〜150°・240〜300° は 6〜10 か所
         2: {"target": "akita_black_bowl_1", "dest": "white_cabinet_1", "dest_site": "white_cabinet_1_top_side", "via": [], "grasp_angles": (-30.0, 30.0)},
     },
+    # 段階 1（5 節）: libero_spatial の 5 配置。偶数の task は公式と同じボウル 1、奇数の task はもう一方のボウル 2 を皿に置く
+    "vla3dsg_spatial": {
+        k: {"target": f"akita_black_bowl_{k % 2 + 1}", "dest": "plate_1", "via": [], "grasp_angles": (-30.0, 30.0)} for k in range(10)
+    },
     # 実験1 の追加検証: 標準から、ボウルか皿の一方だけを動かしたシーン
     "vla3dsg_goal_layout": {
         **{k: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [], "grasp_yaw_deg": 90.0} for k in (0, 1, 3, 4, 6)},

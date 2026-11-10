@@ -1,0 +1,445 @@
+{
+  "suite": "vla3dsg_spatial",
+  "per_task": [
+    {
+      "task_id": 0,
+      "instruction": "pick up the black bowl from table center and place it on the plate",
+      "n_success": 5,
+      "n_episodes": 5,
+      "steps_max": 203,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.151,
+          "steps": 203,
+          "grasp_angle": -22.4
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.091,
+          "steps": 157,
+          "grasp_angle": 21.1
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.126,
+          "steps": 154,
+          "grasp_angle": 26.6
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.131,
+          "steps": 199,
+          "grasp_angle": -28.6
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.094,
+          "steps": 158,
+          "grasp_angle": -28.8
+        }
+      ]
+    },
+    {
+      "task_id": 1,
+      "instruction": "pick up the black bowl next to the plate and place it on the plate",
+      "n_success": 5,
+      "n_episodes": 5,
+      "steps_max": 260,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.156,
+          "steps": 260,
+          "grasp_angle": -22.4
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.109,
+          "steps": 210,
+          "grasp_angle": 21.1
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.139,
+          "steps": 208,
+          "grasp_angle": 26.6
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.129,
+          "steps": 197,
+          "grasp_angle": -28.6
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.091,
+          "steps": 217,
+          "grasp_angle": -28.8
+        }
+      ]
+    },
+    {
+      "task_id": 2,
+      "instruction": "pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate",
+      "n_success": 5,
+      "n_episodes": 5,
+      "steps_max": 236,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.133,
+          "steps": 236,
+          "grasp_angle": -22.4
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.091,
+          "steps": 214,
+          "grasp_angle": 21.1
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.117,
+          "steps": 182,
+          "grasp_angle": 26.6
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.116,
+          "steps": 184,
+          "grasp_angle": -28.6
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.09,
+          "steps": 188,
+          "grasp_angle": -28.8
+        }
+      ]
+    },
+    {
+      "task_id": 3,
+      "instruction": "pick up the black bowl on the wooden cabinet and place it on the plate",
+      "n_success": 5,
+      "n_episodes": 5,
+      "steps_max": 258,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.143,
+          "steps": 258,
+          "grasp_angle": -22.4
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.103,
+          "steps": 233,
+          "grasp_angle": 21.1
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.129,
+          "steps": 209,
+          "grasp_angle": 26.6
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.109,
+          "steps": 250,
+          "grasp_angle": -28.6
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.102,
+          "steps": 210,
+          "grasp_angle": -28.8
+        }
+      ]
+    },
+    {
+      "task_id": 4,
+      "instruction": "pick up the black bowl next to the cookie box and place it on the plate",
+      "n_success": 5,
+      "n_episodes": 5,
+      "steps_max": 396,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.142,
+          "steps": 396,
+          "grasp_angle": -22.4
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.093,
+          "steps": 253,
+          "grasp_angle": 21.1
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.13,
+          "steps": 269,
+          "grasp_angle": 26.6
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.123,
+          "steps": 271,
+          "grasp_angle": -28.6
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.094,
+          "steps": 269,
+          "grasp_angle": -28.8
+        }
+      ]
+    },
+    {
+      "task_id": 5,
+      "instruction": "pick up the black bowl on the stove and place it on the plate",
+      "n_success": 5,
+      "n_episodes": 5,
+      "steps_max": 227,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.14,
+          "steps": 220,
+          "grasp_angle": -22.4
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.089,
+          "steps": 227,
+          "grasp_angle": 21.1
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.127,
+          "steps": 165,
+          "grasp_angle": 26.6
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.141,
+          "steps": 192,
+          "grasp_angle": -28.6
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.097,
+          "steps": 221,
+          "grasp_angle": -28.8
+        }
+      ]
+    },
+    {
+      "task_id": 6,
+      "instruction": "pick up the black bowl on the cookie box and place it on the plate",
+      "n_success": 5,
+      "n_episodes": 5,
+      "steps_max": 236,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.149,
+          "steps": 212,
+          "grasp_angle": -22.4
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.102,
+          "steps": 216,
+          "grasp_angle": 21.1
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.119,
+          "steps": 161,
+          "grasp_angle": 26.6
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.129,
+          "steps": 178,
+          "grasp_angle": -28.6
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.094,
+          "steps": 236,
+          "grasp_angle": -28.8
+        }
+      ]
+    },
+    {
+      "task_id": 7,
+      "instruction": "pick up the black bowl on the wooden cabinet and place it on the plate",
+      "n_success": 5,
+      "n_episodes": 5,
+      "steps_max": 282,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.146,
+          "steps": 282,
+          "grasp_angle": -22.4
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.089,
+          "steps": 220,
+          "grasp_angle": 21.1
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.12,
+          "steps": 228,
+          "grasp_angle": 26.6
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.113,
+          "steps": 196,
+          "grasp_angle": -28.6
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.088,
+          "steps": 238,
+          "grasp_angle": -28.8
+        }
+      ]
+    },
+    {
+      "task_id": 8,
+      "instruction": "pick up the black bowl on the ramekin and place it on the plate",
+      "n_success": 5,
+      "n_episodes": 5,
+      "steps_max": 180,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.158,
+          "steps": 180,
+          "grasp_angle": -22.4
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.086,
+          "steps": 162,
+          "grasp_angle": 21.1
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.129,
+          "steps": 157,
+          "grasp_angle": 26.6
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.127,
+          "steps": 176,
+          "grasp_angle": -28.6
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.099,
+          "steps": 159,
+          "grasp_angle": -28.8
+        }
+      ]
+    },
+    {
+      "task_id": 9,
+      "instruction": "pick up the black bowl on the cookie box and place it on the plate",
+      "n_success": 5,
+      "n_episodes": 5,
+      "steps_max": 238,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.147,
+          "steps": 206,
+          "grasp_angle": -22.4
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.106,
+          "steps": 238,
+          "grasp_angle": 21.1
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.134,
+          "steps": 161,
+          "grasp_angle": 26.6
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.124,
+          "steps": 171,
+          "grasp_angle": -28.6
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.088,
+          "steps": 215,
+          "grasp_angle": -28.8
+        }
+      ]
+    }
+  ]
+}
