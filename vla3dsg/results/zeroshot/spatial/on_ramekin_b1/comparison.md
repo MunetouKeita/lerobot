@@ -5,9 +5,10 @@
 | base | 公式の指示文のみ（例: put the bowl on the plate） | 100.0%（20/20） | 16 |
 | norel | 公式の指示文から対象の位置関係を外したもの（例: pick up the black bowl and place it on the plate） | 85.0%（17/20） | 11 |
 | norel_short | norel + 掴む対象を見分ける最小の関係だけの SG（三つ組） | 90.0%（18/20） | 27 |
+| norel_command | norel の対象の名前の後に、norel_short の SG から作った場所を入れた指示文（例: pick up the black bowl on the cookie box and place it on the plate） | 100.0%（20/20） | 16 |
 
 ## タスクごと（成功回数）
 
-| task | 指示文 | base | norel | norel_short |
-|---|---|---|---|---|
-| vla3dsg_spatial 8 | pick up the black bowl on the ramekin and place it on the plate | 20/20 | 17/20 | 18/20 |
+| task | 指示文 | base | norel | norel_short | norel_command |
+|---|---|---|---|---|---|
+| vla3dsg_spatial 8 | pick up the black bowl on the ramekin and place it on the plate | 20/20 | 17/20 | 18/20 | 20/20 |
