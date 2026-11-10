@@ -1,0 +1,98 @@
+{
+  "pc_success": 1.6666666666666667,
+  "n_success": 1,
+  "n_episodes": 60,
+  "pc_success_ci95": [
+    0.2948159794786249,
+    8.855129727590057
+  ],
+  "per_suite": {
+    "vla3dsg_kitchen4": 1.6666666666666667
+  },
+  "per_task": [
+    {
+      "suite": "vla3dsg_kitchen4",
+      "task_id": 0,
+      "instruction": "put the black bowl on top of the cabinet",
+      "successes": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "pc_success": 0.0
+    },
+    {
+      "suite": "vla3dsg_kitchen4",
+      "task_id": 1,
+      "instruction": "put the black bowl on top of the cabinet",
+      "successes": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "pc_success": 0.0
+    },
+    {
+      "suite": "vla3dsg_kitchen4",
+      "task_id": 2,
+      "instruction": "put the black bowl on top of the cabinet",
+      "successes": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "pc_success": 5.0
+    }
+  ]
+}

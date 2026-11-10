@@ -1,0 +1,452 @@
+{
+  "suite": "vla3dsg_kitchen4",
+  "per_task": [
+    {
+      "task_id": 0,
+      "instruction": "put the black bowl on top of the cabinet",
+      "n_success": 20,
+      "n_episodes": 20,
+      "steps_max": 349,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.156,
+          "steps": 313,
+          "grasp_angle": 108.9
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.098,
+          "steps": 273,
+          "grasp_angle": 217.8
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.134,
+          "steps": 253,
+          "grasp_angle": 231.6
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.126,
+          "steps": 235,
+          "grasp_angle": 93.4
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.092,
+          "steps": 286,
+          "grasp_angle": 93.0
+        },
+        {
+          "init_state": 5,
+          "success": true,
+          "lifted_m": 0.096,
+          "steps": 260,
+          "grasp_angle": 165.4
+        },
+        {
+          "init_state": 6,
+          "success": true,
+          "lifted_m": 0.099,
+          "steps": 245,
+          "grasp_angle": 184.7
+        },
+        {
+          "init_state": 7,
+          "success": true,
+          "lifted_m": 0.098,
+          "steps": 286,
+          "grasp_angle": 125.4
+        },
+        {
+          "init_state": 8,
+          "success": true,
+          "lifted_m": 0.115,
+          "steps": 253,
+          "grasp_angle": 236.3
+        },
+        {
+          "init_state": 9,
+          "success": true,
+          "lifted_m": 0.106,
+          "steps": 257,
+          "grasp_angle": 162.4
+        },
+        {
+          "init_state": 10,
+          "success": true,
+          "lifted_m": 0.138,
+          "steps": 275,
+          "grasp_angle": 236.3
+        },
+        {
+          "init_state": 11,
+          "success": true,
+          "lifted_m": 0.1,
+          "steps": 263,
+          "grasp_angle": 105.6
+        },
+        {
+          "init_state": 12,
+          "success": true,
+          "lifted_m": 0.11,
+          "steps": 233,
+          "grasp_angle": 127.7
+        },
+        {
+          "init_state": 13,
+          "success": true,
+          "lifted_m": 0.097,
+          "steps": 281,
+          "grasp_angle": 232.1
+        },
+        {
+          "init_state": 14,
+          "success": true,
+          "lifted_m": 0.146,
+          "steps": 349,
+          "grasp_angle": 164.7
+        },
+        {
+          "init_state": 15,
+          "success": true,
+          "lifted_m": 0.104,
+          "steps": 293,
+          "grasp_angle": 145.2
+        },
+        {
+          "init_state": 16,
+          "success": true,
+          "lifted_m": 0.09,
+          "steps": 271,
+          "grasp_angle": 173.2
+        },
+        {
+          "init_state": 17,
+          "success": true,
+          "lifted_m": 0.145,
+          "steps": 274,
+          "grasp_angle": 180.0
+        },
+        {
+          "init_state": 18,
+          "success": true,
+          "lifted_m": 0.141,
+          "steps": 275,
+          "grasp_angle": 117.0
+        },
+        {
+          "init_state": 19,
+          "success": true,
+          "lifted_m": 0.139,
+          "steps": 223,
+          "grasp_angle": 135.7
+        }
+      ]
+    },
+    {
+      "task_id": 1,
+      "instruction": "put the black bowl on top of the cabinet",
+      "n_success": 18,
+      "n_episodes": 20,
+      "steps_max": 296,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.164,
+          "steps": 242,
+          "grasp_angle": 112.7
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.09,
+          "steps": 205,
+          "grasp_angle": 243.3
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.131,
+          "steps": 191,
+          "grasp_angle": 259.9
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.122,
+          "steps": 199,
+          "grasp_angle": 94.1
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.071,
+          "steps": 212,
+          "grasp_angle": 93.6
+        },
+        {
+          "init_state": 5,
+          "success": true,
+          "lifted_m": 0.098,
+          "steps": 252,
+          "grasp_angle": 180.5
+        },
+        {
+          "init_state": 6,
+          "success": true,
+          "lifted_m": 0.1,
+          "steps": 188,
+          "grasp_angle": 203.7
+        },
+        {
+          "init_state": 7,
+          "success": true,
+          "lifted_m": 0.109,
+          "steps": 247,
+          "grasp_angle": 132.5
+        },
+        {
+          "init_state": 8,
+          "success": true,
+          "lifted_m": 0.123,
+          "steps": 186,
+          "grasp_angle": 265.6
+        },
+        {
+          "init_state": 9,
+          "success": true,
+          "lifted_m": 0.106,
+          "steps": 206,
+          "grasp_angle": 176.8
+        },
+        {
+          "init_state": 10,
+          "success": true,
+          "lifted_m": 0.128,
+          "steps": 199,
+          "grasp_angle": 265.5
+        },
+        {
+          "init_state": 11,
+          "success": true,
+          "lifted_m": 0.095,
+          "steps": 213,
+          "grasp_angle": 108.7
+        },
+        {
+          "init_state": 12,
+          "success": true,
+          "lifted_m": 0.117,
+          "steps": 191,
+          "grasp_angle": 135.3
+        },
+        {
+          "init_state": 13,
+          "success": true,
+          "lifted_m": 0.119,
+          "steps": 208,
+          "grasp_angle": 260.5
+        },
+        {
+          "init_state": 14,
+          "success": false,
+          "lifted_m": 0.0,
+          "steps": 272,
+          "grasp_angle": 179.7
+        },
+        {
+          "init_state": 15,
+          "success": true,
+          "lifted_m": 0.098,
+          "steps": 235,
+          "grasp_angle": 156.2
+        },
+        {
+          "init_state": 16,
+          "success": true,
+          "lifted_m": 0.085,
+          "steps": 193,
+          "grasp_angle": 189.9
+        },
+        {
+          "init_state": 17,
+          "success": true,
+          "lifted_m": 0.142,
+          "steps": 187,
+          "grasp_angle": 198.0
+        },
+        {
+          "init_state": 18,
+          "success": true,
+          "lifted_m": 0.132,
+          "steps": 224,
+          "grasp_angle": 122.4
+        },
+        {
+          "init_state": 19,
+          "success": false,
+          "lifted_m": 0.0,
+          "steps": 296,
+          "grasp_angle": 144.8
+        }
+      ]
+    },
+    {
+      "task_id": 2,
+      "instruction": "put the black bowl on top of the cabinet",
+      "n_success": 19,
+      "n_episodes": 20,
+      "steps_max": 467,
+      "episodes": [
+        {
+          "init_state": 0,
+          "success": true,
+          "lifted_m": 0.149,
+          "steps": 246,
+          "grasp_angle": -22.4
+        },
+        {
+          "init_state": 1,
+          "success": true,
+          "lifted_m": 0.088,
+          "steps": 248,
+          "grasp_angle": 21.1
+        },
+        {
+          "init_state": 2,
+          "success": true,
+          "lifted_m": 0.139,
+          "steps": 236,
+          "grasp_angle": 26.6
+        },
+        {
+          "init_state": 3,
+          "success": true,
+          "lifted_m": 0.135,
+          "steps": 185,
+          "grasp_angle": -28.6
+        },
+        {
+          "init_state": 4,
+          "success": true,
+          "lifted_m": 0.094,
+          "steps": 419,
+          "grasp_angle": -28.8
+        },
+        {
+          "init_state": 5,
+          "success": true,
+          "lifted_m": 0.084,
+          "steps": 467,
+          "grasp_angle": 0.2
+        },
+        {
+          "init_state": 6,
+          "success": true,
+          "lifted_m": 0.092,
+          "steps": 456,
+          "grasp_angle": 7.9
+        },
+        {
+          "init_state": 7,
+          "success": true,
+          "lifted_m": 0.096,
+          "steps": 267,
+          "grasp_angle": -15.8
+        },
+        {
+          "init_state": 8,
+          "success": true,
+          "lifted_m": 0.123,
+          "steps": 207,
+          "grasp_angle": 28.5
+        },
+        {
+          "init_state": 9,
+          "success": true,
+          "lifted_m": 0.101,
+          "steps": 209,
+          "grasp_angle": -1.1
+        },
+        {
+          "init_state": 10,
+          "success": true,
+          "lifted_m": 0.134,
+          "steps": 210,
+          "grasp_angle": 28.5
+        },
+        {
+          "init_state": 11,
+          "success": true,
+          "lifted_m": 0.079,
+          "steps": 410,
+          "grasp_angle": -23.8
+        },
+        {
+          "init_state": 12,
+          "success": true,
+          "lifted_m": 0.133,
+          "steps": 181,
+          "grasp_angle": -14.9
+        },
+        {
+          "init_state": 13,
+          "success": true,
+          "lifted_m": 0.115,
+          "steps": 216,
+          "grasp_angle": 26.8
+        },
+        {
+          "init_state": 14,
+          "success": true,
+          "lifted_m": 0.14,
+          "steps": 232,
+          "grasp_angle": -0.1
+        },
+        {
+          "init_state": 15,
+          "success": true,
+          "lifted_m": 0.11,
+          "steps": 233,
+          "grasp_angle": -7.9
+        },
+        {
+          "init_state": 16,
+          "success": true,
+          "lifted_m": 0.096,
+          "steps": 221,
+          "grasp_angle": 3.3
+        },
+        {
+          "init_state": 17,
+          "success": false,
+          "lifted_m": -0.0,
+          "steps": 269,
+          "grasp_angle": 6.0
+        },
+        {
+          "init_state": 18,
+          "success": true,
+          "lifted_m": 0.133,
+          "steps": 213,
+          "grasp_angle": -19.2
+        },
+        {
+          "init_state": 19,
+          "success": true,
+          "lifted_m": 0.132,
+          "steps": 179,
+          "grasp_angle": -11.7
+        }
+      ]
+    }
+  ]
+}
