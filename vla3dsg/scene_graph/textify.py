@@ -41,10 +41,18 @@ def to_instruction(sg: SceneGraph) -> str:
     例: (black bowl 1, behind, wine rack) → "put the black bowl behind the wine rack on the plate"。
     場所で対象を特定するため、名前の番号（"black bowl 1" の 1）は付けない。
     """
-    name = " ".join(w for w in sg.target.split() if not w.isdigit())
+    return f"put the {target_name(sg)} {place_phrase(sg)} on the plate"
+
+
+def target_name(sg: SceneGraph) -> str:
+    """対象の名前から番号を除いたもの（"black bowl 1" → "black bowl"）。"""
+    return " ".join(w for w in sg.target.split() if not w.isdigit())
+
+
+def place_phrase(sg: SceneGraph) -> str:
+    """小さな SG の関係を、指示文の中の場所の言い方にする（例: "on the cookie box"、2 本なら and でつなぐ）。"""
     # 領域の名前（例: "top drawer of wooden cabinet"）は、指示文では "of the" にする
-    places = [_PLACE_PHRASES[r[1]].format(o=r[2].replace(" of ", " of the ")) for r in sg.relations]
-    return f"put the {name} {' and '.join(places)} on the plate"
+    return " and ".join(_PLACE_PHRASES[r[1]].format(o=r[2].replace(" of ", " of the ")) for r in sg.relations)
 
 
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-# 5-1: vla3dsg_spatial の 10 タスク × 3 条件（base・norel・norel_short）を学習前のモデルで評価する（学習サーバの GPU 4 枚）。
+# 5-1: vla3dsg_spatial の 10 タスク × 4 条件（base・norel・norel_short・norel_command）を学習前のモデルで評価する（学習サーバの GPU 4 枚）。
 # 各 GPU が (タスク, 条件) の組を順に受け持つ。各工程を status.log に記録し、セッションが切れても進む。
 #   setsid nohup vla3dsg/results/zeroshot/spatial/run.sh > vla3dsg/results/zeroshot/spatial/run.log 2>&1 &
 cd "$(dirname "$0")/../../../.." || exit 1
@@ -8,7 +8,7 @@ export PATH=$HOME/.local/bin:$PATH UV_PROJECT_ENVIRONMENT=$HOME/environments/ler
 export __EGL_VENDOR_LIBRARY_FILENAMES=$HOME/.config/egl/10_nvidia.json
 export MUJOCO_GL=egl PYOPENGL_PLATFORM=egl OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
 SCENES=(center_b1 center_b2 drawer_b1 drawer_b2 near_box_b1 near_box_b2 on_box_b1 on_box_b2 on_ramekin_b1 on_ramekin_b2)
-CONDS=(base norel norel_short)
+CONDS=(base norel norel_short norel_command)
 GPUS=(0 1 2 3)
 log() { echo "$(date '+%F %T') $*" >> $REC/status.log; }
 

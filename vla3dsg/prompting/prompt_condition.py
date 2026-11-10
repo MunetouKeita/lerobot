@@ -67,6 +67,12 @@ def compose_prompt(instruction: str, condition: str, sg: SceneGraph, env: Any) -
         base = _remove_relation(base)
         if condition == "norel":
             return base
+        if condition == "norel_command":
+            sg_small = build_relevant_scene_graph(env)
+            name = textify.target_name(sg_small)
+            if name not in base:
+                raise ValueError(f"指示文 {base!r} に対象の名前 {name!r} がない")
+            return base.replace(name, f"{name} {textify.place_phrase(sg_small)}", 1)
         condition = "base" + condition.removeprefix("norel")
     if condition == "sg_command":
         return textify.to_instruction(build_relevant_scene_graph(env))

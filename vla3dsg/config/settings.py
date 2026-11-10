@@ -165,6 +165,7 @@ PROMPT_CONDITIONS = {
 # 指示文から対象の位置関係を外した条件（vla3dsg_spatial。人が場所を言わない場合）。外し方は NOREL_PATTERNS
 PROMPT_CONDITIONS["norel"] = "公式の指示文から対象の位置関係を外したもの（例: pick up the black bowl and place it on the plate）"
 PROMPT_CONDITIONS["norel_short"] = "norel + 掴む対象を見分ける最小の関係だけの SG（三つ組）"
+PROMPT_CONDITIONS["norel_command"] = "norel の対象の名前の後に、norel_short の SG から作った場所を入れた指示文（例: pick up the black bowl on the cookie box and place it on the plate）"
 # 位置関係を外す書き換え（正規化した指示文に順に当て、最初に一致したものを使う。一致しなければエラー）
 NOREL_PATTERNS = [
     (r"^pick up the black bowl .+ and place it on the plate$", "pick up the black bowl and place it on the plate"),
