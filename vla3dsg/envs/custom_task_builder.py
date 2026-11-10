@@ -148,12 +148,18 @@ def body_positions(env: OffScreenRenderEnv) -> dict[str, np.ndarray]:
     return {name: np.array(e.sim.data.body_xpos[e.obj_body_id[name]]) for name in e.objects_dict}
 
 
-def sample_init_state(env: OffScreenRenderEnv, seed: int) -> np.ndarray | None:
+def sample_init_state(env: OffScreenRenderEnv, seed: int, check: bool = True) -> np.ndarray | None:
     """seed で配置をサンプリングし、何もしない動作で落ち着かせる。問題がなければ MuJoCo の状態を返す。
+
+    check=False では判定をせずに状態を返す（生成済みのデモの配置を再現するとき。MuJoCo は直前の状態を引き継いで計算するため、
+    同じシードでも判定がしきい値の付近で変わることがある）。
 
     物体が落ち着いた後も動いている、または配置の直後から水平方向に大きく動いた（固定物と重なって押し出された・
     倒れた）配置は None を返す。物体はテーブルの少し上に置かれて落ちるため、押し出し・転倒は水平方向の移動で判定する。
     """
+    # LIBERO は reset（モデルの作り直し）のたびに扉・引き出しの開閉のサンプラーを足していき、消さない。そのままでは配置の前に使う
+    # 乱数の数が reset の回数で変わり、同じシードでも配置が変わる（KITCHEN_SCENE4 の開いた引き出し）。空にしてから reset する
+    env.env.object_property_initializers.clear()
     env.seed(seed)
     env.reset()
     sampled = body_positions(env)
@@ -165,7 +171,7 @@ def sample_init_state(env: OffScreenRenderEnv, seed: int) -> np.ndarray | None:
     final = body_positions(env)
     moved = max(np.linalg.norm(settled[k][:2] - sampled[k][:2]) for k in sampled)
     drift = max(np.linalg.norm(final[k] - settled[k]) for k in sampled)
-    if moved > settings.CUSTOM_TASK_MAX_SETTLE_MOVE or drift > settings.CUSTOM_TASK_MAX_DRIFT:
+    if check and (moved > settings.CUSTOM_TASK_MAX_SETTLE_MOVE or drift > settings.CUSTOM_TASK_MAX_DRIFT):
         return None
     return env.get_sim_state()
 

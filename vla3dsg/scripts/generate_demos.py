@@ -95,7 +95,8 @@ def run_scripted(env: OffScreenRenderEnv, obs: dict, demo: dict, rng: np.random.
         angle = float(rng.uniform(lo, hi)) if rng is not None else (lo + hi) / 2
         offset, yaw = rim_grasp(angle)
     result = pick_and_place(
-        env, obs, demo["target"], demo["dest"], demo["via"], grasp_offset=offset, grasp_yaw_deg=yaw, rng=rng, on_step=on_step
+        env, obs, demo["target"], demo["dest"], demo["via"], grasp_offset=offset, grasp_yaw_deg=yaw, rng=rng, on_step=on_step,
+        dest_site=demo.get("dest_site"),
     )
     return {**result, "grasp_angle": None if angle is None else round(angle, 1)}
 

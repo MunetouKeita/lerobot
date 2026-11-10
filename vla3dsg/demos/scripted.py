@@ -31,6 +31,11 @@ def body_pos(env: OffScreenRenderEnv, name: str) -> np.ndarray:
     return np.array(e.sim.data.body_xpos[e.obj_body_id[name]])
 
 
+def site_pos(env: OffScreenRenderEnv, name: str) -> np.ndarray:
+    sim = env.env.sim
+    return np.array(sim.data.site_xpos[sim.model.site_name2id(name)])
+
+
 class Runner:
     def __init__(
         self, env: OffScreenRenderEnv, obs: dict, on_step: StepCallback | None = None, rng: np.random.Generator | None = None
@@ -108,11 +113,13 @@ def pick_and_place(
     grasp_yaw_deg: float = 0.0,
     rng: np.random.Generator | None = None,
     on_step: StepCallback | None = None,
+    dest_site: str | None = None,
 ) -> dict[str, Any]:
     """target を掴んで dest の上に置く。grasp_offset は target の中心から見た掴む点。
     grasp_yaw_deg だけ手先を鉛直軸まわりに回してから掴む（開いた指は初期の向きでは y 方向に並ぶ。縁の壁を挟むには、
     指を掴む点から target の中心へ向かう方向に並べる）。
-    rng を渡すと、経由点をずらし、動作に揺らぎを加える（デモの多様性のため）。"""
+    rng を渡すと、経由点をずらし、動作に揺らぎを加える（デモの多様性のため）。
+    dest_site（例: white_cabinet_1_top_side）を渡すと、その位置に置く。置き場所が台の上なら、その高さの分だけ運ぶ・放す高さを上げる。"""
 
     def jitter(scale: float, n: int) -> np.ndarray:
         return rng.uniform(-scale, scale, n) if rng is not None else np.zeros(n)
@@ -140,20 +147,26 @@ def pick_and_place(
     r.go(grasp + [0, 0, lift_dz], CLOSE, max_speed=speed)
     lifted = float(body_pos(env, target)[2] - start[2])
     offset = (r.obs["robot0_eef_pos"] - body_pos(env, target))[:2]  # 掴んだ後の手先と対象のずれ
-    d = body_pos(env, dest)
+    d = body_pos(env, dest) if dest_site is None else site_pos(env, dest_site)
+    # 放す高さと運ぶ高さ（皿などテーブルの上に置くときは、掴んだ高さが基準）
+    place_z = grasp[2] + (0.0 if dest_site is None else d[2] - start[2])
+    carry_z = grasp[2] + lift_dz if dest_site is None else max(grasp[2] + lift_dz, place_z + approach_dz)
+    if dest_site is not None:
+        # 台の上へ置くときは、まずその場で運ぶ高さまで上げる（斜めに上がると台の角に当たる）
+        r.go(np.r_[r.obs["robot0_eef_pos"][:2], carry_z], CLOSE, max_speed=speed)
     if not via and rng is not None and rng.random() < settings.DEMO_EXTRA_VIA_PROB:
         # まっすぐ運ぶ経路の中点を横へずらした経由点を通る（回り込む経路）
         line = d[:2] + offset - r.obs["robot0_eef_pos"][:2]
         side = np.array([-line[1], line[0]]) / (np.linalg.norm(line) + 1e-9)
         mid = r.obs["robot0_eef_pos"][:2] + line / 2 + side * rng.uniform(-settings.DEMO_EXTRA_VIA_SIDE, settings.DEMO_EXTRA_VIA_SIDE)
-        r.go(np.r_[mid, grasp[2] + lift_dz], CLOSE, max_speed=speed)
+        r.go(np.r_[mid, carry_z], CLOSE, max_speed=speed)
     for x, y in via:
-        r.go(np.r_[np.array([x, y]) + jitter(settings.DEMO_VIA_JITTER, 2), grasp[2] + via_dz], CLOSE, max_speed=speed)
-    r.go(np.r_[d[:2] + offset, grasp[2] + lift_dz], CLOSE, max_speed=speed)
-    r.go(np.r_[d[:2] + offset, grasp[2] + settings.SCRIPTED_RELEASE_DZ + settings.SCRIPTED_SLOW_DZ], CLOSE, max_speed=speed)
-    r.go(np.r_[d[:2] + offset, grasp[2] + settings.SCRIPTED_RELEASE_DZ], CLOSE, max_speed=slow)
+        r.go(np.r_[np.array([x, y]) + jitter(settings.DEMO_VIA_JITTER, 2), max(grasp[2] + via_dz, carry_z)], CLOSE, max_speed=speed)
+    r.go(np.r_[d[:2] + offset, carry_z], CLOSE, max_speed=speed)
+    r.go(np.r_[d[:2] + offset, place_z + settings.SCRIPTED_RELEASE_DZ + settings.SCRIPTED_SLOW_DZ], CLOSE, max_speed=speed)
+    r.go(np.r_[d[:2] + offset, place_z + settings.SCRIPTED_RELEASE_DZ], CLOSE, max_speed=slow)
     r.hold(OPEN, 15)
-    r.go(np.r_[d[:2], grasp[2] + via_dz], OPEN, max_steps=30, max_speed=speed)
+    r.go(np.r_[d[:2], max(grasp[2] + via_dz, carry_z)], OPEN, max_steps=30, max_speed=speed)
     r.hold(OPEN, 20)
     return {
         "success": bool(r.done or env.env._check_success()),

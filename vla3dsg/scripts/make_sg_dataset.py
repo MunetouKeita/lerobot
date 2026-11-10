@@ -45,7 +45,7 @@ def make_prompts(episodes: list[dict], condition: str) -> list[dict]:
             envs[key] = make_env(suite_dir, task)
         env = envs[key]
         # generate_demos.py の generate() と同じ手順
-        state = sample_init_state(env, e["seed"])
+        state = sample_init_state(env, e["seed"], check=False)  # 一致は下の sg_matches で確かめる
         env.reset()
         env.set_init_state(state)
         settle(env)

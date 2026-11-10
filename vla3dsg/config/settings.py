@@ -127,6 +127,15 @@ DEMO_TASK_SPECS = {
         },
         **{k: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [(-0.47, 0.02)], "grasp_angles": (75.0, 120.0)} for k in (1, 2)},
     },
+    # libero_90 の KITCHEN_SCENE4（put the black bowl on top of the cabinet）を元にしたスイート。置き場所はキャビネットの天面
+    # 掴む向きの範囲は、角度ごとに 1 回ずつ試して成功した範囲の内側（tmp の調査、2026-11-05）
+    "vla3dsg_kitchen4": {
+        # ワインラックの裏: 傾いたラックの板に手先が当たる向き（0〜30°、300〜330°）を避ける
+        0: {"target": "akita_black_bowl_1", "dest": "white_cabinet_1", "dest_site": "white_cabinet_1_top_side", "via": [], "grasp_angles": (90.0, 240.0)},
+        1: {"target": "akita_black_bowl_1", "dest": "white_cabinet_1", "dest_site": "white_cabinet_1_top_side", "via": [], "grasp_angles": (90.0, 270.0)},
+        # 見えるボウル（広い範囲）: 330〜30° は 12 か所中 11〜12 か所で成功、90〜150°・240〜300° は 6〜10 か所
+        2: {"target": "akita_black_bowl_1", "dest": "white_cabinet_1", "dest_site": "white_cabinet_1_top_side", "via": [], "grasp_angles": (-30.0, 30.0)},
+    },
     # 実験1 の追加検証: 標準から、ボウルか皿の一方だけを動かしたシーン
     "vla3dsg_goal_layout": {
         **{k: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [], "grasp_yaw_deg": 90.0} for k in (0, 1, 3, 4, 6)},
@@ -174,6 +183,8 @@ SCENE_LABELS = {
     "plate_next_to_bowl": "皿をボウルの隣へ",
     "wide": "見えるボウルを広い範囲に",
     "decoy_visible": "隠れたおとり（見える方が正解）",
+    "hidden_rack": "ワインラックの裏に隠れ",
+    "hidden_cabinet": "キャビネットの裏に隠れ",
 }
 # base_irrelevant の無関係な文（base_full と同じトークン数になるよう、先頭から切り出し、足りなければ繰り返す）
 IRRELEVANT_TEXT = (

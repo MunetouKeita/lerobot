@@ -1,0 +1,102 @@
+{
+  "max_steps": 400,
+  "tasks": [
+    {
+      "name": "hidden_rack",
+      "language": "put the black bowl on top of the cabinet",
+      "bddl_file": "hidden_rack.bddl",
+      "init_states_file": "hidden_rack.pruned_init",
+      "base": "libero_90/KITCHEN_SCENE4_put_the_black_bowl_on_top_of_the_cabinet",
+      "regions": [
+        "akita_black_bowl_init_region=-0.32,-0.31,-0.30,-0.29"
+      ],
+      "official_init": false,
+      "removed_objects": [],
+      "added_objects": [],
+      "min_distance": null,
+      "visibility": {
+        "target": "akita_black_bowl_1",
+        "occluder": "wine_rack_1",
+        "n_init": 50,
+        "n_rejected": 1,
+        "target_position_last": [
+          -0.31,
+          -0.299,
+          0.898
+        ],
+        "agentview_visible_ratio": {
+          "mean": 0.0,
+          "max": 0.002
+        },
+        "wrist_visible_ratio_first": 1.0,
+        "visible_points_first": {
+          "agentview": 0,
+          "robot0_eye_in_hand": 85
+        }
+      }
+    },
+    {
+      "name": "hidden_cabinet",
+      "language": "put the black bowl on top of the cabinet",
+      "bddl_file": "hidden_cabinet.bddl",
+      "init_states_file": "hidden_cabinet.pruned_init",
+      "base": "libero_90/KITCHEN_SCENE4_put_the_black_bowl_on_top_of_the_cabinet",
+      "regions": [
+        "akita_black_bowl_init_region=-0.21,0.30,-0.19,0.32"
+      ],
+      "official_init": false,
+      "removed_objects": [],
+      "added_objects": [],
+      "min_distance": null,
+      "visibility": {
+        "target": "akita_black_bowl_1",
+        "occluder": "white_cabinet_1",
+        "n_init": 50,
+        "n_rejected": 1,
+        "target_position_last": [
+          -0.2,
+          0.311,
+          0.898
+        ],
+        "agentview_visible_ratio": {
+          "mean": 0.0,
+          "max": 0.005
+        },
+        "wrist_visible_ratio_first": null,
+        "visible_points_first": {
+          "agentview": 0,
+          "robot0_eye_in_hand": 0
+        }
+      }
+    },
+    {
+      "name": "wide",
+      "language": "put the black bowl on top of the cabinet",
+      "bddl_file": "wide.bddl",
+      "init_states_file": "wide.pruned_init",
+      "base": "libero_90/KITCHEN_SCENE4_put_the_black_bowl_on_top_of_the_cabinet",
+      "regions": [
+        "akita_black_bowl_init_region=-0.25,-0.15,0.15,0.15"
+      ],
+      "official_init": false,
+      "removed_objects": [],
+      "added_objects": [],
+      "min_distance": 0.11,
+      "visibility": {
+        "target": "akita_black_bowl_1",
+        "occluder": null,
+        "n_init": 50,
+        "n_rejected": 73,
+        "target_position_last": [
+          0.061,
+          -0.08,
+          0.898
+        ],
+        "visible_points_first": {
+          "agentview": 400,
+          "robot0_eye_in_hand": 398
+        }
+      }
+    }
+  ]
+}
