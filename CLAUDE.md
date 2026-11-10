@@ -48,7 +48,7 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 | `vla3dsg/results/<名前>/` | 1 実験分の結果。`README.md`・`summary.json`・`conditions.json`・`eval_info.json` は git 管理、`videos/` と `eval.log` は管理外（ゼミ報告 `results/seminar/<日付>/videos/` の比較動画だけは git 管理） |
 | `vla3dsg/data/<名前>/` | 生成したデータセット（git 管理外）。生成の記録は `vla3dsg/results/demos/<名前>/` |
 | `vla3dsg/tmp/` | テスト・計測の使い捨て出力（git 管理外。いつ消してもよい） |
-| `vla3dsg/docs/` | 調査メモ（LIBERO のタスク定義、LeRobot の LIBERO の読み込み、LeRobot 本体のアーキテクチャ、学習サーバの使い方） |
+| `vla3dsg/docs/` | 調査メモ（LIBERO のタスク定義、LeRobot の LIBERO の読み込み、LeRobot 本体のアーキテクチャ）、実行環境ごとの構成と使い方（`env_local.md`・`env_6000ada.md`・`env_6000pro.md`） |
 | `vla3dsg/progress_management.md`・`vla3dsg/experiments.md` | 計画と進捗・各実験の設定と結果 |
 
 - カスタムシーンの登録やプロンプト改変は、`vla3dsg/` 側のコード（ラッパー、`ProcessorStep` の追加、LIBEROへのベンチマーク登録処理など）で実現する
@@ -72,35 +72,23 @@ LeRobot 公式の `AGENTS.md`（upstream の `CLAUDE.md` のリンク先）の�
 - Ai2 のフォーク（`allenai/lerobot` の `molmoact2-hf-inference`、v0.5.1固定）は論文値の厳密な再現用。ベースラインが論文値と大きくずれたときの切り分けにだけ使う
 - LIBERO の設定 `~/.libero/config.yaml` は既定値で作成済み（初回 import 時の対話を避けるため。評価にデモデータは不要）。アセットは初回起動時に `~/.cache/libero/assets` へ自動ダウンロードされる
 
-## OS・GPU・開発環境
+## 実行環境
 
-| 項目 | 内容 |
-|---|---|
-| OS | Ubuntu 22.04 |
-| GPU | NVIDIA GeForce RTX 5090（VRAM 32GB、Blackwell / sm_120） |
-| CUDA | nvcc 12.8。PyTorch は `uv.lock` で固定される CUDA 12.8 ビルド（torch 2.11.0+cu128）を使う |
-| Python | 3.12（uv 仮想環境 `.venv/`） |
+ローカル PC と研究室のサーバ 2 台を、空き状態に応じて使い分ける。構成・使い方・性能の目安は各ファイルにまとめている。
 
-- `torch.cuda.get_arch_list()` に `sm_120` が含まれることを確認する（`no kernel image is available for execution on the device` が出たら古いホイールが入っている）
-- 動画のデコード（TorchCodec）とテストに、システムの ffmpeg を使う
-- このPCの GPU は ollama も使っている。ollama は止めない
-- ヘッドレス描画と再現性のため、実行前に以下を設定する
+| 環境 | 接続 | GPU | 主な用途 | 詳細 |
+|---|---|---|---|---|
+| ローカル PC | — | RTX 5090 × 1（32GB、sm_120） | 評価・データ作り・短い学習・可視化 | `vla3dsg/docs/env_local.md` |
+| 6000ada | `ssh munetou-6000ada` | RTX 6000 Ada × 4（48GB、sm_89） | GPU を何枚も使う評価、長い学習 | `vla3dsg/docs/env_6000ada.md` |
+| 6000pro | `ssh munetou-6000pro` | RTX PRO 6000 Blackwell × 4（96GB、sm_120） | 長い学習（メモリに余裕がありバッチを大きくできる）、評価 | `vla3dsg/docs/env_6000pro.md` |
 
-```bash
-export MUJOCO_GL=egl
-export PYOPENGL_PLATFORM=egl
-export OMP_NUM_THREADS=1
-export MKL_NUM_THREADS=1
-```
-
-### 学習サーバ（RTX 6000 Ada × 4）
-
-長い学習は学習サーバで行い、このPCは評価とデータ作りに使う。接続（`ssh munetou-6000ada`）・仮想環境・描画の設定は `vla3dsg/docs/training_server.md`。
-
-- 共有サーバのため、次を守る
-  - GPU は基本的に 2 枚まで使う。他のユーザーが使っていることが多いので、使う前に `nvidia-smi` で空き（メモリ・使用率）を確かめ、`CUDA_VISIBLE_DEVICES` で指定する
-  - sudo 権限はあるが、sudo を実行するときは必ず事前にユーザーの許可を得る
-- ホームディレクトリ（`/home/munetou`）の中は自由に変更してよい
+- 使う前に `nvidia-smi` で GPU の空き（メモリ・使用率）を確かめ、`CUDA_VISIBLE_DEVICES` で指定する。サーバは共有で、他のユーザーが使っていることが多い
+- どの環境でも、実行前にヘッドレス描画と再現性のための環境変数を設定する（`MUJOCO_GL=egl`・`PYOPENGL_PLATFORM=egl`・`OMP_NUM_THREADS=1`・`MKL_NUM_THREADS=1`。`settings.apply_runtime_env()` でも設定される）
+- 環境ごとのルール（必ず守る。詳細は各ファイル）
+  - ローカル PC: GPU は ollama も使っている。ollama は止めない
+  - 6000ada: GPU は基本的に 2 枚まで（4 枚はユーザーが許可した実験だけ）。sudo 権限はあるが、実行するときは必ず事前にユーザーの許可を得る
+  - 6000pro: sudo は使えない（管理者ユーザーに限定）。CUDA や Python ライブラリは Apptainer のコンテナとホームの中に入れ、システムには入れない。システムへのインストールや設定の変更は管理者に依頼する。どの GPU を誰が使うかは口頭で調整する
+  - サーバのホームディレクトリ（`/home/munetou`）の中は自由に変更してよい
 
 ## セットアップと主要コマンド
 
