@@ -138,7 +138,15 @@ DEMO_TASK_SPECS = {
     },
     # 段階 1（5 節）: libero_spatial の 5 配置。偶数の task は公式と同じボウル 1、奇数の task はもう一方のボウル 2 を皿に置く
     "vla3dsg_spatial": {
-        k: {"target": f"akita_black_bowl_{k % 2 + 1}", "dest": "plate_1", "via": [], "grasp_angles": (-30.0, 30.0)} for k in range(10)
+        k: {
+            "target": f"akita_black_bowl_{k % 2 + 1}",
+            "dest": "plate_1",
+            "via": [],
+            "grasp_angles": (-30.0, 30.0),
+            # ラメキンの上のボウルは、置いた直後に必ず約 3.7cm 滑って落ち着く（公式の初期状態も滑った後の位置）。配置の判定の上限を広げる
+            **({"max_settle_move": 0.05} if k in (8, 9) else {}),
+        }
+        for k in range(10)
     },
     # 実験1 の追加検証: 標準から、ボウルか皿の一方だけを動かしたシーン
     "vla3dsg_goal_layout": {

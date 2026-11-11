@@ -183,7 +183,7 @@ def generate(args: argparse.Namespace, suite_dir: Path, spec: dict) -> None:
         while n_saved < args.n_episodes:
             if seed - args.seed_start >= args.n_episodes * settings.DEMO_MAX_TRIALS_FACTOR:
                 raise RuntimeError(f"task {task_id}: 成功したデモが集まらない（{n_saved}/{args.n_episodes}、{counts}）")
-            state = sample_init_state(env, seed)
+            state = sample_init_state(env, seed, max_move=demo.get("max_settle_move"))
             seed += 1
             # 評価の初期状態と同じ基準で配置を除く（make_custom_task.py --min-distance）
             min_distance = task.get("min_distance")
