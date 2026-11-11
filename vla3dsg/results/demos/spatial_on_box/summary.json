@@ -1,0 +1,32 @@
+{
+  "dataset": "vla3dsg/data/spatial_on_box",
+  "n_episodes": 60,
+  "n_frames": 12981,
+  "elapsed_s": 597,
+  "per_task": [
+    {
+      "task_id": 6,
+      "task": "pick up the black bowl on the cookie box and place it on the plate",
+      "n_episodes": 30,
+      "n_trials": 30,
+      "rejected_placement": 0,
+      "failed": 0,
+      "too_long": 0,
+      "steps_min": 150,
+      "steps_max": 258,
+      "n_frames": 5821
+    },
+    {
+      "task_id": 7,
+      "task": "pick up the black bowl on the wooden cabinet and place it on the plate",
+      "n_episodes": 30,
+      "n_trials": 35,
+      "rejected_placement": 0,
+      "failed": 4,
+      "too_long": 1,
+      "steps_min": 180,
+      "steps_max": 280,
+      "n_frames": 7160
+    }
+  ]
+}

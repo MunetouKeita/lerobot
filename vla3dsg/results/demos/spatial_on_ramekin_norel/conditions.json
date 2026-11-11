@@ -1,0 +1,13 @@
+{
+  "src": "spatial_on_ramekin",
+  "condition": "norel",
+  "n_episodes": 60,
+  "n_tasks": 1,
+  "sg_matches_generation": "60/60",
+  "max_tokens": 11,
+  "git": {
+    "commit": "df7ba6a77595fc63aaeed541781c807a52ca5197",
+    "upstream_base": "200ee53596d464bd28f6595cdb31be69a2b5e379",
+    "dirty": true
+  }
+}

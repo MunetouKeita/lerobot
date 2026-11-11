@@ -1,0 +1,32 @@
+{
+  "dataset": "vla3dsg/data/spatial_near_box",
+  "n_episodes": 60,
+  "n_frames": 13079,
+  "elapsed_s": 948,
+  "per_task": [
+    {
+      "task_id": 4,
+      "task": "pick up the black bowl next to the cookie box and place it on the plate",
+      "n_episodes": 30,
+      "n_trials": 92,
+      "rejected_placement": 0,
+      "failed": 0,
+      "too_long": 62,
+      "steps_min": 181,
+      "steps_max": 277,
+      "n_frames": 7514
+    },
+    {
+      "task_id": 5,
+      "task": "pick up the black bowl on the stove and place it on the plate",
+      "n_episodes": 30,
+      "n_trials": 30,
+      "rejected_placement": 0,
+      "failed": 0,
+      "too_long": 0,
+      "steps_min": 159,
+      "steps_max": 226,
+      "n_frames": 5565
+    }
+  ]
+}

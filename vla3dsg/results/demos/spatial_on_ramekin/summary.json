@@ -1,0 +1,32 @@
+{
+  "dataset": "vla3dsg/data/spatial_on_ramekin",
+  "n_episodes": 60,
+  "n_frames": 10795,
+  "elapsed_s": 514,
+  "per_task": [
+    {
+      "task_id": 8,
+      "task": "pick up the black bowl on the ramekin and place it on the plate",
+      "n_episodes": 30,
+      "n_trials": 30,
+      "rejected_placement": 0,
+      "failed": 0,
+      "too_long": 0,
+      "steps_min": 135,
+      "steps_max": 194,
+      "n_frames": 4974
+    },
+    {
+      "task_id": 9,
+      "task": "pick up the black bowl on the cookie box and place it on the plate",
+      "n_episodes": 30,
+      "n_trials": 30,
+      "rejected_placement": 0,
+      "failed": 0,
+      "too_long": 0,
+      "steps_min": 150,
+      "steps_max": 258,
+      "n_frames": 5821
+    }
+  ]
+}
