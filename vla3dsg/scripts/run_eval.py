@@ -76,6 +76,9 @@ def main() -> None:
     parser.add_argument(
         "--policy-path", help="追加学習したチェックポイント（<出力先>/checkpoints/<ステップ>/pretrained_model）。省略時は元の MolmoAct2"
     )
+    parser.add_argument(
+        "--max-steps", type=int, help="1 エピソードの最大ステップ数（省略時はスイートの値。時間切れかを確かめるときに延ばす）"
+    )
     args = parser.parse_args()
 
     suites = args.suite.split(",")
@@ -96,10 +99,13 @@ def main() -> None:
         eval_args.insert(0, f"--policy.path={args.policy_path}")
         # 学習データ（lerobot/libero と同じ形式）は手首カメラを image2 と呼ぶ
         eval_args.append('--rename_map={"observation.images.wrist_image": "observation.images.image2"}')
+    if args.max_steps:
+        eval_args.append(f"--env.episode_length={args.max_steps}")
     conditions = {
         "suite": args.suite,
         "task_ids": task_ids,
         "n_episodes_per_task": args.n_episodes,
+        "max_steps": args.max_steps,
         "prompt_condition": args.prompt_condition,
         "prompt_condition_desc": settings.PROMPT_CONDITIONS[args.prompt_condition],
         "annotated_video": args.annotated_video,
