@@ -1,0 +1,160 @@
+{
+  "per_task": [
+    {
+      "task_group": "vla3dsg_spatial",
+      "task_id": 5,
+      "metrics": {
+        "sum_rewards": [
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "max_rewards": [
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "successes": [
+          false,
+          false,
+          true,
+          true,
+          false,
+          true,
+          true,
+          false,
+          true,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          false,
+          true,
+          false,
+          true
+        ],
+        "video_paths": [
+          "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_0.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_1.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_2.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_3.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_4.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_5.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_6.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_7.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_8.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_9.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_10.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_11.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_16.mp4",
+          "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_18.mp4"
+        ],
+        "predicted_video_paths": []
+      },
+      "n_episodes": 20,
+      "n_success": 11,
+      "pc_success": 55.0,
+      "pc_success_ci95": [
+        34.20853424503424,
+        74.18021417443758
+      ]
+    }
+  ],
+  "per_group": {
+    "vla3dsg_spatial": {
+      "avg_sum_reward": 0.55,
+      "avg_max_reward": 0.55,
+      "pc_success": 55.00000000000001,
+      "n_episodes": 20,
+      "n_success": 11,
+      "pc_success_ci95": [
+        34.20853424503424,
+        74.18021417443758
+      ],
+      "video_paths": [
+        "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_0.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_1.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_2.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_3.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_4.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_5.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_6.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_7.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_8.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_9.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_10.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_11.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_16.mp4",
+        "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_18.mp4"
+      ],
+      "predicted_video_paths": []
+    }
+  },
+  "overall": {
+    "avg_sum_reward": 0.55,
+    "avg_max_reward": 0.55,
+    "pc_success": 55.00000000000001,
+    "n_episodes": 20,
+    "n_success": 11,
+    "pc_success_ci95": [
+      34.20853424503424,
+      74.18021417443758
+    ],
+    "eval_s": 399.3305652141571,
+    "eval_ep_s": 19.96652830839157,
+    "video_paths": [
+      "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_0.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_1.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_2.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_3.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_4.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_5.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_6.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_7.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_8.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_9.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_10.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_11.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_16.mp4",
+      "/home/munetou/lerobot/vla3dsg/results/training/spatial_mix_sg_vs_nosg/nosg/step001000/near_box_b2/norel/videos/vla3dsg_spatial_5/eval_episode_18.mp4"
+    ],
+    "predicted_video_paths": []
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "pc_success": 30.0,
+  "n_success": 6,
+  "n_episodes": 20,
+  "pc_success_ci95": [
+    14.54772448676043,
+    51.89728183535234
+  ],
+  "per_suite": {
+    "vla3dsg_spatial": 30.0
+  },
+  "per_task": [
+    {
+      "suite": "vla3dsg_spatial",
+      "task_id": 2,
+      "instruction": "pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate",
+      "successes": [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        true,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "pc_success": 30.0
+    }
+  ]
+}

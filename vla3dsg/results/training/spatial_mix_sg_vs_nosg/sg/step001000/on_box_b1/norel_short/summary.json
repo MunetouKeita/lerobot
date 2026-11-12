@@ -1,0 +1,42 @@
+{
+  "pc_success": 70.0,
+  "n_success": 14,
+  "n_episodes": 20,
+  "pc_success_ci95": [
+    48.10271816464765,
+    85.45227551323956
+  ],
+  "per_suite": {
+    "vla3dsg_spatial": 70.0
+  },
+  "per_task": [
+    {
+      "suite": "vla3dsg_spatial",
+      "task_id": 6,
+      "instruction": "pick up the black bowl on the cookie box and place it on the plate",
+      "successes": [
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        false,
+        true,
+        true,
+        true,
+        false,
+        true
+      ],
+      "pc_success": 70.0
+    }
+  ]
+}
