@@ -1,0 +1,34 @@
+{
+ "out": "results/seminar/2026-11-12/videos/2_sg_vs_nosg.mp4",
+ "title": "正解: 棚の上のボウル（引き出しの中にもう 1 つ）",
+ "crop": "agentview",
+ "groups": [
+  {
+   "label": "追加学習なし",
+   "color": "#555555",
+   "videos": [
+    {
+     "caption": "公式の指示文（関係あり）",
+     "result": "失敗",
+     "path": "results/zeroshot/spatial/drawer_b2/base/videos/vla3dsg_spatial_3/eval_episode_2.mp4"
+    }
+   ]
+  },
+  {
+   "label": "追加学習後",
+   "color": "#2c6fbb",
+   "videos": [
+    {
+     "caption": "関係なし（SG なし）",
+     "result": "失敗",
+     "path": "results/training/spatial_sg_vs_nosg/nosg/step003000/drawer_b2/norel/videos/vla3dsg_spatial_3/eval_episode_2.mp4"
+    },
+    {
+     "caption": "関係なし＋SG",
+     "result": "成功",
+     "path": "results/training/spatial_sg_vs_nosg/sg/step003000/drawer_b2/norel_short/videos/vla3dsg_spatial_3/eval_episode_2.mp4"
+    }
+   ]
+  }
+ ]
+}

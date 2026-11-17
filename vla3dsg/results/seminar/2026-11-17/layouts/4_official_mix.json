@@ -1,0 +1,12 @@
+{
+ "out": "results/seminar/2026-11-17/videos/4_official_mix.mp4",
+ "title": "公式の指示文で指示（正解: 引き出しの中のボウル）",
+ "crop": "agentview",
+ "groups": [
+  {"label": "追加学習なし", "color": "#555555",
+   "videos": [{"caption": "元のモデル", "result": "成功", "path": "results/zeroshot/spatial/drawer_b1/base/videos/vla3dsg_spatial_2/eval_episode_0.mp4"}]},
+  {"label": "追加学習後（SG なし）", "color": "#2c6fbb",
+   "videos": [{"caption": "自作デモだけ", "result": "失敗", "path": "results/training/spatial_v2_sg_vs_nosg/nosg/step003000/drawer_b1/base/videos/vla3dsg_spatial_2/eval_episode_0.mp4"},
+              {"caption": "公式デモも混ぜる", "result": "成功", "path": "results/training/spatial_v2_mix_sg_vs_nosg/nosg/step003000/drawer_b1/base/videos/vla3dsg_spatial_2/eval_episode_0.mp4"}]}
+ ]
+}

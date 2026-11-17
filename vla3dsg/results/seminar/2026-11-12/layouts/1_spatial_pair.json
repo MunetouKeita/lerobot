@@ -1,0 +1,39 @@
+{
+ "out": "results/seminar/2026-11-12/videos/1_spatial_pair.mp4",
+ "title": "同じ画像で正解だけを入れ替えた対　追加学習なし・公式の指示文",
+ "crop": "agentview",
+ "groups": [
+  {
+   "label": "箱の隣の配置（関係の言葉に従う）",
+   "color": "#2c6fbb",
+   "videos": [
+    {
+     "caption": "正解: 箱の隣のボウル",
+     "result": "成功",
+     "path": "results/zeroshot/spatial/near_box_b1/base/videos/vla3dsg_spatial_4/eval_episode_1.mp4"
+    },
+    {
+     "caption": "正解: コンロの上のボウル",
+     "result": "成功",
+     "path": "results/zeroshot/spatial/near_box_b2/base/videos/vla3dsg_spatial_5/eval_episode_1.mp4"
+    }
+   ]
+  },
+  {
+   "label": "中央の配置（関係の言葉に従わない）",
+   "color": "#c0392b",
+   "videos": [
+    {
+     "caption": "正解: 中央のボウル",
+     "result": "成功",
+     "path": "results/zeroshot/spatial/center_b1/base/videos/vla3dsg_spatial_0/eval_episode_1.mp4"
+    },
+    {
+     "caption": "正解: 皿の隣のボウル",
+     "result": "失敗",
+     "path": "results/zeroshot/spatial/center_b2/base/videos/vla3dsg_spatial_1/eval_episode_1.mp4"
+    }
+   ]
+  }
+ ]
+}

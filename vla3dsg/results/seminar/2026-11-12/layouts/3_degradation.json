@@ -1,0 +1,23 @@
+{
+ "out": "results/seminar/2026-11-12/videos/3_degradation.mp4",
+ "title": "追加学習で動作が悪くなった例",
+ "crop": "agentview",
+ "groups": [
+  {
+   "label": "正解: 引き出しの中のボウル",
+   "color": "#555555",
+   "videos": [
+    {
+     "caption": "追加学習なし・公式の指示文",
+     "result": "成功",
+     "path": "results/zeroshot/spatial/drawer_b1/base/videos/vla3dsg_spatial_2/eval_episode_0.mp4"
+    },
+    {
+     "caption": "追加学習後・関係なし＋SG",
+     "result": "失敗",
+     "path": "results/training/spatial_sg_vs_nosg/sg/step003000/drawer_b1/norel_short/videos/vla3dsg_spatial_2/eval_episode_0.mp4"
+    }
+   ]
+  }
+ ]
+}

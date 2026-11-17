@@ -1,0 +1,11 @@
+{
+ "out": "results/seminar/2026-11-17/videos/1_demos.mp4",
+ "title": "教師データ　引き出しの中のボウルを皿に置く",
+ "crop": "left",
+ "groups": [
+  {"label": "公式デモ（人の操作）", "color": "#555555",
+   "videos": [{"caption": "公式デモ", "result": "成功", "crop": "none", "path": "tmp/seminar_src/official_drawer.mp4"}]},
+  {"label": "自作デモ（スクリプト制御）", "color": "#2c6fbb",
+   "videos": [{"caption": "自作デモ", "result": "成功", "path": "tmp/seminar_src/new_check/videos/task2_episode_0.mp4"}]}
+ ]
+}
