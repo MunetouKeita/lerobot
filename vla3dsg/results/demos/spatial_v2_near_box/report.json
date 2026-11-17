@@ -1,0 +1,71 @@
+{
+  "n_episodes_each": 20,
+  "stats": {
+    "official (libero_spatial/pick_up_the_black_bowl_next_to_the_cookie_box_and_place_it_on_the_plate)": {
+      "steps": 127.3,
+      "move_abs_mean": [
+        0.344,
+        0.219,
+        0.373
+      ],
+      "move_saturated_frac": [
+        0.156,
+        0.0,
+        0.028
+      ],
+      "rot_abs_mean": [
+        0.023,
+        0.05,
+        0.031
+      ],
+      "stalled_frac": 0.031,
+      "grip_closes": 1.05,
+      "first_close_step": 50.25,
+      "yaw_at_close_deg": -1.845
+    },
+    "generated (task 4)": {
+      "steps": 125.5,
+      "move_abs_mean": [
+        0.35,
+        0.245,
+        0.413
+      ],
+      "move_saturated_frac": [
+        0.206,
+        0.144,
+        0.218
+      ],
+      "rot_abs_mean": [
+        0.016,
+        0.044,
+        0.014
+      ],
+      "stalled_frac": 0.038,
+      "grip_closes": 1.0,
+      "first_close_step": 55.25,
+      "yaw_at_close_deg": -0.075
+    },
+    "generated (task 5)": {
+      "steps": 115.85,
+      "move_abs_mean": [
+        0.374,
+        0.369,
+        0.396
+      ],
+      "move_saturated_frac": [
+        0.066,
+        0.077,
+        0.217
+      ],
+      "rot_abs_mean": [
+        0.018,
+        0.04,
+        0.013
+      ],
+      "stalled_frac": 0.078,
+      "grip_closes": 1.0,
+      "first_close_step": 30.95,
+      "yaw_at_close_deg": 0.49
+    }
+  }
+}

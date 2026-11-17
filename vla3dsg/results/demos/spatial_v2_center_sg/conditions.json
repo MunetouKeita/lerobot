@@ -1,0 +1,13 @@
+{
+  "src": "spatial_v2_center",
+  "condition": "norel_short",
+  "n_episodes": 60,
+  "n_tasks": 2,
+  "sg_matches_generation": "60/60",
+  "max_tokens": 39,
+  "git": {
+    "commit": "387306b9cb5659cd5b0c7f82b111fde4b8df1ea0",
+    "upstream_base": "200ee53596d464bd28f6595cdb31be69a2b5e379",
+    "dirty": true
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "dataset": "vla3dsg/data/spatial_v2_center",
+  "n_episodes": 60,
+  "n_frames": 6585,
+  "elapsed_s": 443,
+  "per_task": [
+    {
+      "task_id": 0,
+      "task": "pick up the black bowl from table center and place it on the plate",
+      "n_episodes": 30,
+      "n_trials": 37,
+      "rejected_placement": 7,
+      "failed": 0,
+      "too_long": 0,
+      "steps_min": 94,
+      "steps_max": 126,
+      "n_frames": 3104
+    },
+    {
+      "task_id": 1,
+      "task": "pick up the black bowl next to the plate and place it on the plate",
+      "n_episodes": 30,
+      "n_trials": 37,
+      "rejected_placement": 7,
+      "failed": 0,
+      "too_long": 0,
+      "steps_min": 105,
+      "steps_max": 140,
+      "n_frames": 3481
+    }
+  ]
+}

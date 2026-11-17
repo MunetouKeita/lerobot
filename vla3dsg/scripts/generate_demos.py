@@ -41,6 +41,7 @@ settings.apply_runtime_env()
 import imageio  # noqa: E402
 import numpy as np  # noqa: E402
 import torch  # noqa: E402
+from scipy.spatial.transform import Rotation  # noqa: E402
 from libero.libero.envs import OffScreenRenderEnv  # noqa: E402
 
 from lerobot.datasets.lerobot_dataset import LeRobotDataset  # noqa: E402
@@ -94,6 +95,8 @@ def run_scripted(env: OffScreenRenderEnv, obs: dict, demo: dict, rng: np.random.
         lo, hi = ranges
         angle = float(rng.uniform(lo, hi)) if rng is not None else (lo + hi) / 2
         offset, yaw = rim_grasp(angle)
+        # 手先の向きを指定したタスクは、縁の向きに合わせて回さない（公式デモはほとんど回さずに掴む）
+        yaw = demo.get("grasp_yaw_deg", yaw)
     result = pick_and_place(
         env, obs, demo["target"], demo["dest"], demo["via"], grasp_offset=offset, grasp_yaw_deg=yaw, rng=rng, on_step=on_step,
         dest_site=demo.get("dest_site"),
@@ -264,6 +267,13 @@ def action_stats(actions: np.ndarray, states: np.ndarray) -> dict:
         "move_saturated_frac": (np.abs(actions[:, :3]) > 0.9).mean(0).round(3).tolist(),
         "rot_abs_mean": np.abs(actions[:, 3:6]).mean(0).round(3).tolist(),
         "stalled_frac": round(float((moved < settings.DEMO_REPORT_STALL_MOVE).mean()), 3),  # 手先がほぼ動かないステップの割合
+        # グリッパーを閉じる指令の回数（1 回なら掴み直しなし）と、最初に閉じるまでのステップ数
+        "grip_closes": int(((closed := actions[:, 6] > 0)[1:] & ~closed[:-1]).sum() + closed[0]),
+        "first_close_step": int(np.argmax(closed)) if closed.any() else -1,
+        # 最初に閉じた時点の手先の鉛直軸まわりの回転（度、初期の向きから）
+        "yaw_at_close_deg": round(float(np.degrees(
+            (Rotation.from_rotvec(states[0, 3:6]).inv() * Rotation.from_rotvec(states[int(np.argmax(closed)), 3:6])).as_euler("xyz")[2]
+        )), 1),
     }
 
 

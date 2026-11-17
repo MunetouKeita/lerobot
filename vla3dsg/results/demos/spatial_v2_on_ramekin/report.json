@@ -1,0 +1,71 @@
+{
+  "n_episodes_each": 20,
+  "stats": {
+    "official (libero_spatial/pick_up_the_black_bowl_on_the_ramekin_and_place_it_on_the_plate)": {
+      "steps": 114.3,
+      "move_abs_mean": [
+        0.411,
+        0.169,
+        0.451
+      ],
+      "move_saturated_frac": [
+        0.072,
+        0.0,
+        0.105
+      ],
+      "rot_abs_mean": [
+        0.023,
+        0.057,
+        0.061
+      ],
+      "stalled_frac": 0.03,
+      "grip_closes": 1.1,
+      "first_close_step": 33.45,
+      "yaw_at_close_deg": 10.345
+    },
+    "generated (task 8)": {
+      "steps": 114.85,
+      "move_abs_mean": [
+        0.317,
+        0.192,
+        0.392
+      ],
+      "move_saturated_frac": [
+        0.193,
+        0.071,
+        0.204
+      ],
+      "rot_abs_mean": [
+        0.015,
+        0.028,
+        0.014
+      ],
+      "stalled_frac": 0.072,
+      "grip_closes": 1.0,
+      "first_close_step": 41.45,
+      "yaw_at_close_deg": -0.46
+    },
+    "generated (task 9)": {
+      "steps": 129.65,
+      "move_abs_mean": [
+        0.33,
+        0.211,
+        0.412
+      ],
+      "move_saturated_frac": [
+        0.163,
+        0.083,
+        0.211
+      ],
+      "rot_abs_mean": [
+        0.016,
+        0.054,
+        0.014
+      ],
+      "stalled_frac": 0.055,
+      "grip_closes": 1.0,
+      "first_close_step": 63.15,
+      "yaw_at_close_deg": 0.24
+    }
+  }
+}

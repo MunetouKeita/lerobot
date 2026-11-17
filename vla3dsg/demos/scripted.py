@@ -74,12 +74,16 @@ class Runner:
         self.prev = cmd
         self.step(np.r_[cmd, grip])
 
-    def go(self, target: np.ndarray, grip: float, max_steps: int = 150, max_speed: float = settings.SCRIPTED_SPEED) -> None:
+    def go(
+        self, target: np.ndarray, grip: float, max_steps: int = 150, max_speed: float = settings.SCRIPTED_SPEED,
+        tol: float = settings.SCRIPTED_TOL,
+    ) -> None:
+        """target へ動かす。途中の点（tol を大きくする）では止まらずに次へ進み、通り過ぎる動きにする。"""
         history: deque[np.ndarray] = deque(maxlen=settings.SCRIPTED_STALL_STEPS + 1)
         for _ in range(max_steps):
             pos = self.obs["robot0_eef_pos"]
             err = target - pos
-            if self.done or self.steps >= settings.SCRIPTED_MAX_STEPS or np.linalg.norm(err) < settings.SCRIPTED_TOL:
+            if self.done or self.steps >= settings.SCRIPTED_MAX_STEPS or np.linalg.norm(err) < tol:
                 return
             history.append(pos.copy())
             # 目標に届かないまま止まった（物体に当たっている）ら、押し続けずに次の動作へ進む
@@ -138,13 +142,14 @@ def pick_and_place(
     grasp = start + np.array(grasp_offset) + np.r_[jitter(settings.DEMO_GRASP_JITTER, 2), 0]
     # まず今の高さのまま対象の真上へ動き、それから下ろす（斜めに下りると、背の高い固定物の角に当たることがある）
     above = grasp + [0, 0, approach_dz]
-    r.go(np.r_[above[:2], max(above[2], r.obs["robot0_eef_pos"][2])], OPEN, max_speed=speed)
-    r.go(above, OPEN, max_speed=speed)
+    passing = settings.SCRIPTED_PASS_TOL  # 途中の点では止まらない
+    r.go(np.r_[above[:2], max(above[2], r.obs["robot0_eef_pos"][2])], OPEN, max_speed=speed, tol=passing)
+    r.go(above, OPEN, max_speed=speed, tol=passing)
     # 掴む直前（最後の SCRIPTED_SLOW_DZ）だけ、止まったときに勢いが残らないようにゆっくり下ろす
     r.go(grasp + [0, 0, settings.SCRIPTED_SLOW_DZ], OPEN, max_speed=speed)
     r.go(grasp, OPEN, max_speed=slow)
-    r.hold(CLOSE, 15)
-    r.go(grasp + [0, 0, lift_dz], CLOSE, max_speed=speed)
+    r.hold(CLOSE, settings.SCRIPTED_GRASP_HOLD)
+    r.go(grasp + [0, 0, lift_dz], CLOSE, max_speed=speed, tol=passing)
     lifted = float(body_pos(env, target)[2] - start[2])
     offset = (r.obs["robot0_eef_pos"] - body_pos(env, target))[:2]  # 掴んだ後の手先と対象のずれ
     d = body_pos(env, dest) if dest_site is None else site_pos(env, dest_site)
@@ -153,19 +158,19 @@ def pick_and_place(
     carry_z = grasp[2] + lift_dz if dest_site is None else max(grasp[2] + lift_dz, place_z + approach_dz)
     if dest_site is not None:
         # 台の上へ置くときは、まずその場で運ぶ高さまで上げる（斜めに上がると台の角に当たる）
-        r.go(np.r_[r.obs["robot0_eef_pos"][:2], carry_z], CLOSE, max_speed=speed)
+        r.go(np.r_[r.obs["robot0_eef_pos"][:2], carry_z], CLOSE, max_speed=speed, tol=passing)
     if not via and rng is not None and rng.random() < settings.DEMO_EXTRA_VIA_PROB:
         # まっすぐ運ぶ経路の中点を横へずらした経由点を通る（回り込む経路）
         line = d[:2] + offset - r.obs["robot0_eef_pos"][:2]
         side = np.array([-line[1], line[0]]) / (np.linalg.norm(line) + 1e-9)
         mid = r.obs["robot0_eef_pos"][:2] + line / 2 + side * rng.uniform(-settings.DEMO_EXTRA_VIA_SIDE, settings.DEMO_EXTRA_VIA_SIDE)
-        r.go(np.r_[mid, carry_z], CLOSE, max_speed=speed)
+        r.go(np.r_[mid, carry_z], CLOSE, max_speed=speed, tol=passing)
     for x, y in via:
-        r.go(np.r_[np.array([x, y]) + jitter(settings.DEMO_VIA_JITTER, 2), max(grasp[2] + via_dz, carry_z)], CLOSE, max_speed=speed)
-    r.go(np.r_[d[:2] + offset, carry_z], CLOSE, max_speed=speed)
+        r.go(np.r_[np.array([x, y]) + jitter(settings.DEMO_VIA_JITTER, 2), max(grasp[2] + via_dz, carry_z)], CLOSE, max_speed=speed, tol=passing)
+    r.go(np.r_[d[:2] + offset, carry_z], CLOSE, max_speed=speed, tol=passing)
     r.go(np.r_[d[:2] + offset, place_z + settings.SCRIPTED_RELEASE_DZ + settings.SCRIPTED_SLOW_DZ], CLOSE, max_speed=speed)
     r.go(np.r_[d[:2] + offset, place_z + settings.SCRIPTED_RELEASE_DZ], CLOSE, max_speed=slow)
-    r.hold(OPEN, 15)
+    r.hold(OPEN, settings.SCRIPTED_RELEASE_HOLD)
     r.go(np.r_[d[:2], max(grasp[2] + via_dz, carry_z)], OPEN, max_steps=30, max_speed=speed)
     r.hold(OPEN, 20)
     return {

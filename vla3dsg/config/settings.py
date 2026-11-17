@@ -62,15 +62,20 @@ ENV_CREATE_RETRIES = 5  # 環境を作るときの配置のサンプリングが
 CUSTOM_TASK_VIS_MAX_POINTS = 400  # 見え方を測るときに使う対象物体の表面の点の数（メッシュの頂点を間引く）
 
 # スクリプト制御による pick-and-place（demos/scripted.py）。正解の位置へ手先を動かす
-SCRIPTED_GAIN = 25.0  # 手先の位置の誤差（m）に掛けて、移動量の指令（-1〜1）にする
-SCRIPTED_SPEED = 0.8  # 移動の指令の大きさ（3 軸まとめたベクトルの長さ）の上限
-SCRIPTED_SLOW_SPEED = 0.3  # 掴む・置く直前に下ろすときの速さの上限
+# 2026-11-13 に公式デモの速さ・止まり方に近づけた（GAIN 25・SPEED 0.8・SLOW 0.3・ACCEL 0.1・STALL_STEPS 10・PASS_TOL 0.01・
+# 掴む／放す後の待ち 15・15・DEMO_EXTRA_VIA_PROB 0.5・DEMO_SPEED_RANGE (0.7, 1.0) から変更。それ以前のデモはこの古い値。比較は experiments.md 5-2）
+SCRIPTED_GAIN = 40.0  # 手先の位置の誤差（m）に掛けて、移動量の指令（-1〜1）にする
+SCRIPTED_SPEED = 1.3  # 移動の指令の大きさ（3 軸まとめたベクトルの長さ）の上限
+SCRIPTED_SLOW_SPEED = 0.5  # 掴む・置く直前に下ろすときの速さの上限
 SCRIPTED_SLOW_DZ = 0.03  # m。掴む・置く高さのこれだけ上から、ゆっくり下ろす
-SCRIPTED_ACCEL = 0.1  # 移動・回転の指令の 1 ステップあたりの変化量の上限（加速・減速をなめらかにする）
+SCRIPTED_ACCEL = 0.15  # 移動・回転の指令の 1 ステップあたりの変化量の上限（加速・減速をなめらかにする）
 SCRIPTED_ROT_GAIN = 1.0  # 手先の向きの初期からのずれ（回転ベクトル、rad）に掛けて、回転の指令にする
-SCRIPTED_STALL_STEPS = 10  # このステップ数の間に
+SCRIPTED_STALL_STEPS = 5  # このステップ数の間に
 SCRIPTED_STALL_MOVE = 0.002  # m。手先がこれだけしか動かなければ、止まった（物体に当たっている）とみなして次の動作へ進む
 SCRIPTED_TOL = 0.01  # m。各経由点にこれより近づいたら次へ進む
+SCRIPTED_PASS_TOL = 0.04  # m。途中の点（真上・持ち上げ・運ぶ途中）で次へ進む距離。大きくすると止まらずに通り過ぎる
+SCRIPTED_GRASP_HOLD = 10  # 閉じる指令を出してから持ち上げるまでのステップ数
+SCRIPTED_RELEASE_HOLD = 5  # 放す指令を出してから手先を上げるまでのステップ数
 SCRIPTED_GRASP_OFFSET = (-0.04, 0.0, 0.01)  # m。ボウルの中心から見た掴む点（ロボット側の縁）
 SCRIPTED_APPROACH_DZ = 0.12  # m。掴む点の上のこの高さから下ろす
 SCRIPTED_LIFT_DZ = 0.15  # m。掴んだ後に持ち上げる高さ
@@ -91,9 +96,9 @@ DEMO_MOVE_NOISE = 0.02  # 移動の指令に加える揺らぎ（1 ステップ�
 DEMO_ROT_NOISE = 0.01  # 回転の指令に加える揺らぎ
 # 経路のばらつき（rng を渡したとき、デモごとに決める）
 DEMO_HEIGHT_JITTER = 0.03  # m。近づく高さ・持ち上げる（運ぶ）高さ・経由点の高さを、それぞれ ± この範囲で変える
-DEMO_EXTRA_VIA_PROB = 0.5  # 掴んだ所から置き場所までの途中に、経由点を 1 つ足す確率（タスクに経由点がない場合）
+DEMO_EXTRA_VIA_PROB = 0.0  # 掴んだ所から置き場所までの途中に、経由点を 1 つ足す確率（タスクに経由点がない場合）
 DEMO_EXTRA_VIA_SIDE = 0.08  # m。足す経由点を、まっすぐな経路の中点から横へずらす幅（±）
-DEMO_SPEED_RANGE = (0.7, 1.0)  # 速さの上限（SCRIPTED_SPEED・SCRIPTED_SLOW_SPEED）に掛ける倍率の範囲
+DEMO_SPEED_RANGE = (0.85, 1.0)  # 速さの上限（SCRIPTED_SPEED・SCRIPTED_SLOW_SPEED）に掛ける倍率の範囲
 SCRIPTED_RIM_RADIUS = 0.04  # m。ボウルの中心から縁を掴む点までの水平距離（grasp_angles で掴む点を決めるとき）
 SCRIPTED_RIM_DZ = 0.01  # m。縁を掴む点の、ボウルの中心からの高さ
 DEMO_OFFICIAL_DATASET = "lerobot/libero"  # 比べる公式デモ（generate_demos.py --report）
@@ -107,6 +112,7 @@ DEMO_NOISE_THETA = 0.1  # 揺らぎが 0 に戻る速さ（オルンシュタイ
 # 指が縁の壁を挟むようにする（回さないと片方の指が縁に乗って下りられず、押し続ける）
 # grasp_angles: 縁を掴む向きの範囲（度。ボウルの中心から見て 0 = 手前（+x）、90 = 左（+y）、180 = ロボット側）。指定すると、
 # 掴む点と手先の向きを grasp_offset・grasp_yaw_deg の代わりにこの角度から決める（rng を渡すと範囲内でランダム、渡さないと中央）
+# grasp_angles と grasp_yaw_deg を両方指定すると、掴む点は角度から決め、手先の向きは grasp_yaw_deg にする（縁の向きに合わせて回さない）
 DEMO_TASK_SPECS = {
     # libero_goal の put the bowl on the plate を元にしたスイート
     "vla3dsg_goal": {
@@ -137,12 +143,15 @@ DEMO_TASK_SPECS = {
         2: {"target": "akita_black_bowl_1", "dest": "white_cabinet_1", "dest_site": "white_cabinet_1_top_side", "via": [], "grasp_angles": (-30.0, 30.0)},
     },
     # 段階 1（5 節）: libero_spatial の 5 配置。偶数の task は公式と同じボウル 1、奇数の task はもう一方のボウル 2 を皿に置く
+    # 掴む向きは公式デモに合わせ、手先をほとんど回さずに縁を掴む（公式デモの閉じた時点の手先の位置と向きから。
+    # 公式は多くが左の縁（約 90°）を回さずに掴み、引き出しは約 140° を約 25° 回して、ラメキンの上は約 -30° を掴む。2026-11-13）
     "vla3dsg_spatial": {
         k: {
             "target": f"akita_black_bowl_{k % 2 + 1}",
             "dest": "plate_1",
             "via": [],
-            "grasp_angles": (-30.0, 30.0),
+            "grasp_angles": {0: (70.0, 110.0), 2: (125.0, 155.0), 4: (75.0, 115.0), 6: (75.0, 105.0), 8: (-45.0, -10.0)}.get(k, (75.0, 105.0)),
+            "grasp_yaw_deg": 25.0 if k == 2 else 0.0,
             # ラメキンの上のボウルは、置いた直後に必ず約 3.7cm 滑って落ち着く（公式の初期状態も滑った後の位置）。配置の判定の上限を広げる
             **({"max_settle_move": 0.05} if k in (8, 9) else {}),
         }

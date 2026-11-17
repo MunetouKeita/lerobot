@@ -1,0 +1,71 @@
+{
+  "n_episodes_each": 20,
+  "stats": {
+    "official (libero_spatial/pick_up_the_black_bowl_from_table_center_and_place_it_on_the_plate)": {
+      "steps": 115.75,
+      "move_abs_mean": [
+        0.29,
+        0.186,
+        0.422
+      ],
+      "move_saturated_frac": [
+        0.016,
+        0.0,
+        0.047
+      ],
+      "rot_abs_mean": [
+        0.015,
+        0.045,
+        0.026
+      ],
+      "stalled_frac": 0.063,
+      "grip_closes": 1.0,
+      "first_close_step": 41.5,
+      "yaw_at_close_deg": 2.685
+    },
+    "generated (task 0)": {
+      "steps": 103.35,
+      "move_abs_mean": [
+        0.36,
+        0.233,
+        0.454
+      ],
+      "move_saturated_frac": [
+        0.086,
+        0.083,
+        0.267
+      ],
+      "rot_abs_mean": [
+        0.017,
+        0.034,
+        0.013
+      ],
+      "stalled_frac": 0.028,
+      "grip_closes": 1.0,
+      "first_close_step": 41.3,
+      "yaw_at_close_deg": -0.01
+    },
+    "generated (task 1)": {
+      "steps": 113.7,
+      "move_abs_mean": [
+        0.276,
+        0.406,
+        0.454
+      ],
+      "move_saturated_frac": [
+        0.0,
+        0.242,
+        0.286
+      ],
+      "rot_abs_mean": [
+        0.025,
+        0.041,
+        0.013
+      ],
+      "stalled_frac": 0.054,
+      "grip_closes": 1.0,
+      "first_close_step": 63.15,
+      "yaw_at_close_deg": 0.11
+    }
+  }
+}

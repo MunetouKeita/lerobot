@@ -1,0 +1,32 @@
+{
+  "dataset": "vla3dsg/data/spatial_v2_drawer",
+  "n_episodes": 60,
+  "n_frames": 8910,
+  "elapsed_s": 511,
+  "per_task": [
+    {
+      "task_id": 2,
+      "task": "pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate",
+      "n_episodes": 30,
+      "n_trials": 33,
+      "rejected_placement": 0,
+      "failed": 3,
+      "too_long": 0,
+      "steps_min": 124,
+      "steps_max": 177,
+      "n_frames": 4408
+    },
+    {
+      "task_id": 3,
+      "task": "pick up the black bowl on the wooden cabinet and place it on the plate",
+      "n_episodes": 30,
+      "n_trials": 31,
+      "rejected_placement": 0,
+      "failed": 1,
+      "too_long": 0,
+      "steps_min": 133,
+      "steps_max": 177,
+      "n_frames": 4502
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "n_episodes_each": 20,
+  "stats": {
+    "official (libero_spatial/pick_up_the_black_bowl_in_the_top_drawer_of_the_wooden_cabinet_and_place_it_on_the_plate)": {
+      "steps": 147.1,
+      "move_abs_mean": [
+        0.315,
+        0.277,
+        0.443
+      ],
+      "move_saturated_frac": [
+        0.04,
+        0.002,
+        0.1
+      ],
+      "rot_abs_mean": [
+        0.018,
+        0.046,
+        0.063
+      ],
+      "stalled_frac": 0.029,
+      "grip_closes": 1.1,
+      "first_close_step": 50.95,
+      "yaw_at_close_deg": -25.43
+    },
+    "generated (task 2)": {
+      "steps": 147.15,
+      "move_abs_mean": [
+        0.292,
+        0.311,
+        0.332
+      ],
+      "move_saturated_frac": [
+        0.146,
+        0.164,
+        0.093
+      ],
+      "rot_abs_mean": [
+        0.018,
+        0.048,
+        0.037
+      ],
+      "stalled_frac": 0.152,
+      "grip_closes": 1.0,
+      "first_close_step": 66.5,
+      "yaw_at_close_deg": -24.76
+    },
+    "generated (task 3)": {
+      "steps": 153.5,
+      "move_abs_mean": [
+        0.244,
+        0.454,
+        0.342
+      ],
+      "move_saturated_frac": [
+        0.029,
+        0.254,
+        0.104
+      ],
+      "rot_abs_mean": [
+        0.023,
+        0.048,
+        0.014
+      ],
+      "stalled_frac": 0.085,
+      "grip_closes": 1.0,
+      "first_close_step": 59.6,
+      "yaw_at_close_deg": -0.34
+    }
+  }
+}
