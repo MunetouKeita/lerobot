@@ -26,8 +26,8 @@ eval_one() {  # eval_one <結果の名前> <プロンプト条件> <policy-path 
 }
 evaluate() {  # evaluate <結果の名前> <プロンプト条件> <policy-path>
   eval_one $1/train_scenes $2 $3 vla3dsg_goal_train 0 1 2 3  # 学習用シーンの評価用の初期状態（学習のデモとは別の配置）
-  eval_one $1/goal $2 $3 vla3dsg_goal 0 1 2 3  # 2-2 と同じ 4 シーン
-  eval_one $1/layout_far $2 $3 vla3dsg_goal_layout 1 2 5  # 2-3 の遠いボウル（4-1 と比べる）
+  eval_one $1/goal $2 $3 vla3dsg_goal 0 1 2 3  # 2-1 と同じ 4 シーン
+  eval_one $1/layout_far $2 $3 vla3dsg_goal_layout 1 2 5  # 2-2 の遠いボウル（4-1 と比べる）
 }
 NORM=$(ls ~/.cache/huggingface/hub/models--allenai--MolmoAct2-LIBERO/snapshots/*/norm_stats.json | head -1)
 train() {  # train <モデル名> <データセット名> <追加の引数...>: 有効バッチ 32（8 × 勾配累積 4）、12,000 ステップ ＝ 更新 3,000 回

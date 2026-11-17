@@ -105,7 +105,7 @@ uv run python vla3dsg/scripts/run_eval.py --name baseline/xxx --suite libero_spa
 uv run python vla3dsg/scripts/run_eval.py --name zeroshot/hidden/base_short --suite vla3dsg_goal --task-ids 2 --n-episodes 20 --prompt-condition base_short --annotated-video   # プロンプト条件（settings.PROMPT_CONDITIONS）
 uv run python vla3dsg/scripts/make_custom_task.py --suite vla3dsg_goal --name <タスク名> --base libero_goal/put_the_bowl_on_the_plate --language "<指示文>" --region <領域名>=x0,y0,x1,y1 --target <物体> --occluder <遮る物体>   # 自作タスク（--preview・--remove-object・--add-object・--copy-init・--min-distance は先頭の説明）
 uv run python vla3dsg/scripts/generate_demos.py --name <名前> --suite vla3dsg_goal_train --task-ids 0 1 2 3 --n-episodes 50   # デモの自動生成（設定は settings.DEMO_TASK_SPECS）
-uv run python vla3dsg/scripts/summarize_results.py --root zeroshot --scenes standard shuffle hidden hidden_decoy --names base base_short base_full base_wrong sg_command   # シーン × 条件の比較表
+uv run python vla3dsg/scripts/summarize_results.py --root zeroshot --scenes standard shuffle hidden hidden_decoy --names base base_short base_wrong   # シーン × 条件の比較表
 uv run python vla3dsg/scripts/show_conditions.py --suite vla3dsg_goal --out zeroshot/conditions   # 評価前の確認資料
 uv run python vla3dsg/scripts/make_demo_video.py --name baseline/xxx --keep-failures-only   # デモ動画と失敗動画だけを残す
 pre-commit run --all-files                          # Lint・フォーマット（ruff、typos、bandit など）

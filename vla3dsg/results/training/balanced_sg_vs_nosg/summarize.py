@@ -13,11 +13,11 @@ PREV = RESULTS / "training/sg_vs_nosg"  # 4-2（学習前の学習用シーン�
 ROWS = [
     *[("学習用シーン", name, "train_scenes", i, BEFORE_41 if i in (0, 3) else PREV / "before/train_scenes_base", PREV / "before/train_scenes_sg")
       for i, name in enumerate(["ボウル1個,ボウルランダム", "ボウル1個,隠れ（学習用）", "ボウル2個,見えるボウル=ランダム,隠れた方が正解", "ボウル2個,見えるボウル=ランダム,見える方が正解"])],
-    *[("2-2 の 4 シーン", name, "goal", i, ZEROSHOT / key / "base", ZEROSHOT / key / "base_short")
+    *[("2-1 の 4 シーン", name, "goal", i, ZEROSHOT / key / "base", ZEROSHOT / key / "base_short")
       for i, (key, name) in enumerate([("standard", "ボウル1個,標準位置"), ("shuffle", "ボウル1個,4物体シャッフル"), ("hidden", "ボウル1個,隠れ（評価用）"), ("hidden_decoy", "ボウル2個,見えるボウル=標準位置,隠れた方が正解")])],
     # ボウル2個,見えるボウル=標準位置,隠れた方が正解と対になるシーン（vla3dsg_goal の task 4）
     ("標準の位置のボウル＋裏のおとり", "ボウル2個,見えるボウル=標準位置,見える方が正解", "goal_visible_decoy", 4, ZEROSHOT / "visible_decoy" / "base", None),
-    *[("2-3 の遠いボウル", name, "layout_far", i, ZEROSHOT / "layout_check" / key / "base", None)
+    *[("2-2 の遠いボウル", name, "layout_far", i, ZEROSHOT / "layout_check" / key / "base", None)
       for i, key, name in [(1, "bowl_shuffle", "ボウル1個,手前左（固定）"), (2, "bowl_far", "ボウル1個,遠く"), (5, "bowl_far_apart", "ボウル1個,遠く・皿から離す")]],
 ]
 COLUMNS = ["学習前", "学習前 SG あり", "4-2 SG なし 3,000 回", "4-2 SG あり 3,000 回", "SG なし 1,000 回", "SG なし 3,000 回",

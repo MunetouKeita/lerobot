@@ -23,8 +23,8 @@ eval_one() {  # eval_one <結果の名前> <プロンプト条件> <policy-path 
 }
 evaluate() {  # evaluate <結果の名前> <プロンプト条件> <policy-path>
   eval_one $1/train_scenes $2 $3 vla3dsg_goal_train 0 1 2 3  # 学習用シーンの評価用の初期状態（学習のデモとは別の配置）
-  eval_one $1/goal $2 $3 vla3dsg_goal 0 1 2 3  # 2-2 と同じ 4 シーン
-  eval_one $1/layout_far $2 $3 vla3dsg_goal_layout 1 2 5  # 2-3 の遠いボウル（4-1 と比べる）
+  eval_one $1/goal $2 $3 vla3dsg_goal 0 1 2 3  # 2-1 と同じ 4 シーン
+  eval_one $1/layout_far $2 $3 vla3dsg_goal_layout 1 2 5  # 2-2 の遠いボウル（4-1 と比べる）
 }
 NORM=$(ls ~/.cache/huggingface/hub/models--allenai--MolmoAct2-LIBERO/snapshots/*/norm_stats.json | head -1)
 train() {  # train <モデル名> <データセット名> <追加の引数...>: 有効バッチ 32（8 × 勾配累積 4）、12,000 ステップ ＝ 更新 3,000 回
@@ -55,7 +55,7 @@ train() {  # train <モデル名> <データセット名> <追加の引数...>: 
 declare -A COND=([nosg]=base [sg]=base_short)
 
 log "BEGIN（git $(git rev-parse --short HEAD)）"
-# 学習前: 学習用シーンの公式の指示文（task 0・3 は 4-1 の before にある）と SG あり。2-2・2-3 の 4 シーン・遠いボウルは zeroshot/ にある
+# 学習前: 学習用シーンの公式の指示文（task 0・3 は 4-1 の before にある）と SG あり。2-1・2-2 の 4 シーン・遠いボウルは zeroshot/ にある
 eval_one training/$EXP/before/train_scenes_base base base vla3dsg_goal_train 1 2
 eval_one training/$EXP/before/train_scenes_sg base_short base vla3dsg_goal_train 0 1 2 3
 # SG あり: 指示文は make_sg_dataset.py で正規化済みのため、学習でも正規化を切る（評価と同じ）
