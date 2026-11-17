@@ -1,60 +1,7 @@
-"""SG のテキスト化（三つ組・JSON・自然文の列と、場所を書いた指示文）。"""
-
-import json
+"""SG のテキスト化（三つ組の列）。"""
 
 from vla3dsg.scene_graph.builder import SceneGraph
 
 
 def to_triples(sg: SceneGraph) -> str:
     return "; ".join("(" + ", ".join(r) + ")" for r in sg.relations)
-
-
-def to_json(sg: SceneGraph) -> str:
-    """関係の列を JSON にする（三つ組と同じ情報。例: [{"subject": "black bowl", "relation": "behind", "object": "wine rack"}]）。"""
-    return json.dumps([{"subject": s, "relation": r, "object": o} for s, r, o in sg.relations])
-
-
-def to_sentences(sg: SceneGraph) -> str:
-    """関係の列を自然文にする（三つ組と同じ情報。例: "the black bowl is behind the wine rack."）。"""
-    return " ".join(f"the {s} is {_PLACE_PHRASES[r].format(o=o)}." for s, r, o in sg.relations)
-
-
-FORMATS = {"triples": to_triples, "json": to_json, "nl": to_sentences}
-
-
-# 関係を、指示文の中の場所の言い方にする（"the black bowl behind the wooden cabinet" の "behind the wooden cabinet"）
-_PLACE_PHRASES = {
-    "on": "on the {o}",
-    "in": "in the {o}",
-    "behind": "behind the {o}",
-    "in front of": "in front of the {o}",
-    "left of": "to the left of the {o}",
-    "right of": "to the right of the {o}",
-    "next to": "next to the {o}",
-}
-
-
-def to_instruction(sg: SceneGraph) -> str:
-    """掴む対象の小さな SG（relevant.build_relevant_scene_graph）から、場所を書いた指示文を作る。
-
-    LIBERO の公式の指示文（"put the bowl on the plate"）と同じ形にする。
-    例: (black bowl 1, behind, wine rack) → "put the black bowl behind the wine rack on the plate"。
-    場所で対象を特定するため、名前の番号（"black bowl 1" の 1）は付けない。
-    """
-    return f"put the {target_name(sg)} {place_phrase(sg)} on the plate"
-
-
-def target_name(sg: SceneGraph) -> str:
-    """対象の名前から番号を除いたもの（"black bowl 1" → "black bowl"）。"""
-    return " ".join(w for w in sg.target.split() if not w.isdigit())
-
-
-def place_phrase(sg: SceneGraph) -> str:
-    """小さな SG の関係を、指示文の中の場所の言い方にする（例: "on the cookie box"、2 本なら and でつなぐ）。"""
-    # 領域の名前（例: "top drawer of wooden cabinet"）は、指示文では "of the" にする
-    return " and ".join(_PLACE_PHRASES[r[1]].format(o=r[2].replace(" of ", " of the ")) for r in sg.relations)
-
-
-
-
-

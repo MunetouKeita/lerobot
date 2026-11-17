@@ -62,7 +62,11 @@ def main() -> None:
         target_id = next(i for i in e.obj_of_interest if i in e.objects_dict)
         title = f"task {task_id}: {settings.SCENE_LABELS.get(task['name'], task['name'])}"
         md += [f"## {title}", "", f"対象: {sg.target}（scenes.png の赤丸）", "", "| 条件 | 指示文 |", "|---|---|"]
-        md += [f"| {k} | {compose_prompt(task['language'], k, sg, e)} |" for k in settings.PROMPT_CONDITIONS]
+        for k in settings.PROMPT_CONDITIONS:
+            try:
+                md.append(f"| {k} | {compose_prompt(task['language'], k, e)} |")
+            except ValueError:  # norel 系は位置関係を書いた指示文（vla3dsg_spatial）専用
+                continue
         md.append("")
 
         tiles = []

@@ -50,7 +50,7 @@ def make_prompts(episodes: list[dict], condition: str) -> list[dict]:
         env.set_init_state(state)
         settle(env)
         sg = build_scene_graph(env.env)
-        prompt = compose_prompt(e["task"], condition, sg, env.env)
+        prompt = compose_prompt(e["task"], condition, env.env)
         out.append(
             {"episode_index": e["episode_index"], "task_id": e["task_id"], "prompt": prompt, "n_tokens": count_tokens(prompt),
              "sg_matches": sg.to_dict() == e["scene_graph"]}

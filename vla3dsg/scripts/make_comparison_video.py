@@ -10,7 +10,7 @@
 
     {"out": "results/seminar/2026-10-15/videos/exp1.mp4", "title": "...", "crop": "agentview",
      "groups": [{"label": "SG なし", "color": "#555555",
-                 "videos": [{"caption": "SG から作った指示文", "result": "成功", "path": "results/zeroshot/shuffle/sg_command/videos/.../eval_episode_4.mp4"}]}]}
+                 "videos": [{"caption": "＋SG", "result": "成功", "path": "results/zeroshot/shuffle/base_short/videos/.../eval_episode_4.mp4"}]}]}
 
 crop が "agentview" のとき、run_eval.py の動画（左が agentview、右が手首カメラ）の左半分だけを使い、上端に焼き込まれた
 カメラ名を切り落とす。"left" のときは、左半分だけを使う（カメラ名のない動画。例: generate_demos.py --check の動画）。

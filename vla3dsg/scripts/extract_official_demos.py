@@ -30,7 +30,6 @@ from lerobot.datasets.lerobot_dataset import LeRobotDataset  # noqa: E402
 from vla3dsg.demos.scripted import settle  # noqa: E402
 from vla3dsg.envs.custom_task_builder import sample_init_state  # noqa: E402
 from vla3dsg.prompting.prompt_condition import compose_prompt  # noqa: E402
-from vla3dsg.scene_graph.builder import build_scene_graph  # noqa: E402
 from vla3dsg.scripts.generate_demos import IMAGE_KEYS, features, make_env, write_json  # noqa: E402
 from vla3dsg.scripts.run_eval import git_info  # noqa: E402
 
@@ -49,7 +48,7 @@ def scene_prompt(scene: str, condition: str, n_layouts: int) -> str:
         env.reset()
         env.set_init_state(state)
         settle(env)
-        prompts.add(compose_prompt(task["language"], condition, build_scene_graph(env.env), env.env))
+        prompts.add(compose_prompt(task["language"], condition, env.env))
     env.close()
     if len(prompts) != 1:
         raise RuntimeError(f"配置によって指示文が変わる: {prompts}")

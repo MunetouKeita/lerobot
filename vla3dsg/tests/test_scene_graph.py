@@ -60,10 +60,8 @@ def main() -> None:
         instruction = inner._orig_task_description
         # norel 系は位置関係を書いた指示文（vla3dsg_spatial）専用のため、ここでは除く（下の norel の確認で見る）
         conds = [k for k in settings.PROMPT_CONDITIONS if not k.startswith("norel")]
-        prompts = {k: prompt_condition.compose_prompt(instruction, k, sg, env) for k in conds}
+        prompts = {k: prompt_condition.compose_prompt(instruction, k, env) for k in conds}
         assert prompts["base"] == instruction.lower()  # LIBERO の指示文は正規化（小文字化など）以外そのまま
-        assert prompts["sg_command"] == textify.to_instruction(relevant)
-        assert prompts["sg_command"].startswith("put the ") and prompts["sg_command"].endswith(" on the plate")
         # 手がかりに同じ種類の物体と行き先を使わない
         same = [n for n in sg.nodes if n.split()[:2] == sg.target.split()[:2]]
         assert all(r[2] not in same and r[2] != "plate" for r in relevant.relations), relevant.relations
@@ -75,9 +73,9 @@ def main() -> None:
         )
         Image.fromarray(np.ascontiguousarray(obs["pixels"]["image"][0][::-1, ::-1])).save(out_dir / f"{args.suite}_{task_id}.png")
         print(f"task {task_id}: {instruction}")
-        for k in ("base_short", "base_wrong", "sg_command"):
+        for k in ("base_short", "base_wrong"):
             print(f"  {k}: {prompts[k]}")
-        print(f"  base_full の関係の数: {len(sg.relations)}")
+        print(f"  全部の関係の数: {len(sg.relations)}")
         vec_env.close()
 
     # norel: libero_spatial の指示文から位置関係だけを外す

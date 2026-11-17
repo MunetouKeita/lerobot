@@ -19,7 +19,7 @@ from lerobot.policies.molmoact2.processor_molmoact2 import _normalize_question_t
 
 from vla3dsg.config import settings
 from vla3dsg.scene_graph import textify
-from vla3dsg.scene_graph.builder import SceneGraph, build_scene_graph
+from vla3dsg.scene_graph.builder import build_scene_graph
 from vla3dsg.scene_graph.relevant import build_relevant_scene_graph, build_wrong_scene_graph
 
 _installed = False
@@ -37,13 +37,6 @@ def count_tokens(text: str) -> int:
     return len(_tokenizer()(text, add_special_tokens=False)["input_ids"])
 
 
-def _irrelevant(n_tokens: int) -> str:
-    """シーンと無関係な文を、トークン数 n_tokens に合わせて切り出す。"""
-    ids = _tokenizer()(settings.IRRELEVANT_TEXT, add_special_tokens=False)["input_ids"]
-    ids = (ids * (n_tokens // len(ids) + 1))[:n_tokens]
-    return _tokenizer().decode(ids).strip()
-
-
 def _remove_relation(text: str) -> str:
     """指示文から対象の位置関係を外す（settings.NOREL_PATTERNS）。"""
     for pattern, repl in settings.NOREL_PATTERNS:
@@ -52,35 +45,20 @@ def _remove_relation(text: str) -> str:
     raise ValueError(f"位置関係を外す書き換えがない指示文: {text!r}（settings.NOREL_PATTERNS）")
 
 
-def compose_prompt(instruction: str, condition: str, sg: SceneGraph, env: Any) -> str:
+def compose_prompt(instruction: str, condition: str, env: Any) -> str:
     """条件に応じた指示文を返す。base は元の指示文の正規化のみ（モデルへの入力は公式の評価と同一）。
 
-    SG を加える条件では、小さな SG を作るために env（LIBERO の BDDL 環境）を使う。隠れていることは伝えない。
-    末尾の _json・_nl で SG の形式を変える（付けないと三つ組）。
+    SG を加える条件では、小さな SG（三つ組）を作るために env（LIBERO の BDDL 環境）を使う。隠れていることは伝えない。
     """
     if condition not in settings.PROMPT_CONDITIONS:
         raise ValueError(f"Unknown prompt condition {condition!r}. Expected one of {list(settings.PROMPT_CONDITIONS)}")
     base = _normalize_question_text(instruction)
-    if condition == "base":
-        return base
     if condition.startswith("norel"):
         base = _remove_relation(base)
-        if condition == "norel":
-            return base
-        if condition == "norel_command":
-            sg_small = build_relevant_scene_graph(env)
-            name = textify.target_name(sg_small)
-            if name not in base:
-                raise ValueError(f"指示文 {base!r} に対象の名前 {name!r} がない")
-            return base.replace(name, f"{name} {textify.place_phrase(sg_small)}", 1)
-        condition = "base" + condition.removeprefix("norel")
-    if condition == "sg_command":
-        return textify.to_instruction(build_relevant_scene_graph(env))
-    if condition == "base_irrelevant":
-        return f"{base}. {settings.PROMPT_SG_LABEL}: {_irrelevant(count_tokens(textify.to_triples(sg)))}"
-    kind, _, fmt = condition.partition("_")[2].partition("_")
-    given = {"short": build_relevant_scene_graph, "full": lambda _: sg, "wrong": build_wrong_scene_graph}[kind](env)
-    return f"{base}. {settings.PROMPT_SG_LABEL}: {textify.FORMATS[fmt or 'triples'](given)}"
+    if condition in ("base", "norel"):
+        return base
+    given = build_wrong_scene_graph(env) if condition == "base_wrong" else build_relevant_scene_graph(env)
+    return f"{base}. {settings.PROMPT_SG_LABEL}: {textify.to_triples(given)}"
 
 
 def install(condition: str) -> None:
@@ -99,7 +77,7 @@ def install(condition: str) -> None:
             self._orig_task_description = self.task_description
             self._prompt_episode = 0
         sg = build_scene_graph(self._env.env)
-        prompt = compose_prompt(self._orig_task_description, condition, sg, self._env.env)
+        prompt = compose_prompt(self._orig_task_description, condition, self._env.env)
         self.task_description = prompt
         self._prompt_step = 0
         self._prompt_record = {

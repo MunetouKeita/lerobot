@@ -179,23 +179,15 @@ SG_LANDMARK_OBJECTS = ("plate",)  # 固定物のほかに、位置の手がか�
 PROMPT_CONDITIONS = {
     "base": "公式の指示文のみ（例: put the bowl on the plate）",
     "base_short": "公式の指示文 + 掴む対象を見分ける最小の関係だけの SG（三つ組、1〜2 本。scene_graph/relevant.py）",
-    "base_full": "公式の指示文 + 全部の関係の SG（三つ組）",
-    "base_wrong": "公式の指示文 + 対象には当てはまらない関係の SG（おとりがあればおとりの関係、なければ前後左右を逆にしたもの）",
-    "sg_command": "base_short の SG から作った、場所を書いた指示文（例: put the black bowl behind the wine rack on the plate）",
+    "base_wrong": "公式の指示文 + 対象には当てはまらない関係の SG（三つ組）（おとりがあればおとりの関係、なければ前後左右を逆にしたもの）",
 }
 # 指示文から対象の位置関係を外した条件（vla3dsg_spatial。人が場所を言わない場合）。外し方は NOREL_PATTERNS
 PROMPT_CONDITIONS["norel"] = "公式の指示文から対象の位置関係を外したもの（例: pick up the black bowl and place it on the plate）"
 PROMPT_CONDITIONS["norel_short"] = "norel + 掴む対象を見分ける最小の関係だけの SG（三つ組）"
-PROMPT_CONDITIONS["norel_command"] = "norel の対象の名前の後に、norel_short の SG から作った場所を入れた指示文（例: pick up the black bowl on the cookie box and place it on the plate）"
 # 位置関係を外す書き換え（正規化した指示文に順に当て、最初に一致したものを使う。一致しなければエラー）
 NOREL_PATTERNS = [
     (r"^pick up the black bowl .+ and place it on the plate$", "pick up the black bowl and place it on the plate"),
 ]
-PROMPT_CONDITIONS["base_irrelevant"] = "公式の指示文 + base_full と同じ長さ（トークン数）の、シーンと無関係な文（長さの影響を見る対照）"
-# SG の形式を変えた条件（末尾 _json・_nl。付けないと三つ組）。textify.FORMATS
-for _k in ("base_short", "base_full", "base_wrong"):
-    PROMPT_CONDITIONS[f"{_k}_json"] = PROMPT_CONDITIONS[_k].replace("三つ組", "JSON") if "三つ組" in PROMPT_CONDITIONS[_k] else PROMPT_CONDITIONS[_k] + "（JSON）"
-    PROMPT_CONDITIONS[f"{_k}_nl"] = PROMPT_CONDITIONS[_k].replace("三つ組", "自然文") if "三つ組" in PROMPT_CONDITIONS[_k] else PROMPT_CONDITIONS[_k] + "（自然文）"
 # 自作スイートのタスク名の表示名（確認用の資料・表）
 SCENE_LABELS = {
     "standard": "標準",
@@ -226,14 +218,6 @@ SCENE_LABELS = {
     "on_ramekin_b1": "ラメキンの上のボウル（もう一方は箱の上）",
     "on_ramekin_b2": "クッキーの箱の上のボウル（もう一方はラメキンの上）",
 }
-# base_irrelevant の無関係な文（base_full と同じトークン数になるよう、先頭から切り出し、足りなければ繰り返す）
-IRRELEVANT_TEXT = (
-    "the weather was sunny in the morning and it started to rain in the afternoon. "
-    "many people enjoy reading books in the library on weekends. "
-    "the train arrived at the station ten minutes later than scheduled. "
-    "a small bird was singing in the garden near the old tree. "
-    "the museum opens at nine and closes at five every day except monday. "
-)
 PROMPT_SG_LABEL = "scene information"  # 指示文と追加テキストの区切り: "<指示文>. <ラベル>: <テキスト>"
 # SG を加えると指示文が長くなるため、系列長の上限を広げる（既定は指示文 32 トークン分の見込み）
 MOLMOACT2_MAX_SEQUENCE_LENGTH = 1024

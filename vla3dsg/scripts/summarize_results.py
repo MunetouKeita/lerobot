@@ -8,10 +8,7 @@
 シーン × 条件の成功率の表を作る。シーンにない条件は、そのシーンの表では除き、全体の表では「-」にする。
 
     uv run python vla3dsg/scripts/summarize_results.py --root zeroshot --scenes standard shuffle hidden hidden_decoy \
-        --names base base_short base_full base_wrong sg_command
-    uv run python vla3dsg/scripts/summarize_results.py --root zeroshot --scenes standard shuffle --table formats.md \\
-        --names base base_short base_short_json base_short_nl base_full base_full_json base_full_nl base_irrelevant \\
-        base_wrong base_wrong_json base_wrong_nl
+        --names base base_short base_wrong
 """
 
 import argparse
