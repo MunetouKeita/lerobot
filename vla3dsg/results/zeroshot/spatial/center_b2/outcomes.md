@@ -11,9 +11,3 @@
 | task | プロンプト（先頭） | 成功 | 結果（回数） |
 |---|---|---|---|
 | 1 | pick up the black bowl and place it on the plate | 0/20 | 12 × black bowl 1 on plate<br>7 × black bowl 1 on plate, black bowl 2 on black bowl 1<br>1 × black bowl 1 on black bowl 2 |
-
-## norel_short
-
-| task | プロンプト（先頭） | 成功 | 結果（回数） |
-|---|---|---|---|
-| 1 | pick up the black bowl and place it on the plate. scene information: (black bowl 2, left o | 0/20 | 13 × black bowl 1 on plate<br>6 × black bowl 1 on plate, black bowl 2 on black bowl 1<br>1 × black bowl 1 on plate, black bowl 2 on plate |
