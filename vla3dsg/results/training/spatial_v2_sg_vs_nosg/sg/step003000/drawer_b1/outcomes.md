@@ -11,3 +11,9 @@
 | task | プロンプト（先頭） | 成功 | 結果（回数） |
 |---|---|---|---|
 | 2 | pick up the black bowl and place it on the plate | 10/20 | 10 × black bowl 1 on plate<br>7 × black bowl 2 on plate<br>3 × 変化なし |
+
+## norel_wrong
+
+| task | プロンプト（先頭） | 成功 | 結果（回数） |
+|---|---|---|---|
+| 2 | pick up the black bowl and place it on the plate. scene information: (black bowl 1, on, to | 0/20 | 20 × black bowl 2 on plate |
