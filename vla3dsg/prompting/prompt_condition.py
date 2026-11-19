@@ -57,7 +57,7 @@ def compose_prompt(instruction: str, condition: str, env: Any) -> str:
         base = _remove_relation(base)
     if condition in ("base", "norel"):
         return base
-    given = build_wrong_scene_graph(env) if condition == "base_wrong" else build_relevant_scene_graph(env)
+    given = build_wrong_scene_graph(env) if condition.endswith("_wrong") else build_relevant_scene_graph(env)
     return f"{base}. {settings.PROMPT_SG_LABEL}: {textify.to_triples(given)}"
 
 
