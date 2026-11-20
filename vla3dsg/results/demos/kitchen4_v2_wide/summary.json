@@ -1,0 +1,20 @@
+{
+  "dataset": "vla3dsg/data/kitchen4_v2_wide",
+  "n_episodes": 100,
+  "n_frames": 14606,
+  "elapsed_s": 923,
+  "per_task": [
+    {
+      "task_id": 2,
+      "task": "put the black bowl on top of the cabinet",
+      "n_episodes": 100,
+      "n_trials": 274,
+      "rejected_placement": 164,
+      "failed": 10,
+      "too_long": 0,
+      "steps_min": 118,
+      "steps_max": 187,
+      "n_frames": 14606
+    }
+  ]
+}

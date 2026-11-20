@@ -1,0 +1,32 @@
+{
+  "dataset": "vla3dsg/data/kitchen4_v2_hidden",
+  "n_episodes": 100,
+  "n_frames": 15198,
+  "elapsed_s": 624,
+  "per_task": [
+    {
+      "task_id": 0,
+      "task": "put the black bowl on top of the cabinet",
+      "n_episodes": 50,
+      "n_trials": 53,
+      "rejected_placement": 1,
+      "failed": 2,
+      "too_long": 0,
+      "steps_min": 156,
+      "steps_max": 197,
+      "n_frames": 8318
+    },
+    {
+      "task_id": 1,
+      "task": "put the black bowl on top of the cabinet",
+      "n_episodes": 50,
+      "n_trials": 53,
+      "rejected_placement": 1,
+      "failed": 2,
+      "too_long": 0,
+      "steps_min": 127,
+      "steps_max": 153,
+      "n_frames": 6880
+    }
+  ]
+}
