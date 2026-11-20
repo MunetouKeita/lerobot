@@ -1,0 +1,13 @@
+{
+  "src": "kitchen4_v3_hidden",
+  "condition": "base_short",
+  "n_episodes": 100,
+  "n_tasks": 2,
+  "sg_matches_generation": "100/100",
+  "max_tokens": 22,
+  "git": {
+    "commit": "8db135861c9ffbea2471c60320670837f1274549",
+    "upstream_base": "200ee53596d464bd28f6595cdb31be69a2b5e379",
+    "dirty": true
+  }
+}
