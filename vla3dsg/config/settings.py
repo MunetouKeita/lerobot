@@ -134,13 +134,14 @@ DEMO_TASK_SPECS = {
         **{k: {"target": "akita_black_bowl_1", "dest": "plate_1", "via": [(-0.47, 0.02)], "grasp_angles": (75.0, 120.0)} for k in (1, 2)},
     },
     # libero_90 の KITCHEN_SCENE4（put the black bowl on top of the cabinet）を元にしたスイート。置き場所はキャビネットの天面
-    # 掴む向きの範囲は、角度ごとに 1 回ずつ試して成功した範囲の内側（tmp の調査、2026-11-05）
+    # 掴む向きは段階 1（5-2）と同じく、手先を回さずに左の縁（75〜105°）を掴む（各角度 5 回ずつ試し、3 シーンとも 4〜5/5 成功。2026-11-19）
+    # 以前（4-4）はワインラックの裏 90〜240°・キャビネットの裏 90〜270°・見えるボウル -30〜30° で、手先を最大 90° 回していた
+    # 見えるボウル（task 2）は、y > -0.06 では左の縁が 50 か所中 13 か所で掴み損ねるが、右の縁（255〜285°）なら掴める（2026-11-19）
     "vla3dsg_kitchen4": {
-        # ワインラックの裏: 傾いたラックの板に手先が当たる向き（0〜30°、300〜330°）を避ける
-        0: {"target": "akita_black_bowl_1", "dest": "white_cabinet_1", "dest_site": "white_cabinet_1_top_side", "via": [], "grasp_angles": (90.0, 240.0)},
-        1: {"target": "akita_black_bowl_1", "dest": "white_cabinet_1", "dest_site": "white_cabinet_1_top_side", "via": [], "grasp_angles": (90.0, 270.0)},
-        # 見えるボウル（広い範囲）: 330〜30° は 12 か所中 11〜12 か所で成功、90〜150°・240〜300° は 6〜10 か所
-        2: {"target": "akita_black_bowl_1", "dest": "white_cabinet_1", "dest_site": "white_cabinet_1_top_side", "via": [], "grasp_angles": (-30.0, 30.0)},
+        k: {"target": "akita_black_bowl_1", "dest": "white_cabinet_1", "dest_site": "white_cabinet_1_top_side", "via": [],
+            "grasp_angles": (75.0, 105.0), "grasp_yaw_deg": 0.0,
+            **({"grasp_angles_by_y": ((-0.06, (75.0, 105.0)), (None, (255.0, 285.0)))} if k == 2 else {})}
+        for k in range(3)
     },
     # 段階 1（5 節）: libero_spatial の 5 配置。偶数の task は公式と同じボウル 1、奇数の task はもう一方のボウル 2 を皿に置く
     # 掴む向きは公式デモに合わせ、手先をほとんど回さずに縁を掴む（公式デモの閉じた時点の手先の位置と向きから。
@@ -174,12 +175,14 @@ SG_ON_MIN_DZ = 0.005  # m。接触していて、相手よりこれ以上高い�
 SG_RELEVANT_MAX = 2  # 関係の最大数
 SG_HIDDEN_MAX_VISIBLE = 0.2  # agentview から見える点の割合がこれ未満なら「隠れている」
 SG_LANDMARK_OBJECTS = ("plate",)  # 固定物のほかに、位置の手がかりにする（大きくて動かない）物体の種類（行き先の物体は除く）
+# 隠し場所の候補（表示名）。誤った SG は、おとりがなく対象がこのどれかの裏にあれば、別の隠し場所の裏とする（vla3dsg_kitchen4）
+SG_HIDING_PLACES = ("wine rack", "white cabinet")
 
 # プロンプト条件（run_eval.py --prompt-condition）
 PROMPT_CONDITIONS = {
     "base": "公式の指示文のみ（例: put the bowl on the plate）",
     "base_short": "公式の指示文 + 掴む対象を見分ける最小の関係だけの SG（三つ組、1〜2 本。scene_graph/relevant.py）",
-    "base_wrong": "公式の指示文 + 対象には当てはまらない関係の SG（三つ組）（おとりがあればおとりの関係、なければ前後左右を逆にしたもの）",
+    "base_wrong": "公式の指示文 + 対象には当てはまらない関係の SG（三つ組）（おとりがあればおとりの関係、隠し場所の裏なら別の隠し場所の裏、どれでもなければ前後左右を逆にしたもの）",
 }
 # 指示文から対象の位置関係を外した条件（vla3dsg_spatial。人が場所を言わない場合）。外し方は NOREL_PATTERNS
 PROMPT_CONDITIONS["norel"] = "公式の指示文から対象の位置関係を外したもの（例: pick up the black bowl and place it on the plate）"

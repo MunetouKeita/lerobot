@@ -83,14 +83,15 @@ def run_scripted(env: OffScreenRenderEnv, obs: dict, demo: dict, rng: np.random.
     """settings.DEMO_TASK_SPECS のタスクの設定で、スクリプト制御を 1 エピソード実行する。
 
     grasp_angles があれば、縁を掴む向きをその範囲から選ぶ（rng を渡すとランダム、渡さないと中央）。
-    grasp_angles_by_x があれば、対象の x の位置で範囲を切り替える（((x の上限, (lo, hi)), ...)。上限 None は残り全部）。
+    grasp_angles_by_x・grasp_angles_by_y があれば、対象の x・y の位置で範囲を切り替える（((上限, (lo, hi)), ...)。上限 None は残り全部）。
     """
     offset, yaw = demo.get("grasp_offset", settings.SCRIPTED_GRASP_OFFSET), demo.get("grasp_yaw_deg", 0.0)
     angle = None
     ranges = demo.get("grasp_angles")
-    if "grasp_angles_by_x" in demo:
-        x = body_pos(env, demo["target"])[0]
-        ranges = next(r for x_max, r in demo["grasp_angles_by_x"] if x_max is None or x < x_max)
+    for axis, key in ((0, "grasp_angles_by_x"), (1, "grasp_angles_by_y")):
+        if key in demo:
+            v = body_pos(env, demo["target"])[axis]
+            ranges = next(r for v_max, r in demo[key] if v_max is None or v < v_max)
     if ranges is not None:
         lo, hi = ranges
         angle = float(rng.uniform(lo, hi)) if rng is not None else (lo + hi) / 2

@@ -110,7 +110,8 @@ def build_wrong_scene_graph(env: Any) -> SceneGraph:
     """掴む対象について成り立たない関係だけの小さな SG（誤った SG の条件）。
 
     同じ種類の別の物体（おとり）があれば、おとりの小さな SG を対象の名前で書き、対象にも当てはまる関係は除く
-    （おとりへ誘導する誤り）。おとりがない、または残らなければ、対象の小さな SG の前後左右を逆にする。
+    （おとりへ誘導する誤り）。おとりがなく、対象が隠し場所（settings.SG_HIDING_PLACES）の裏にあれば、別の隠し場所の裏にする。
+    どれでもなければ、対象の小さな SG の前後左右を逆にする。
     """
     names = _display_names(env)
     support = _support_relations(env, names)
@@ -124,6 +125,12 @@ def build_wrong_scene_graph(env: Any) -> SceneGraph:
         relations = [
             (target, *r[1:]) for r in decoy.relations if not _holds(env, target_id, (r[1], r[2]), names, support, positions)
         ]
+    if not relations:
+        # 対象が隠し場所の裏にあれば、シーンにある別の隠し場所の裏とする（もう一方の隠し場所へ誘導する誤り）
+        hidden_behind = [r[2] for r in build_relevant_scene_graph(env).relations if r[1] == "behind" and r[2] in settings.SG_HIDING_PLACES]
+        others = [p for p in settings.SG_HIDING_PLACES if p in names.values() and p not in hidden_behind]
+        if hidden_behind and others:
+            relations = [(target, "behind", others[0])]
     if not relations:
         candidates = _candidates(env, target_id, names, support, positions)
         relations = [(target, _OPPOSITE[r], o) for r, o in candidates if r in _OPPOSITE][:1]
