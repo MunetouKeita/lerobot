@@ -5,28 +5,49 @@
  "groups": [
   {
    "label": "追加学習なし",
-   "color": "#555555",
+   "color": "#6B7280",
    "videos": [
     {
      "caption": "元のモデル",
      "result": "成功",
-     "path": "results/zeroshot/spatial/drawer_b1/base/videos/vla3dsg_spatial_2/eval_episode_0.mp4"
+     "path": "results/zeroshot/spatial/drawer_b1/base/videos/vla3dsg_spatial_2/eval_episode_0.mp4",
+     "target": {
+      "suite": "vla3dsg_spatial",
+      "task_id": 2,
+      "episode": 0
+     }
     }
    ]
   },
   {
    "label": "追加学習（SG なし）",
-   "color": "#2c6fbb",
+   "color": "#6B7280",
    "videos": [
     {
      "caption": "自作デモだけ",
      "result": "失敗",
-     "path": "results/training/spatial_v2_sg_vs_nosg/nosg/step003000/drawer_b1/base/videos/vla3dsg_spatial_2/eval_episode_0.mp4"
-    },
+     "path": "results/training/spatial_v2_sg_vs_nosg/nosg/step003000/drawer_b1/base/videos/vla3dsg_spatial_2/eval_episode_0.mp4",
+     "target": {
+      "suite": "vla3dsg_spatial",
+      "task_id": 2,
+      "episode": 0
+     }
+    }
+   ]
+  },
+  {
+   "label": "追加学習（SG なし）",
+   "color": "#85023E",
+   "videos": [
     {
      "caption": "公式デモも混ぜる",
      "result": "成功",
-     "path": "results/training/spatial_v2_mix_sg_vs_nosg/nosg/step003000/drawer_b1/base/videos/vla3dsg_spatial_2/eval_episode_0.mp4"
+     "path": "results/training/spatial_v2_mix_sg_vs_nosg/nosg/step003000/drawer_b1/base/videos/vla3dsg_spatial_2/eval_episode_0.mp4",
+     "target": {
+      "suite": "vla3dsg_spatial",
+      "task_id": 2,
+      "episode": 0
+     }
     }
    ]
   }

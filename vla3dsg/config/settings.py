@@ -43,6 +43,13 @@ VIDEO_SAVE_FAILURES = True
 
 # デモ動画のテロップ
 DEMO_FONT_PATH = "/usr/share/fonts/opentype/noto/NotoSansCJK-Medium.ttc"  # 日本語表示用（fonts-noto-cjk）
+# 発表資料と比較動画の配色（意味を固定し、ほかの意味には使わない。scripts/make_comparison_video.py）
+SEMINAR_COLORS = {
+    "proposed": "#85023E",  # 提案・注目する条件（SG あり、公式デモも混ぜる、指示どおりに動いた例）、成功（九大カラー）
+    "baseline": "#6B7280",  # 比較・ベースライン（追加学習なし、SG なし、自作デモだけ、指示に従わない例）、失敗（灰）
+    "text": "#1F2937",  # 普通の文字（背景は白）
+    "caution": "#2F4A6D",  # 課題・注意を示したいときだけ（紺）
+}
 DEMO_HOLD_LAST_S = 1.0  # 各エピソードの最後のフレームを止めて見せる秒数
 DEMO_EPISODES_PER_TASK = 1  # デモ動画に載せるエピソード数（成功率は全エピソードから計算）
 # MolmoAct2 のドキュメントの評価コマンドに合わせる
