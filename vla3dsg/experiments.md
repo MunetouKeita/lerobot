@@ -115,6 +115,8 @@
 
 ## 4. 追加学習
 
+隠れたシーンの条件: 対象は、評価の待ち（50 ステップ）の後に agentview・手首カメラのどちらにも映らないこと（`make_custom_task.py --occluder` が見える点が `settings.CUSTOM_TASK_HIDDEN_MAX_VISIBLE_POINTS` を超える配置を除く）。4-4・4-5 の `vla3dsg_kitchen4` はこれを満たさず、ワインラックの裏のボウルが最初から手首カメラに映っていた（`tasks.json` の `wrist_visible_ratio_first` 1.0）。agentview から見える割合だけを確かめていたため、見落とした（4-5）。4-6 から、2 か所の隠れたボウルの位置を変えて満たす
+
 #### 4-1. SG なしで、見えるボウルを広い範囲に置いたデモで学習（`results/training/visible_nosg/`）
 
 - 概要: 3-5 のデモのうち、正解のボウルが見える 2 シーン（wide・decoy_visible、100 本・16,222 フレーム）で、`MolmoAct2-LIBERO` を LoRA で追加学習した（2026-10-29、このPC で 5 時間 13 分）。有効バッチ 32（8 × 勾配累積 4）、12,000 ステップ ＝ 更新 3,000 回（約 6 周）、学習率の予定は学習の長さに合わせた（`run.sh`）。公式デモは混ぜない
