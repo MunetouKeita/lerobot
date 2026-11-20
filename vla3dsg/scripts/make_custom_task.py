@@ -4,6 +4,8 @@
 2. reset（配置のサンプリング）→ 何もしない動作で物体を落ち着かせ、問題のない配置だけを初期状態として集める
    - 物体が落ち着いた後も動いている、または配置の直後から水平方向に大きく動いた（固定物と重なって押し出された・倒れた）ものは除く
 3. 対象物体の見え方（agentview・手首カメラから、遮っている物体をどけた場合に対して表面の何 % が直接見えるか）を測る
+   - --occluder を付けた隠れたシーンでは、評価と同じく待った後（settings.LIBERO_NUM_STEPS_WAIT）にどちらかのカメラで対象が
+     見える配置を除く（settings.CUSTOM_TASK_HIDDEN_MAX_VISIBLE_POINTS。手首カメラに映ると、画像だけで隠し場所が分かるため）
 4. 初期状態（.pruned_init）と tasks.json を保存し、スイートの全タスクを複数の視点で描画した確認用の画像
    （previews/overview.png、visualization/scene_overview.py）を作り直す
 
@@ -48,6 +50,7 @@ from vla3dsg.envs.custom_task_builder import (  # noqa: E402
     set_region_range,
     too_close,
     visibility,
+    visible_after_wait,
 )
 from vla3dsg.visualization.scene_overview import render_overview  # noqa: E402
 
@@ -110,7 +113,7 @@ def main() -> None:
     size = settings.LIBERO_OBS_SIZE
     env = OffScreenRenderEnv(bddl_file_name=str(bddl_path), camera_heights=size, camera_widths=size)
     n_target = 1 if args.preview else args.n_init
-    states, vis_list, rejected = [], [], 0
+    states, vis_list, wait_list, rejected, rejected_visible = [], [], [], 0, 0
     seed = 0
     if args.copy_init:
         base_suite, base_task = args.base.split("/")
@@ -129,8 +132,16 @@ def main() -> None:
         if state is None or (args.min_distance is not None and too_close(env, state, args.min_distance)):
             rejected += 1
             continue
+        vis = visibility(env, args.target, args.occluder)
+        if args.occluder:
+            seen = visible_after_wait(env, state, args.target)
+            if max(seen.values()) > settings.CUSTOM_TASK_HIDDEN_MAX_VISIBLE_POINTS:
+                rejected += 1
+                rejected_visible += 1
+                continue
+            wait_list.append(seen)
         states.append(state)
-        vis_list.append(visibility(env, args.target, args.occluder))
+        vis_list.append(vis)
 
     first = vis_list[0]
     if args.preview:
@@ -147,6 +158,9 @@ def main() -> None:
         ratios = [v["visible_ratio"]["agentview"] for v in vis_list if v["visible_ratio"]["agentview"] is not None]
         stats["agentview_visible_ratio"] = {"mean": round(float(np.mean(ratios)), 3), "max": round(float(np.max(ratios)), 3)}
         stats["wrist_visible_ratio_first"] = first["visible_ratio"]["robot0_eye_in_hand"]
+        if wait_list:  # --copy-init では測らない
+            stats["n_rejected_visible_after_wait"] = rejected_visible
+            stats["visible_points_after_wait_max"] = {c: max(w[c] for w in wait_list) for c in wait_list[0]}
     stats["visible_points_first"] = first["visible_points"]
     env.close()
 

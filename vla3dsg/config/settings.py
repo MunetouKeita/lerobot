@@ -64,6 +64,9 @@ CUSTOM_TASK_N_INIT = 50  # 初期状態の数（元の LIBERO と同じ）
 CUSTOM_TASK_STABILITY_STEPS = 50  # 落ち着いた後、さらに何もしないで進めて動きを確かめるステップ数
 CUSTOM_TASK_MAX_SETTLE_MOVE = 0.02  # m。配置の直後から落ち着くまでに水平方向にこれ以上動いた配置は除く（押し出し・転倒）
 CUSTOM_TASK_MAX_DRIFT = 0.005  # m。落ち着いた後にこれ以上動く配置は除く
+# 隠れたシーン（--occluder を付けたタスク）では、評価の待ちの後にどちらかのカメラで対象がこれより多く見える配置を除く
+# （4-5 で、ワインラックの裏のボウルが手首カメラに映り、SG なしでも隠し場所が分かった。2026-11-20）
+CUSTOM_TASK_HIDDEN_MAX_VISIBLE_POINTS = 2
 CUSTOM_TASK_MAX_TRIALS_FACTOR = 4  # 有効な配置が n_init の何倍の試行で集まらなければ中止するか
 ENV_CREATE_RETRIES = 5  # 環境を作るときの配置のサンプリングが失敗したときに作り直す回数（配置範囲の広いタスクでまれに失敗する）
 CUSTOM_TASK_VIS_MAX_POINTS = 400  # 見え方を測るときに使う対象物体の表面の点の数（メッシュの頂点を間引く）

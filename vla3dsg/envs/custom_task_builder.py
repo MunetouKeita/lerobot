@@ -124,6 +124,19 @@ def visible_points(env: OffScreenRenderEnv, target: str) -> dict[str, tuple[int,
     return result
 
 
+def visible_after_wait(env: OffScreenRenderEnv, state: np.ndarray, target: str) -> dict[str, int]:
+    """評価と同じく初期状態から何もしないで待った後の、カメラごとに対象物体の直接見える点の数。
+
+    待つあいだにロボットの姿勢が落ち着いて手首カメラの視点が変わるため、配置の直後には映らなくても、待った後に映ることがある
+    （4-5 のキャビネットの裏）。
+    """
+    env.reset()
+    env.set_init_state(state)
+    for _ in range(settings.LIBERO_NUM_STEPS_WAIT):
+        env.step(NOOP)
+    return {c: v[1] for c, v in visible_points(env, target).items()}
+
+
 def visibility(env: OffScreenRenderEnv, target: str, occluder: str | None) -> dict:
     """対象物体の見え方。遮っている物体を遠くへどけた場合に見える点の数に対する割合で表す。"""
     e = env.env
