@@ -1,0 +1,160 @@
+{
+  "per_task": [
+    {
+      "task_group": "vla3dsg_kitchen4",
+      "task_id": 1,
+      "metrics": {
+        "sum_rewards": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "max_rewards": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "successes": [
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          true,
+          true,
+          true,
+          false,
+          false,
+          true,
+          false,
+          false,
+          true,
+          true,
+          false,
+          true,
+          true,
+          true
+        ],
+        "video_paths": [
+          "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_0.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_1.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_2.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_3.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_4.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_5.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_6.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_7.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_8.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_9.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_10.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_12.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_13.mp4",
+          "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_16.mp4"
+        ],
+        "predicted_video_paths": []
+      },
+      "n_episodes": 20,
+      "n_success": 10,
+      "pc_success": 50.0,
+      "pc_success_ci95": [
+        29.92980081982124,
+        70.07019918017876
+      ]
+    }
+  ],
+  "per_group": {
+    "vla3dsg_kitchen4": {
+      "avg_sum_reward": 0.5,
+      "avg_max_reward": 0.5,
+      "pc_success": 50.0,
+      "n_episodes": 20,
+      "n_success": 10,
+      "pc_success_ci95": [
+        29.92980081982124,
+        70.07019918017876
+      ],
+      "video_paths": [
+        "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_0.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_1.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_2.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_3.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_4.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_5.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_6.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_7.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_8.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_9.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_10.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_12.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_13.mp4",
+        "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_16.mp4"
+      ],
+      "predicted_video_paths": []
+    }
+  },
+  "overall": {
+    "avg_sum_reward": 0.5,
+    "avg_max_reward": 0.5,
+    "pc_success": 50.0,
+    "n_episodes": 20,
+    "n_success": 10,
+    "pc_success_ci95": [
+      29.92980081982124,
+      70.07019918017876
+    ],
+    "eval_s": 255.65636897087097,
+    "eval_ep_s": 12.782818460464478,
+    "video_paths": [
+      "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_0.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_1.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_2.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_3.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_4.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_5.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_6.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_7.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_8.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_9.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_10.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_12.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_13.mp4",
+      "/home/common/github/lerobot/vla3dsg/results/training/kitchen4_v3_sg_vs_nosg/nosg/step005000/hidden_cabinet/base/videos/vla3dsg_kitchen4_1/eval_episode_16.mp4"
+    ],
+    "predicted_video_paths": []
+  }
+}
