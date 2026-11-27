@@ -1,0 +1,13 @@
+{
+  "src": "spatial_v2_near_box",
+  "condition": "base",
+  "n_episodes": 60,
+  "n_tasks": 2,
+  "sg_matches_generation": "60/60",
+  "max_tokens": 16,
+  "git": {
+    "commit": "6981a48548fe42667438fadc11c96368dbeeb87d",
+    "upstream_base": "200ee53596d464bd28f6595cdb31be69a2b5e379",
+    "dirty": false
+  }
+}
